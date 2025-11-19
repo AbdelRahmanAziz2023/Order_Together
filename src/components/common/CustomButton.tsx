@@ -4,7 +4,7 @@ import CustomText from './CustomText';
 type Props = {
   onPress?: () => void;
   title: string;
-  isRounded?: boolean;
+  isBordered?: boolean;
   isDisabled?: boolean;
   btnStyle?: ViewStyle;
 };
@@ -12,7 +12,7 @@ type Props = {
 const CustomButton = ({
   onPress,
   title,
-  isRounded = false,
+  isBordered = false,
   isDisabled = false,
   btnStyle,
 }: Props) => {
@@ -20,7 +20,7 @@ const CustomButton = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={isDisabled}
-      style={[isRounded ? styles.roundedStyle : styles.mainStyle, btnStyle]}
+      style={[isBordered ? styles.roundedStyle : styles.mainStyle, btnStyle]}
     >
       <CustomText text={title} textStyle={styles.textStyle} />
     </TouchableOpacity>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   mainStyle: {
     width: '100%',
     height: 60,
-    backgroundColor: '#FF7622',
+    backgroundColor: '#0672CB',
     color: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#FF7622',
+    borderColor: '#2b6cb0',
   },
   textStyle: {
-    fontFamily: 'Sen-Bold',
-    // fontSize: 1,
+    fontFamily: 'SenBold',
+    fontSize: 18,
     color: '#fff',
   },
 });

@@ -1,4 +1,4 @@
-import { Text, StyleSheet, TextStyle } from 'react-native';
+import { StyleSheet, Text, TextStyle } from 'react-native';
 
 type Props = {
   text: string;
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   text: {
     color : '#32343E',
     fontSize:16,
-    fontFamily: 'Sen-Regular',
+    fontFamily: 'SenRegular',
   },
 });
 

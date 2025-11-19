@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import CustomText from '../../components/common/CustomText';
 
 type Props = {
@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontFamily: 'Sen-Bold',
+    fontFamily: 'SenBold',
     color: '#fff',
   },
   description: {
-    color: '#FFF2E0',
+    color: '#e6e6ff',
   },
 });
 

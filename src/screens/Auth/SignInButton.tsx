@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     color: "#646982",
   },
   second: {
-    color: "#FF7622",
-    fontFamily: "Sen-Bold",
+    color: "#0672CB",
+    fontFamily: "SenBold",
   },
 });
 

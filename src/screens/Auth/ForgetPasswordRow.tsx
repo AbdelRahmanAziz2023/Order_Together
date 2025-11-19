@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   forgetText: {
-    color: "#FF7622",
+    color: "#0672CB",
     fontSize: 14,
   },
 });
