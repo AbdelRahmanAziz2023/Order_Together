@@ -1,6 +1,7 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import CustomTextField from "@/src/components/common/CustomTextField";
 import { useRegisterMutation } from "@/src/services/api/Endpoints/AuthEndpoints";
+import { saveToken, saveUser } from "@/src/store/expo-secure-store";
 import { validateSignUpInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -21,7 +22,10 @@ const RegisterForm = () => {
     try {
       const res = await signUp({ firstName, secondName, email, password }).unwrap();
       console.log("REGISTER SUCCESS:", res);
-      router.replace("/(app)/Home");
+      // Store token and user data
+      await saveToken(res.token);
+      await saveUser({ id: res.id, fullName: res.fullName, email: res.email });
+      router.replace("/(app)/(home)");
     } catch (err: any) {
       console.log("REGISTER ERROR: " + err);
     }

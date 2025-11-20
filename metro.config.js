@@ -2,7 +2,7 @@ const { getDefaultConfig } = require("expo/metro-config");
 
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
-
+  
   // 1. SVG transformer
   config.transformer = {
     ...config.transformer,

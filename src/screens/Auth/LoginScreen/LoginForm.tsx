@@ -1,6 +1,7 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import CustomTextField from "@/src/components/common/CustomTextField";
 import { useLoginMutation } from "@/src/services/api/Endpoints/AuthEndpoints";
+import { saveToken, saveUser } from "@/src/store/expo-secure-store";
 import { validateLogInInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -16,8 +17,11 @@ const LoginForm = () => {
   const handleLogin = async () => {
     if (!validateLogInInput(email, password)) return;
     try {
-      await login({ email, password }).unwrap();
-      router.replace("/(app)/Home");
+      const res = await login({ email, password }).unwrap();
+      // Store token and user data
+      await saveToken(res.token);
+      await saveUser({ id: res.id, fullName: res.fullName, email: res.email });
+      router.replace("/(app)/(home)");
     } catch (err) {
       console.log("LOGIN ERROR:", err);
     }
