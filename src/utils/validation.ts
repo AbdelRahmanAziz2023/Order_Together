@@ -30,7 +30,6 @@ export const validateLogInInput = (
     );
     return false;
   }
-
   return true;
 };
 
@@ -38,7 +37,7 @@ export const validateSignUpInput = (
   firstName: string,
   secondName: string,
   email: string,
-  password: string,
+  password: string
 ): boolean => {
   if (firstName.trim().length === 0) {
     Alert.alert("Missing Field", "Please enter your First Name.");

@@ -6,7 +6,7 @@ const LoginHeader = () => (
   <View style={styles.header}>
     <AuthHead
       title="Login"
-      description="Please sign in to your existing account"
+      description="Please log in to your existing account"
     />
   </View>
 );

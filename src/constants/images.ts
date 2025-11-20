@@ -42,8 +42,6 @@ import UnderArrow from '../../assets/images/icons/Under Arrow.svg';
 import User from '../../assets/images/icons/User.svg';
 import Volume from '../../assets/images/icons/volume-1.svg';
 import Watch from '../../assets/images/icons/Watch.svg';
-import Map from '../../assets/images/map.svg';
-export { default as GoogleIcon } from '../../assets/images/icons/google.svg';
 
 
 export const Icons = {
@@ -93,6 +91,5 @@ export const Icons = {
 };
 
 export const Images = {
-  map: Map,
   error: Error,
 };

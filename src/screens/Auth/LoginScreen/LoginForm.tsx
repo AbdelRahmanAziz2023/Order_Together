@@ -5,7 +5,8 @@ import { validateLogInInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import SignInButton from "./SignupButton";
+import AuthFoot from "../AuthFoot";
+
 
 const LoginForm = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const LoginForm = () => {
         onPress={handleLogin}
         isDisabled={isLoading}
       />
-      <SignInButton />
+      <AuthFoot targetName="Register" textButton="Sign Up" question="Don't have an account?"/>
     </View>
   );
 };

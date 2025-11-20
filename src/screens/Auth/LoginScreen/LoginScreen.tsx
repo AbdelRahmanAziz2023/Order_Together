@@ -1,4 +1,5 @@
 import { Icons } from "@/src/constants/images";
+
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import {
@@ -12,13 +13,13 @@ import LoginHeader from "./LoginHeader";
 
 const LoginScreen = () => {
   return (
-    <KeyboardAwareScrollView
-      bottomOffset={0}
-      keyboardDismissMode="interactive"
-      style={styles.container}
-      contentContainerStyle={{ flexGrow: 1 }}
-    >
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView
+        bottomOffset={0}
+        keyboardDismissMode="interactive"
+        style={styles.container}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <View style={styles.iconWrapper}>
           <Icons.authBack width="100%" height={350} />
         </View>
@@ -33,13 +34,13 @@ const LoginScreen = () => {
             <LoginForm />
           </KeyboardStickyView>
         </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#002A58" },
+  container: { flex: 1, backgroundColor: "#4A0000" },
   iconWrapper: {
     position: "absolute",
     top: 0,

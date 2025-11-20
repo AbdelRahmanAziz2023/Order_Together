@@ -23,12 +23,12 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 32,
     fontFamily: 'SenBold',
     color: '#fff',
   },
   description: {
-    color: '#e6e6ff',
+    color: '#FAD69D',
   },
 });
 

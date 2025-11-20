@@ -1,9 +1,11 @@
 import { Icons } from "@/src/constants/images";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { KeyboardAwareScrollView, KeyboardStickyView } from "react-native-keyboard-controller";
+import {
+  KeyboardAwareScrollView,
+  KeyboardStickyView,
+} from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import RegisterForm from "./RegisterForm";
 import RegisterHeader from "./RegisterHeader";
 
@@ -17,13 +19,16 @@ const RegisterScreen = () => (
       contentContainerStyle={{ flexGrow: 1 }}
     >
       <View style={styles.iconWrapper}>
-        <Icons.authBack width="100%" height={300} />
+        <Icons.authBack width="100%" height={350} />
       </View>
 
       <View style={styles.content}>
         <RegisterHeader />
 
-        <KeyboardStickyView offset={{ closed: 0, opened: 400 }} style={{ width: "100%" }}>
+        <KeyboardStickyView
+          offset={{ closed: 0, opened: 400 }}
+          style={{ width: "100%" }}
+        >
           <RegisterForm />
         </KeyboardStickyView>
       </View>
@@ -32,7 +37,7 @@ const RegisterScreen = () => (
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#002A58" },
+  container: { flex: 1, backgroundColor: "#4A0000" },
   iconWrapper: {
     position: "absolute",
     top: 0,
