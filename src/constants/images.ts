@@ -13,8 +13,8 @@ import Clock from '../../assets/images/icons/Clock.svg';
 import Cross from '../../assets/images/icons/Close.svg';
 import CreditCard from '../../assets/images/icons/credit-card.svg';
 import Delivery from '../../assets/images/icons/Delivery.svg';
-import EllipseGray from '../../assets/images/icons/EllipseGray.svg';
-import EllipseOrange from '../../assets/images/icons/EllipseOrange.svg';
+import EllipseMustard from '../../assets/images/icons/EllipseMusterd.svg';
+import EllipseRed from '../../assets/images/icons/EllipseRed.svg';
 import EyeOff from '../../assets/images/icons/eye-off.svg';
 import Eye from '../../assets/images/icons/eye.svg';
 import Facebook from '../../assets/images/icons/facebook.svg';
@@ -78,8 +78,8 @@ export const Icons = {
   star: Star,
   volume: Volume,
   authBack: AuthBack,
-  ellipseGray: EllipseGray,
-  ellipseOrange: EllipseOrange,
+  ellipseRed: EllipseRed,
+  ellipseMustard: EllipseMustard,
   google: Google,
   facbook: Facebook,
   twitter: Twitter,
