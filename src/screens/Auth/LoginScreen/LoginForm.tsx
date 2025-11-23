@@ -5,7 +5,7 @@ import { saveToken, saveUser } from "@/src/store/expo-secure-store";
 import { validateLogInInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import AuthFoot from "../AuthFoot";
 
 
@@ -24,6 +24,9 @@ const LoginForm = () => {
       await saveUser({ id: res.id, fullName: res.fullName, email: res.email });
       router.replace("/(app)/(home)");
     } catch (err) {
+      Alert.alert("Error", "Invalid email or password");
+      setEmail("");
+      setPassword("");
       console.log("LOGIN ERROR:", err);
     }
   };

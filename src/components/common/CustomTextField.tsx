@@ -1,13 +1,14 @@
+import { Colors } from '@/src/constants/colors';
+import { useState } from 'react';
 import {
-  View,
+  Pressable,
   StyleSheet,
   TextInput,
+  View,
   ViewStyle,
-  Pressable,
 } from 'react-native';
-import CustomText from './CustomText';
-import { useState } from 'react';
 import { Icons } from '../../constants/images';
+import CustomText from './CustomText';
 
 type Props = {
   name: string;
@@ -46,13 +47,14 @@ const CustomTextField = ({
       <CustomText text={name} />
       <View style={styles.textFieldContainer}>
         <TextInput
-          cursorColor={'#FF7622'}
+          cursorColor={Colors.lightred}
           placeholder={placeholder}
           style={styles.textFieldStyle}
           secureTextEntry={isSecure}
           placeholderTextColor={'#A0A5BA'}
           onChangeText={onChangeText}
           value={value}
+          selectionHandleColor={Colors.lightred}
         />
         {isPassword && <Pressable onPress={changeSecure}>{icon}</Pressable>}
       </View>
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  textStyle: {},
   textFieldContainer: {
     backgroundColor: '#F0F5FA',
     width: '100%',
@@ -79,6 +80,8 @@ const styles = StyleSheet.create({
   textFieldStyle: {
     color: '#32343E',
     width: '90%',
+    fontSize: 16,
+    fontFamily: 'SenRegular',
   },
 });
 

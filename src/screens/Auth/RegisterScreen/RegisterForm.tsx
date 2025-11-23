@@ -5,7 +5,7 @@ import { saveToken, saveUser } from "@/src/store/expo-secure-store";
 import { validateSignUpInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import AuthFoot from "../AuthFoot";
 
 const RegisterForm = () => {
@@ -27,6 +27,11 @@ const RegisterForm = () => {
       await saveUser({ id: res.id, fullName: res.fullName, email: res.email });
       router.replace("/(app)/(home)");
     } catch (err: any) {
+      Alert.alert("Error", "Something went wrong");
+      setFirstName("");
+      setSecondName("");
+      setEmail("");
+      setPassword("");
       console.log("REGISTER ERROR: " + err);
     }
   };
