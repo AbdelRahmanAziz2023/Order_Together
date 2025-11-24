@@ -14,6 +14,7 @@ const RecentOrders = () => {
         keyExtractor={(item) => item.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.ordersList}
+        scrollEnabled={false}
       />
     </View>
   );

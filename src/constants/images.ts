@@ -9,7 +9,6 @@ import Call from '../../assets/images/icons/Call.svg';
 import Camera from '../../assets/images/icons/Camera.svg';
 import Car from '../../assets/images/icons/Car.svg';
 import Cart from '../../assets/images/icons/Cart.svg';
-import CheckCircle from '../../assets/images/icons/check-circle.svg';
 import Check from '../../assets/images/icons/Check.svg';
 import Clock from '../../assets/images/icons/Clock.svg';
 import Cross from '../../assets/images/icons/Close.svg';
@@ -39,7 +38,6 @@ import Send from '../../assets/images/icons/Send.svg';
 import Smile from '../../assets/images/icons/smile.svg';
 import Star from '../../assets/images/icons/Star.svg';
 import Tag from '../../assets/images/icons/Tag.svg';
-import Twitter from '../../assets/images/icons/twitter.svg';
 import UnderArrow from '../../assets/images/icons/Under Arrow.svg';
 import User from '../../assets/images/icons/User.svg';
 import Volume from '../../assets/images/icons/volume-1.svg';
@@ -72,7 +70,6 @@ export const Icons = {
   info: Info,
   creditCard: CreditCard,
   check: Check,
-  checkCircle: CheckCircle,
   car: Car,
   call: Call,
   logout: Logout,
@@ -87,7 +84,6 @@ export const Icons = {
   ellipseMustard: EllipseMustard,
   google: Google,
   facbook: Facebook,
-  twitter: Twitter,
   delivery: Delivery,
   clock: Clock,
   arrow: Arrow,

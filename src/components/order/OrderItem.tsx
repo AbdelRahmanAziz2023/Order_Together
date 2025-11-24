@@ -1,12 +1,21 @@
 import { Colors } from "@/src/constants/colors";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";
 import getStatusBadgeStyle from "../../helper/getStatusBadgeStyle";
 import CustomText from "../common/CustomText";
 
-const OrderItem = () => {
-    const onPress = () => {
-        // navigation.navigate("OrderDetail");
-    };
+type Props = {
+  item: any;
+};
+
+const OrderItem = ({ item }: Props) => {
+  const router = useRouter();
+  const onPress = () => {
+    router.push({
+      pathname: "/(app)/(home)/OrderDetails",
+      params: { orderId: "" },
+    });
+  };
   return (
     <Pressable style={styles.orderCard} onPress={onPress}>
       <View style={styles.headerRow}>
@@ -19,7 +28,10 @@ const OrderItem = () => {
       <CustomText text={`CreatedBy: Saleh`} textStyle={styles.orderTotal} />
       <CustomText text={`Participants: 3`} textStyle={styles.orderTotal} />
       <View style={styles.divider} />
-      <CustomText text={`Placed on : 10/10/2023 `} textStyle={styles.orderDate} />
+      <CustomText
+        text={`Placed on : 10/10/2023 `}
+        textStyle={styles.orderDate}
+      />
     </Pressable>
   );
 };
@@ -85,7 +97,7 @@ const styles = StyleSheet.create({
   statusText: {
     color: Colors.white,
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: "SenBold",
   },
   emptyText: {
     textAlign: "center",
@@ -100,7 +112,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "SenBold",
     color: "#111",
   },
 });

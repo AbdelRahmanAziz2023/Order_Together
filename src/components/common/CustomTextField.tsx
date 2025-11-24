@@ -55,6 +55,7 @@ const CustomTextField = ({
           onChangeText={onChangeText}
           value={value}
           selectionHandleColor={Colors.lightred}
+          autoCapitalize='none'
         />
         {isPassword && <Pressable onPress={changeSecure}>{icon}</Pressable>}
       </View>

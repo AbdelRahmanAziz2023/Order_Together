@@ -16,3 +16,31 @@ export interface UserResponse {
   email: string;
   token: string;
 }
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarUrl: string;
+}
+
+export interface UpdateProfileBody {
+  firstName: string;
+  lastName: string;
+  avatarUrl: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
+
+export interface ChangePasswordBody {
+  oldPassword: string;
+  newPassword: string;
+}

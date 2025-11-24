@@ -1,8 +1,9 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import CustomText from "@/src/components/common/CustomText";
 import CustomTextField from "@/src/components/common/CustomTextField";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Modal, StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 
 type Props = {
   isVisible: boolean;
@@ -10,11 +11,15 @@ type Props = {
 };
 
 const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
+  const router = useRouter();
   const [passcode, setPasscode] = useState("");
 
   const handleSubmit = () => {
-    // submit passcode logic...
-    setPasscode("");
+    router.push({
+      pathname: "/(app)/(home)/OrderDetails",
+      params: { orderId:""},
+    });
+    handleClose();
   };
 
   const handleClose = () => {
@@ -31,7 +36,6 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
     >
       <View style={styles.overlay}>
         <View style={styles.alertBox}>
-          
           <CustomText text="Enter Passcode" textStyle={styles.title} />
 
           <CustomTextField
@@ -41,17 +45,15 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
             onChangeText={setPasscode}
           />
 
-          <CustomButton 
-            title="Submit" 
-            btnStyle={styles.submitButton} 
+          <CustomButton
+            title="Submit"
+            btnStyle={styles.submitButton}
             onPress={handleSubmit}
           />
 
-          
-          {/* <TouchableOpacity onPress={handleClose}>
+          <TouchableOpacity onPress={handleClose}>
             <CustomText text="Close" textStyle={styles.closeText} />
-          </TouchableOpacity> */}
-
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -72,23 +74,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 25,
     alignItems: "center",
-    gap: 15,
   },
 
   title: {
     fontSize: 22,
     fontFamily: "SenBold",
     color: "#000",
-    marginBottom: 5,
   },
 
   submitButton: {
     width: "50%",
-    marginTop: 5,
+    marginTop: 20,
   },
 
   closeText: {
-    marginTop: 5,
+    marginTop: 15,
     fontSize: 14,
     color: "#777",
     textDecorationLine: "underline",
