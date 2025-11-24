@@ -18,7 +18,7 @@ const HomeScreen = () => {
   };
 
   const navigateToRestaurant = () => {
-    router.push("/(app)/(home)/OrderHistory");
+    router.push("/(app)/(home)/Restaurant");
   };
 
   return (
