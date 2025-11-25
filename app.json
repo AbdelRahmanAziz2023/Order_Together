@@ -21,7 +21,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.abdelrahman_aziz23.iken_training_project"
+      "package": "com.abdelrahman_aziz23.iken_training_project",
+      "jsEngine": "hermes"
     },
     "web": {
       "output": "static",

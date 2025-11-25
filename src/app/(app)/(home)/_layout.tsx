@@ -18,7 +18,10 @@ export default function HomeLayout() {
       <Stack.Screen name="OrderHistory" options={{headerTitle: "Order History"}} />
       <Stack.Screen name="Restaurant" options={{ headerTitle: "Restaurants" }} />
       <Stack.Screen name="Menu" options={{headerTitle: "Menu"}} />
+<<<<<<< HEAD
       <Stack.Screen name="Cart" options={{headerTitle: "Cart"}} />
+=======
+>>>>>>> e9512e93c422399b83dc2c7fcede3a066434f33f
     </Stack>
   );
 }
