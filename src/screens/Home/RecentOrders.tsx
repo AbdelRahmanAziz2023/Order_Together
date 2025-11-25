@@ -10,7 +10,7 @@ const RecentOrders = () => {
 
       <FlatList
         data={[1, 2, 3]}
-        renderItem={() => <OrderItem />}
+        renderItem={() => <OrderItem item = {1} />}
         keyExtractor={(item) => item.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.ordersList}

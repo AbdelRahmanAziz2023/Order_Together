@@ -4,6 +4,9 @@ export const Colors = {
   lightred: '#F44322',
   mustard: '#F4A629',
   success: '#4BB543',
+  red100:'#FEE2E2',
+  green100: '#DCFCE7',
+  yellow100: '#FEF9C3',
   
   // Neutral colors
   white: '#FFFFFF',

@@ -1,5 +1,5 @@
 import { Colors } from '@/src/constants/colors';
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import CustomText from './CustomText';
 
@@ -8,6 +8,7 @@ type Props = {
   title: string;
   isDisabled?: boolean;
   btnStyle?: ViewStyle;
+  textStyle?: TextStyle;
   Icon?: React.FC<SvgProps>;
 };
 
@@ -16,6 +17,7 @@ const CustomButton = ({
   title,
   isDisabled = false,
   btnStyle,
+  textStyle,
   Icon,
 }: Props) => {
   return (
@@ -26,7 +28,7 @@ const CustomButton = ({
     >
       <View style={styles.content}>
         {Icon && <Icon style={styles.iconWrapper} />}
-        <CustomText text={title} textStyle={styles.textStyle} />
+        <CustomText text={title} textStyle={!textStyle? styles.textStyle: textStyle} />
       </View>
     </TouchableOpacity>
   );

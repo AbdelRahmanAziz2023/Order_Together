@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ActiveCart from "./ActiveCart";
 import HomeActions from "./HomeActions";
 import HomeHeader from "./HomeHeader";
 import PasscodePopup from "./PasscodePopup";
@@ -31,6 +32,7 @@ const HomeScreen = () => {
           onJoin={showPasscodePopup} 
           onCreate={navigateToRestaurant} 
         />
+        <ActiveCart/>
 
         <RecentOrders />
       </ScrollView>
