@@ -1,8 +1,10 @@
 import { Colors } from '@/src/constants/colors';
 import { useGetRestaurantMenuQuery } from '@/src/services/api/Endpoints/RestaurantEndpoints';
+import { setRestaurant } from '@/src/store/slices/cartSlice';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { MenuList } from './MenuList';
 
 const MenuScreen: React.FC = () => {
@@ -10,6 +12,7 @@ const MenuScreen: React.FC = () => {
     restaurantId: string;
     restaurantName: string;
   }>();
+  const dispatch = useDispatch();
 
   const { data: menuItems = [], isLoading, isError } = useGetRestaurantMenuQuery(
     Number(restaurantId),
@@ -17,6 +20,16 @@ const MenuScreen: React.FC = () => {
       skip: !restaurantId,
     }
   );
+
+  // Set restaurant info in cart when menu loads
+  useEffect(() => {
+    if (restaurantId && restaurantName) {
+      dispatch(setRestaurant({
+        id: Number(restaurantId),
+        name: restaurantName,
+      }));
+    }
+  }, [restaurantId, restaurantName, dispatch]);
 
   const handleMenuItemPress = (item: any) => {
     console.log('Menu item pressed:', item);
@@ -69,8 +82,8 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   title: {
     fontSize: 28,
