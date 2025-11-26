@@ -3,25 +3,31 @@ import { Stack } from "expo-router";
 
 export default function HomeLayout() {
   return (
-    <Stack screenOptions={{ 
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.lightred,
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontFamily: 'SenBold',
-        fontSize: 18,
-      },
-    }}>
+    <Stack
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors.lightred,
+        },
+        headerTintColor: Colors.white,
+        headerTitleStyle: {
+          fontFamily: "SenBold",
+          fontSize: 18,
+        },
+      }}
+    >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="OrderHistory" options={{headerTitle: "Order History"}} />
-      <Stack.Screen name="Restaurant" options={{ headerTitle: "Restaurants" }} />
-      <Stack.Screen name="Menu" options={{headerTitle: "Menu"}} />
-<<<<<<< HEAD
-      <Stack.Screen name="Cart" options={{headerTitle: "Cart"}} />
-=======
->>>>>>> e9512e93c422399b83dc2c7fcede3a066434f33f
+      <Stack.Screen
+        name="OrderHistory"
+        options={{ headerTitle: "Order History" }}
+      />
+      <Stack.Screen
+        name="Restaurant"
+        options={{ headerTitle: "Restaurants" }}
+      />
+      <Stack.Screen name="Menu" options={{ headerTitle: "Menu" }} />
+
+      <Stack.Screen name="Cart" options={{ headerTitle: "Cart" }} />
     </Stack>
   );
 }

@@ -1,7 +1,8 @@
 import { Colors } from "@/src/constants/colors";
+import { getPaidStatusStyle } from "@/src/helper/getPaidStausStyle";
+import { getPaymentStatusStyle } from "@/src/helper/getPaymentStatusStyle";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
-import getStatusBadgeStyle from "../../helper/getStatusBadgeStyle";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import CustomText from "../common/CustomText";
 
 type Props = {
@@ -10,26 +11,40 @@ type Props = {
 
 const OrderItem = ({ item }: Props) => {
   const router = useRouter();
+  const isHost=false;
   const onPress = () => {
     router.push({
       pathname: "/(app)/(home)/OrderDetails",
-      params: { orderId: "" },
+      params: { orderId: " "},
     });
   };
+
+  const status= isHost?"Completed":"Unpaid";
+
+  const statusBadge = !isHost?getPaidStatusStyle(status):getPaymentStatusStyle(status);
+
   return (
     <Pressable style={styles.orderCard} onPress={onPress}>
       <View style={styles.headerRow}>
-        <CustomText text={"#3fd34"} textStyle={styles.orderId} />
-        <View style={[styles.statusBadge, getStatusBadgeStyle("opened")]}>
-          <CustomText text="Opened" textStyle={styles.statusText} />
+        <View style={styles.imageContainer}>
+          <Image
+            source={{
+              uri: "https://thumbs.dreamstime.com/b/restaurant-logo-design-idea-chef-hat-fork-graphic-leaf-shape-food-drinks-symbol-concept-cooking-eating-vector-template-173237325.jpg",
+            }}
+            style={styles.image}
+          />
+        </View>
+        <View style={[styles.statusBadge, statusBadge]}>
+          <CustomText text={status} textStyle={statusBadge} />
         </View>
       </View>
-      <CustomText text={`نعمه`} textStyle={styles.restaurantName} />
-      <CustomText text={`CreatedBy: Saleh`} textStyle={styles.orderTotal} />
-      <CustomText text={`Participants: 3`} textStyle={styles.orderTotal} />
-      <View style={styles.divider} />
+      <CustomText text={`Pizza Hut`} textStyle={styles.restaurantName} />
+
+      { isHost&&<CustomText text={`Hosted by you `} textStyle={styles.orderTotal} />}
+      { !isHost&&<CustomText text={`60.00 EGP`} textStyle={styles.orderTotal} />}
+     
       <CustomText
-        text={`Placed on : 10/10/2023 `}
+        text={`Placed on: 10/10/2023`}
         textStyle={styles.orderDate}
       />
     </Pressable>
@@ -52,14 +67,21 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+  
     marginBottom: 12,
   },
-  orderId: {
-    fontWeight: "700",
-    fontSize: 16,
-    color: "#1E1E1E",
-    letterSpacing: 0.5,
+  imageContainer: {
+    width: 65,
+    height: 65,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: Colors.white,
+    overflow: "hidden",
+  },
+
+  image: {
+    width: "100%",
+    height: "100%",
   },
   restaurantName: {
     fontSize: 22,
@@ -92,6 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 6,
     paddingHorizontal: 12,
+    height: 32,
     backgroundColor: "#FF6B6B", // fallback if getStatusBadgeStyle fails
   },
   statusText: {
@@ -115,6 +138,7 @@ const styles = StyleSheet.create({
     fontFamily: "SenBold",
     color: "#111",
   },
+
 });
 
 export default OrderItem;

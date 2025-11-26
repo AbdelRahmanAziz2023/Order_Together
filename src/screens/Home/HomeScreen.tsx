@@ -4,15 +4,17 @@ import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ActiveCart from "./ActiveCart";
+import ActiveCartPlaceholder from "./ActiveCartPlaceholder";
 import HomeActions from "./HomeActions";
 import HomeHeader from "./HomeHeader";
 import PasscodePopup from "./PasscodePopup";
 import RecentOrders from "./RecentOrders";
 
-
 const HomeScreen = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
+
+  const isActiveCart = true;
 
   const showPasscodePopup = () => {
     setIsVisible(true);
@@ -25,14 +27,17 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.content}>
-        <PasscodePopup isVisible={isVisible} onClose={() => setIsVisible(false)} />
+        <PasscodePopup
+          isVisible={isVisible}
+          onClose={() => setIsVisible(false)}
+        />
         <HomeHeader />
 
-        <HomeActions 
-          onJoin={showPasscodePopup} 
-          onCreate={navigateToRestaurant} 
+        <HomeActions
+          onJoin={showPasscodePopup}
+          onCreate={navigateToRestaurant}
         />
-        <ActiveCart/>
+        {!isActiveCart ? <ActiveCartPlaceholder /> : <ActiveCart />}
 
         <RecentOrders />
       </ScrollView>
