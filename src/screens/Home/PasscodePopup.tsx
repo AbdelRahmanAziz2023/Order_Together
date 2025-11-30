@@ -1,6 +1,7 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import CustomText from "@/src/components/common/CustomText";
 import CustomTextField from "@/src/components/common/CustomTextField";
+import { Colors } from "@/src/constants/colors";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -85,12 +86,13 @@ const styles = StyleSheet.create({
   submitButton: {
     width: "50%",
     marginTop: 20,
+    backgroundColor:Colors.red
   },
 
   closeText: {
     marginTop: 15,
     fontSize: 14,
-    color: "#777",
+    color: Colors.gray500,
     textDecorationLine: "underline",
   },
 });

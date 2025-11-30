@@ -2,9 +2,16 @@ import CustomButton from "@/src/components/common/CustomButton";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import getStatusBadgeStyle from "@/src/helper/getStatusBadgeStyle";
+import { useRouter } from "expo-router";
 import { Image, StyleSheet, View } from "react-native";
 
 const ActiveCart = () => {
+  const router = useRouter();
+
+  const handleGoToCart = () => {
+    router.push("/(app)/(home)/PaymentTracker");
+  };
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
@@ -40,6 +47,7 @@ const ActiveCart = () => {
             title="Go To Cart →"
             btnStyle={styles.btnStyle}
             textStyle={styles.btnText}
+            onPress={handleGoToCart}
           />
         </View>
       </View>

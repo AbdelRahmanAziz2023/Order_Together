@@ -1,5 +1,4 @@
 import CustomButton from "@/src/components/common/CustomButton";
-import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { clearAuth, getUser } from "@/src/store/expo-secure-store";
 import { useRouter } from "expo-router";
@@ -47,7 +46,7 @@ const ProfileScreen = () => {
         <MenuSection onOrderHistoryPress={handleOrderHistory} />
 
         <View style={styles.logoutSection}>
-          <CustomButton title="Logout" onPress={handleLogout} />
+          <CustomButton title="Logout" onPress={handleLogout} btnStyle={{backgroundColor:Colors.red}} />
         </View>
       </ScrollView>
     </SafeAreaView>
