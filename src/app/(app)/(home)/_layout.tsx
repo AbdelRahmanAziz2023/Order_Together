@@ -33,6 +33,7 @@ export default function HomeLayout() {
       />
 
       <Stack.Screen name="Receipt" options={{ headerTitle: "Receipt" }} />
+      
     </Stack>
   );
 }

@@ -28,15 +28,17 @@ const dummyOrders = [
 ];
 
 const OrderDetailsScreen = () => {
-  const [status, setStatus] = React.useState("locked");
+  const [status, setStatus] = React.useState("opened");
 
   // keep orders in local state so participant can "leave" in demo
   const [ordersState, setOrdersState] = useState(dummyOrders);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [paymentInstapay, setPaymentInstapay] = useState('');
 
   const isLocked = status === "locked";
   const isOpened = status === "opened";
 
-  const isCreator = ordersState.some((o) => o.isYou === false);
+  const isCreator = ordersState.some((o) => o.isYou === true);
 
   const subtotal = ordersState
     .flatMap((o) => o.items)
@@ -59,8 +61,8 @@ const OrderDetailsScreen = () => {
           orders={ordersState}
           {...({ isOpened, isLocked, isCreator } as any)}
         />
-        {isLocked && isCreator && <DeliveryPaymentSection />}
-        <OrderTotals subtotal={subtotal} />
+        {isLocked && isCreator && <DeliveryPaymentSection setDeliveryFee={setDeliveryFee} setPaymentInstapay={setPaymentInstapay} />}
+        <OrderTotals deliveryFee={deliveryFee} subtotal={subtotal} />
         {!isCreator && (
           <CustomHint
             message={isOpened ? "Waiting for Host to lock order..." : "Host is finalizing the order..."}

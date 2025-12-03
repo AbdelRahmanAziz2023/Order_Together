@@ -1,50 +1,81 @@
 import CustomText from "@/src/components/common/CustomText";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
-const DeliveryPaymentSection = () => {
+type Props = {
+  setDeliveryFee: (v: number) => void;
+  setPaymentInstapay: (v: string) => void;
+  membersCount?: number;
+};
+
+const DeliveryPaymentSection = ({
+  setDeliveryFee,
+  setPaymentInstapay,
+  membersCount = 3,
+}: Props) => {
+
+  const [delivery, setDelivery] = useState(0);
+
+  const perPerson =
+    membersCount > 0 ? (delivery / membersCount).toFixed(2) : "0.00";
+
+  const onDeliveryChange = (v: string) => {
+    const num = Number(v) || 0;
+    setDelivery(num);
+    setDeliveryFee(num);
+  };
+
   return (
     <View style={styles.container}>
-      {/* Total Delivery */}
-      <View style={styles.deliveryRow}>
-        <View style={styles.flex1}>
-          <CustomText text={"Total Delivery"} textStyle={[styles.label]} />
+      {/* Delivery Fee */}
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <CustomText text="Total Delivery" textStyle={[styles.label]} />
 
-          <View style={styles.inputWrapper}>
-            <View style={styles.currencyBox}>
-              <CustomText text={"EGP"} textStyle={[styles.currencyText]} />
+          <View style={styles.inputGroup}>
+            <View style={styles.leftTag}>
+              <CustomText text="EGP" textStyle={[styles.leftTagText]} />
             </View>
 
             <TextInput
               keyboardType="numeric"
-              defaultValue="30"
+              placeholder="0"
+              onChangeText={onDeliveryChange}
               style={styles.numberInput}
+              value={delivery === 0 ? "" : String(delivery)}
             />
           </View>
         </View>
 
-        {/* Price per person */}
-        <View style={styles.personBox}>
-          <CustomText text={"= 10.00 / person"} textStyle={[styles.equalsText, styles.boldValue]} />
+        {/* AUTO CALCULATED */}
+        <View style={styles.perPersonBox}>
+          <CustomText
+            text={`= ${perPerson} / person`}
+            textStyle={[styles.perPersonText]}
+          />
         </View>
       </View>
 
       {/* Payment Instructions */}
       <View style={styles.section}>
-        <CustomText text={"Payment Instructions"} textStyle={[styles.label]} />
+        <CustomText text="Payment Instructions" textStyle={[styles.label]} />
 
-        <View style={styles.inputWrapper}>
-          <View style={styles.iconBox}>
-            <CustomText text={"💳"} textStyle={[styles.iconPlaceholder]} />
+        <View style={styles.inputGroup}>
+          <View style={styles.icon}>
+            <CustomText text="💳" textStyle={[{ fontSize: 18 }]} />
           </View>
 
           <TextInput
             placeholder="ahmed@instapay"
             style={styles.textInput}
+            onChangeText={(v) => setPaymentInstapay(v)}
           />
         </View>
 
-        <CustomText text={"Participants will see this on their bill."} textStyle={[styles.hintText]} />
+        <CustomText
+          text="Participants will see this on their bill."
+          textStyle={[styles.hint]}
+        />
       </View>
     </View>
   );
@@ -52,107 +83,99 @@ const DeliveryPaymentSection = () => {
 
 export default DeliveryPaymentSection;
 
+
 const styles = StyleSheet.create({
-  deliveryRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 16,
-    marginBottom: 24,
-  },
   container: {
-    marginVertical: 10,
+    marginTop: 12,
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
   },
-  flex1: { flex: 1 },
+
+  row: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 20,
+  },
 
   label: {
-    fontSize: 10,
-    fontWeight: "700",
+    fontSize: 11,
+    fontFamily: "SenBold",
     color: "#6B7280",
     textTransform: "uppercase",
-    marginBottom: 4,
+    marginBottom: 6,
   },
 
-  /** Total Delivery Input */
-  inputWrapper: {
-    position: "relative",
+  /** Global input wrapper */
+  inputGroup: {
+    justifyContent: "center",
   },
 
-  currencyBox: {
+  /** Tag before number input */
+  leftTag: {
     position: "absolute",
-    left: 0,
+    left: 12,
     top: 0,
     bottom: 0,
+    zIndex: 1,
     justifyContent: "center",
-    paddingLeft: 12,
   },
 
-  currencyText: {
-    color: "#6B7280",
-    fontWeight: "700",
+  leftTagText: {
+    fontSize: 14,
+    fontFamily: "SenBold",
+    color: "#D1D5DB",
   },
 
   numberInput: {
-    paddingLeft: 48,
+    paddingLeft: 55,
+    height: 48,
     width: "100%",
     backgroundColor: "#F9FAFB",
     borderColor: "#D1D5DB",
     borderWidth: 1,
-    color: "#111827",
-    fontSize: 18,
+    borderRadius: 10,
+    fontSize: 17,
     fontWeight: "700",
-    borderRadius: 8,
-    padding: 10,
+    color: "#111827",
   },
 
-  /** Per Person */
-  personBox: {
-    marginBottom: 12,
+  perPersonBox: {
+    justifyContent: "flex-end",
+    paddingBottom: 4,
   },
 
-  equalsText: {
+  perPersonText: {
     fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
-   
-  },
-
-  boldValue: {
+    fontFamily: "SenBold",
     color: "#111827",
-    fontWeight: "700",
   },
 
   /** Payment Instructions */
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
 
-  iconBox: {
+  icon: {
     position: "absolute",
-    top: 12,
     left: 12,
-  },
-
-  iconPlaceholder: {
-    fontSize: 18,
-    color: "#9CA3AF",
+    top: 13,
+    zIndex: 1,
   },
 
   textInput: {
-    paddingLeft: 40,
-    padding: 10,
-    borderRadius: 8,
+    paddingLeft: 45,
+    height: 48,
+    borderRadius: 10,
     borderColor: "#D1D5DB",
     borderWidth: 1,
-    fontSize: 14,
+    fontSize: 15,
     backgroundColor: "#FFFFFF",
   },
 
-  hintText: {
-    fontSize: 10,
+  hint: {
+    fontSize: 11,
     color: "#9CA3AF",
-    marginTop: 4,
+    marginTop: 6,
   },
 });
