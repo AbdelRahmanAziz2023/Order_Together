@@ -7,7 +7,7 @@ import {
   User,
   UserResponse,
 } from "../../../types/auth.type";
-import { baseApi } from "../baseApi";
+import baseApi from "../baseApi";
 
 const AuthEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
