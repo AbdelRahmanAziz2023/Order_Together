@@ -9,6 +9,7 @@ const OrderItemSkeletonList = () => {
       keyExtractor={(item) => item.toString()}
       renderItem={() => <OrderItemSkeleton />}
       showsVerticalScrollIndicator={false}
+      scrollEnabled={false}
       contentContainerStyle={{ paddingVertical: 16, paddingHorizontal:5 }}
     />
   );

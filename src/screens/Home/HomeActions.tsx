@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   joinButton: {
-    backgroundColor: Colors.red,
     width: "48%",
   },
   createButton: {
     width: "48%",
+    backgroundColor: Colors.mustard,
   },
 });
 

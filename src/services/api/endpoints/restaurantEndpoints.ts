@@ -1,4 +1,4 @@
-import baseApi from "../baseApi";
+import { baseApi } from "../baseApi";
 
 export interface Restaurant {
   id: number;
@@ -22,9 +22,9 @@ const RestaurantEndpoints = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
-    getRestaurantMenu: builder.query<MenuItem[], number>({
-      query: (restaurantId) => ({
-        url: `restaurants/${restaurantId}/menu`,
+    getRestaurantMenu: builder.query<MenuItem[], string>({
+      query: (shortCode) => ({
+        url: `restaurants/${shortCode}`,
         method: "GET",
       }),
     }),

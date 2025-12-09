@@ -2,6 +2,7 @@ import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { StyleSheet, View } from "react-native";
 
+
 const ActiveCartPlaceholder = () => {
   return (
     <View style={styles.wrapper}>

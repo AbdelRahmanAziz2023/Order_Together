@@ -1,5 +1,5 @@
-import { StyleSheet, View } from 'react-native';
-import CustomText from '../../components/common/CustomText';
+import { StyleSheet, View } from "react-native";
+import CustomText from "../../components/common/CustomText";
 
 type Props = {
   title: string;
@@ -9,8 +9,8 @@ type Props = {
 const AuthHead = ({ title, description }: Props) => {
   return (
     <View style={styles.container}>
-      <CustomText text={title} textStyle={styles.title} />
-      <CustomText text={description} textStyle={styles.description} />
+      <CustomText text={title} textStyle={[styles.title]} />
+      <CustomText text={description} textStyle={[styles.description]} />
     </View>
   );
 };
@@ -18,17 +18,17 @@ const AuthHead = ({ title, description }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     gap: 20,
   },
   title: {
     fontSize: 32,
-    fontFamily: 'SenBold',
-    color: '#fff',
+    fontFamily: "SenBold",
+    color: "#fff",
   },
   description: {
-    color: '#FAD69D',
+    color: "#FAD69D",
   },
 });
 

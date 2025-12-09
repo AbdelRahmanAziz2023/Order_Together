@@ -1,24 +1,24 @@
 import {
-  ChangePasswordBody,
+  AuthResponse,
+  ChangePasswordRequest,
   ChangePasswordResponse,
-  LoginBody,
-  RegisterBody,
-  UpdateProfileBody,
+  LoginRequest,
+  RegisterRequest,
+  UpdateProfileRequest,
   User,
-  UserResponse,
 } from "../../../types/auth.type";
-import baseApi from "../baseApi";
+import { baseApi } from "../baseApi";
 
 const AuthEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<UserResponse, LoginBody>({
+    login: builder.mutation<any, LoginRequest>({
       query: (loginBody) => ({
         url: "auth/login",
         method: "POST",
         body: loginBody,
       }),
     }),
-    register: builder.mutation<UserResponse, RegisterBody>({
+    register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (registerBody) => ({
         url: "auth/register",
         method: "POST",
@@ -28,7 +28,7 @@ const AuthEndpoints = baseApi.injectEndpoints({
     getProfile: builder.query<User, void>({
       query: () => "auth/profile",
     }),
-    updateProfile: builder.mutation<User, UpdateProfileBody>({
+    updateProfile: builder.mutation<User, UpdateProfileRequest>({
       query: (updateProfileBody) => ({
         url: "auth/profile",
         method: "PUT",
@@ -37,7 +37,7 @@ const AuthEndpoints = baseApi.injectEndpoints({
     }),
     changePassword: builder.mutation<
       ChangePasswordResponse,
-      ChangePasswordBody
+      ChangePasswordRequest
     >({
       query: (changePasswordBody) => ({
         url: "auth/password",

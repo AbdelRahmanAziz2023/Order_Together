@@ -16,6 +16,12 @@ const MenuSection = ({
 }: Props) => {
   return (
     <View style={styles.menuSection}>
+       <MenuItem
+        icon={Icons.activeUser}
+        title="Account Settings"
+        onPress={onAccountSettingsPress}
+        iconStroke={Colors.textPrimary}
+      />
       <MenuItem
         icon={Icons.watch}
         title="Order History"
@@ -26,12 +32,7 @@ const MenuSection = ({
         title="Notifications"
         onPress={onNotificationsPress}
       />
-      <MenuItem
-        icon={Icons.activeUser}
-        title="Account Settings"
-        onPress={onAccountSettingsPress}
-        iconStroke={Colors.textPrimary}
-      />
+     
     </View>
   );
 };

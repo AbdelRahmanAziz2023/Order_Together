@@ -1,21 +1,40 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { Icons } from "@/src/constants/images";
-import { StyleSheet, View } from "react-native";
+import { getUser } from "@/src/store/expo-secure-store";
+import { User } from "@/src/types/auth.type";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
 
-type Props = {
-  fullName: string;
-  email: string;
-};
+const ProfileHeader = () => {
+  const [user, setUser] = useState<User>({id: "", firstName: "", lastName: "", email: "", avatarUrl: "", role: []});
 
-const ProfileHeader = ({ fullName, email }: Props) => {
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    const userData = await getUser();
+    setUser(userData!);
+  };
+
   return (
     <View style={styles.profileCard}>
       <View style={styles.avatarContainer}>
-        <Icons.user width={60} height={60} stroke={Colors.red} />
+        {user?.avatarUrl ? (
+          <Image
+            source={{ uri: user.avatarUrl }}
+            style={{ width: 60, height: 60, borderRadius: 150 }}
+          />
+        ) : (
+          <Icons.user width={60} height={60} stroke={Colors.red} />
+        )}
       </View>
-      <CustomText text={fullName || "User"} textStyle={styles.userName} />
-      <CustomText text={email || ""} textStyle={styles.userEmail} />
+      <CustomText
+        text={(user?.firstName + " " + user?.lastName) || "User"}
+        textStyle={[styles.userName]}
+      />
+      <CustomText text={user?.email || "Email"} textStyle={[styles.userEmail]} />
     </View>
   );
 };

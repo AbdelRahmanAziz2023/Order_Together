@@ -76,6 +76,7 @@ const ReceiptScreen = () => {
               keyExtractor={(item) => item.id.toString()}
               ItemSeparatorComponent={() => <View style={{ height: 18 }} />}
               renderItem={({ item }) => <ReceiptItemRow item={item} />}
+              scrollEnabled={false}
             />
           </View>
 

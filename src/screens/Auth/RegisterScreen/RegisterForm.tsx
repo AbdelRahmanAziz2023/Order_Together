@@ -9,8 +9,8 @@ const RegisterForm = () => {
   const {
     firstName,
     setFirstName,
-    secondName,
-    setSecondName,
+    lastName,
+    setLastName,
     email,
     setEmail,
     password,
@@ -28,8 +28,8 @@ const RegisterForm = () => {
         placeholder="Enter your first name"
       />
       <CustomTextField
-        value={secondName}
-        onChangeText={setSecondName}
+        value={lastName}
+        onChangeText={setLastName}
         name="Last Name"
         placeholder="Enter your last name"
       />

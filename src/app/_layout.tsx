@@ -5,12 +5,11 @@ import { useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
-import { API_URL, ENV } from "../config/env";
 import { store } from "../store/store";
 
-if (__DEV__) {
-  require("../../ReactotronConfig");
-}
+// if (__DEV__) {
+//   require("../../ReactotronConfig");
+// }
 
 // SplashScreen.preventAutoHideAsync();
 SplashScreen.hideAsync();
@@ -23,9 +22,6 @@ export default function RootLayout() {
     SenSemiBold: require("../../assets/fonts/sen/Sen-SemiBold.ttf"),
     SenExtraBold: require("../../assets/fonts/sen/Sen-ExtraBold.ttf"),
   });
-  console.log(ENV);
-  console.log(API_URL);
-
   useEffect(() => {
     if (loaded) SplashScreen.hideAsync();
   }, [loaded]);

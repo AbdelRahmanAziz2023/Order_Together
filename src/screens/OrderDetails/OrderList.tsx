@@ -21,6 +21,14 @@ const OrderList = ({ orders }: { orders: Order[] }) => {
 
   const itemCounts = useMemo(() => orders.map((o) => o.items.length), [orders]);
 
+  const onDelete = () => {
+    console.log("onDelete");
+  };
+
+  const onEdit = () => {
+    console.log("onEdit");
+  };
+
   return (
     <>
       {orders.map((order, index) => {
@@ -36,27 +44,51 @@ const OrderList = ({ orders }: { orders: Order[] }) => {
                 >
                   {order.name}
                 </Text>
-                <Text style={styles.meta}>{itemCounts[index]} items</Text>
+                <CustomText
+                  text={`${itemCounts[index]} items`}
+                  textStyle={[styles.meta]}
+                />
               </View>
 
               <View style={styles.right}>
-                <Text style={styles.total}>{totals[index].toFixed(2)} EGP</Text>
-                <Text style={styles.chev}>{isExpanded ? "▾" : "▸"}</Text>
+                <CustomText
+                  text={`${totals[index].toFixed(2)} EGP`}
+                  textStyle={[styles.total]}
+                />
+                <CustomText
+                  text={isExpanded ? "▾" : "▸"}
+                  textStyle={[styles.chev]}
+                />
               </View>
             </Pressable>
 
             {isExpanded && (
               <View style={styles.expandedContent}>
                 {order.items.map((item, idx) => (
-                  <View key={idx} style={styles.itemRow}>
-                    <CustomText
-                      text={item.label}
-                      textStyle={[styles.itemText]}
-                    />
-                    <CustomText
-                      text={`${item.price.toFixed(2)} EGP`}
-                      textStyle={[styles.price]}
-                    />
+                  <View key={idx} style={styles.item}>
+                    <View style={styles.itemRow}>
+                      <CustomText
+                        text={item.label}
+                        textStyle={[styles.itemText]}
+                      />
+                      <CustomText
+                        text={`${item.price.toFixed(2)} EGP`}
+                        textStyle={[styles.price]}
+                      />
+                    </View>
+                    {isYou && (
+                      <View style={styles.actions}>
+                        <Pressable onPress={onDelete}>
+                          <CustomText
+                            text="Delete"
+                            textStyle={[styles.delete]}
+                          />
+                        </Pressable>
+                        <Pressable onPress={onEdit}>
+                          <CustomText text="Edit" textStyle={[styles.edit]} />
+                        </Pressable>
+                      </View>
+                    )}
                   </View>
                 ))}
               </View>
@@ -107,5 +139,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemText: { fontSize: 14 },
+  item: {},
+  actions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  delete: { color: Colors.red },
+  edit: { color: Colors.mustard },
   price: { fontFamily: "SenBold" },
 });

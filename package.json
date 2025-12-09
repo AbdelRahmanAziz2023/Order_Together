@@ -5,6 +5,12 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
+    "prebuild:dev": "NODE_ENV=development EXPO_PUBLIC_ENV=development npx expo prebuild",
+    "prebuild:test": "NODE_ENV=test EXPO_PUBLIC_ENV=test npx expo prebuild",
+    "prebuild:prod": "NODE_ENV=production EXPO_PUBLIC_ENV=production npx expo prebuild",
+    "android:dev": "NODE_ENV=development EXPO_PUBLIC_ENV=development expo run:android",
+    "android:test": "NODE_ENV=test EXPO_PUBLIC_ENV=test expo run:android",
+    "android:prod": "NODE_ENV=production EXPO_PUBLIC_ENV=production expo run:android",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -16,6 +22,8 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@reduxjs/toolkit": "^2.10.1",
+    "dotenv": "^17.2.3",
+    "dotenv-flow": "^4.1.0",
     "expo": "~54.0.24",
     "expo-clipboard": "^8.0.7",
     "expo-constants": "~18.0.10",
@@ -49,6 +57,7 @@
     "reactotron-react-native": "^5.1.18"
   },
   "devDependencies": {
+    "@types/node": "^24.10.1",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

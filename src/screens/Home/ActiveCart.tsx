@@ -11,7 +11,9 @@ interface ActiveCartProps {
   cartData?: ActiveCartData;
 }
 
-const ActiveCart: React.FC<ActiveCartProps> = ({ cartData = dummyActiveCart }) => {
+const ActiveCart: React.FC<ActiveCartProps> = ({
+  cartData = dummyActiveCart,
+}) => {
   const router = useRouter();
 
   const handleGoToCart = () => {
@@ -21,13 +23,16 @@ const ActiveCart: React.FC<ActiveCartProps> = ({ cartData = dummyActiveCart }) =
     });
   };
 
-  const statusText = cartData.status.charAt(0).toUpperCase() + cartData.status.slice(1);
+  const statusText =
+    cartData.status.charAt(0).toUpperCase() + cartData.status.slice(1);
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <CustomText text="Active Cart" textStyle={[styles.title]} />
-        <View style={[styles.statusBadge, getStatusBadgeStyle(cartData.status)]}>
+        <View
+          style={[styles.statusBadge, getStatusBadgeStyle(cartData.status)]}
+        >
           <CustomText text={statusText} textStyle={[styles.statusText]} />
         </View>
       </View>
@@ -44,15 +49,27 @@ const ActiveCart: React.FC<ActiveCartProps> = ({ cartData = dummyActiveCart }) =
           </View>
 
           <View style={styles.textGroup}>
-            <CustomText text={cartData.restaurant.name} textStyle={[styles.cartTitle]} />
-            <CustomText text={`Hosted by ${cartData.restaurant.hostedBy}`} textStyle={[styles.hostText]} />
-            <CustomText text={`Participants: ${cartData.participantsCount}`} textStyle={[styles.hostText]} />
+            <CustomText
+              text={cartData.restaurant.name}
+              textStyle={[styles.cartTitle]}
+            />
+            <CustomText
+              text={`Hosted by ${cartData.restaurant.hostedBy}`}
+              textStyle={[styles.hostText]}
+            />
+            <CustomText
+              text={`Participants: ${cartData.participantsCount}`}
+              textStyle={[styles.hostText]}
+            />
           </View>
         </View>
 
         <View style={styles.rightWrapper}>
           <CustomText text="Your Total" textStyle={[styles.totalLabel]} />
-          <CustomText text={`${cartData.totalPrice} EGP`} textStyle={[styles.totalValue]} />
+          <CustomText
+            text={`${cartData.totalPrice} EGP`}
+            textStyle={[styles.totalValue]}
+          />
 
           <CustomButton
             title="Go To Cart →"

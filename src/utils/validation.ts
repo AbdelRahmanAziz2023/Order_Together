@@ -2,67 +2,82 @@ import { Alert } from "react-native";
 
 export const validateEmail = (email: string): boolean => {
   // Simple regex for basic email validation
-  const reEmail = /^.+@.+\..+$/;
-  return reEmail.test(email.trim().toLowerCase());
-};
-
-export const validatePassword = (password: string): boolean => {
-  // Simple regex for basic password validation
-  return password.length >= 6 && !/\s/.test(password);
-};
-
-
-export const validateLogInInput = (
-  email: string,
-  password: string
-): boolean => {
-  if (!validateEmail(email)) {
+  const emailRegex = /^.+@.+\..+$/;
+  if (!emailRegex.test(email.trim())) {
     Alert.alert(
       "Invalid Email",
       'Please enter a valid email address that includes "@" and ".".'
-    );
-    return false;
-  }
-
-  if (!validatePassword(password)) {
-    Alert.alert(
-      "Invalid Password",
-      "Password must be at least 8 characters long."
     );
     return false;
   }
   return true;
 };
 
-export const validateSignUpInput = (
-  firstName: string,
-  secondName: string,
-  email: string,
-  password: string
-): boolean => {
-  if (firstName.trim().length === 0) {
-    Alert.alert("Missing Field", "Please enter your First Name.");
+export const validatePassword = (password: string): boolean => {
+  const trimmed = password.trim();
+
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
+  if (!passwordRegex.test(trimmed)) {
+    Alert.alert(
+      "Invalid Password",
+      `Password must:
+- Be at least 6 characters
+- Contain at least ONE uppercase letter
+- Contain at least ONE lowercase letter
+- Contain at least ONE number
+- Not contain Arabic letters
+- Not contain spaces`
+    );
     return false;
   }
 
-  if (secondName.trim().length === 0) {
-    Alert.alert("Missing Field", "Please enter your Second Name.");
-    return false;
-  }
-  if (!validateEmail(email)) {
+  return true;
+};
+export const validateName = (name: string, fieldName: string): boolean => {
+  const trimmed = name.trim();
+  const nameRegex =
+    /^(?![_*$!])[A-Za-z\u0600-\u06FF]{2,}(?:[ -]?[A-Za-z\u0600-\u06FF]{2,})*$/;
+
+  if (!nameRegex.test(trimmed)) {
     Alert.alert(
-      "Invalid Email",
-      'Please enter a valid email address that includes "@" and ".".'
+      "Invalid Name",
+      `${fieldName} must:
+- Start with at least 2 letters
+- No special characters at start`
     );
     return false;
   }
-  if (!validatePassword(password)) {
-    Alert.alert(
-      "Invalid Password",
-      "Password must be at least 8 characters long."
-    );
+
+  return true;
+};
+
+export const validateLogInInput = (
+  email: string,
+  password: string
+): boolean => {
+  if (!validateEmail(email) || !validatePassword(password)) {
     return false;
   }
+
+  return true;
+};
+
+export const validateSignUpInput = (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string
+): boolean => {
+  if (
+    !validateName(firstName, "First Name") ||
+    !validateName(lastName, "Last Name") ||
+    !validateEmail(email) ||
+    !validatePassword(password)
+  ) {
+    return false;
+  }
+
   return true;
 };
 

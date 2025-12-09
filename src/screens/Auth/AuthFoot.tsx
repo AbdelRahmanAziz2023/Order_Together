@@ -1,10 +1,10 @@
-import CustomText from "@/src/components/common/CustomText";
-import { Colors } from "@/src/constants/colors";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";
+import CustomText from "../../components/common/CustomText";
+import { Colors } from "../../constants/colors";
 
 type Props = {
-  targetName: string;  
+  targetName: string;
   textButton: string;
   question: string;
 };
@@ -18,9 +18,9 @@ const AuthFoot = ({ targetName, textButton, question }: Props) => {
 
   return (
     <View style={styles.container}>
-      <CustomText text={question} textStyle={styles.question} />
+      <CustomText text={question} textStyle={[styles.question]} />
       <Pressable onPress={onPress}>
-        <CustomText text={textButton} textStyle={styles.textButton} />
+        <CustomText text={textButton} textStyle={[styles.textButton]} />
       </Pressable>
     </View>
   );

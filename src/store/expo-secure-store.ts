@@ -1,5 +1,6 @@
 // src/store/expo-secure-store.ts
 import * as SecureStore from "expo-secure-store";
+import { User } from "../types/auth.type";
 
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "user_data";
@@ -59,7 +60,7 @@ export const removeRefreshToken = async (): Promise<void> => {
   }
 };
 
-export const saveUser = async (user: object): Promise<void> => {
+export const saveUser = async (user: User): Promise<void> => {
   try {
     await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
   } catch (error) {
@@ -68,7 +69,7 @@ export const saveUser = async (user: object): Promise<void> => {
   }
 };
 
-export const getUser = async (): Promise<object | null> => {
+export const getUser = async (): Promise<User | null> => {
   try {
     const userData = await SecureStore.getItemAsync(USER_KEY);
     return userData ? JSON.parse(userData) : null;

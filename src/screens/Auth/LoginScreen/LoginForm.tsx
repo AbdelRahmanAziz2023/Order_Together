@@ -1,7 +1,6 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import CustomTextField from "@/src/components/common/CustomTextField";
 import { useLogin } from "@/src/hooks/useLogin";
-import React from "react";
 import { StyleSheet, View } from "react-native";
 import AuthFoot from "../AuthFoot";
 
@@ -29,7 +28,11 @@ const LoginForm = () => {
         onPress={handleLogin}
         isDisabled={isLoading}
       />
-      <AuthFoot targetName="Register" textButton="Sign Up" question="Don't have an account?"/>
+      <AuthFoot
+        targetName="Register"
+        textButton="Sign Up"
+        question="Don't have an account?"
+      />
     </View>
   );
 };

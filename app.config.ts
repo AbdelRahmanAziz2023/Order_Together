@@ -1,13 +1,14 @@
-const ENV = process.env.EXPO_PUBLIC_ENV;
+import "dotenv-flow/config";
+const ENV = process.env.NODE_ENV;
 
 export default {
   expo: {
     name:
       ENV === "production"
         ? "Order Together"
-        : ENV === "staging"
+        : ENV === "test"
         ? "Order Together Staging"
-        : "Order Together Dev",
+        : ENV === "development" ? "Order Together Dev":"Order Together default",
 
     slug: "order-together",
 
@@ -20,27 +21,27 @@ export default {
 
     // Add this block to disable splash
     splash: {
-      backgroundColor: "transparent", // makes background invisible
-      image: null,                    // no splash image
-      resizeMode: "contain",          // optional
+      image: "./assets/images/splash.png", // must exist
+      resizeMode: "contain", // or 'cover'
+      backgroundColor: "#ffffff",
     },
 
     ios: {
+      icon: "./assets/images/icon.png",
       supportsTablet: true,
       bundleIdentifier:
         ENV === "production"
           ? "com.abdelrahmanaziz23.ordertogether"
-          : ENV === "staging"
+          : ENV === "test"
           ? "com.abdelrahmanaziz23.ordertogetherstaging"
           : "com.abdelrahmanaziz23.ordertogetherdev",
     },
 
     android: {
+      icon: "./assets/images/icon.png",
       adaptiveIcon: {
-        backgroundColor: "#E6F4FE",
-        foregroundImage: "./assets/images/android-icon-foreground.png",
-        backgroundImage: "./assets/images/android-icon-background.png",
-        monochromeImage: "./assets/images/android-icon-monochrome.png",
+        backgroundColor: "#FFFFFF",
+        foregroundImage: "./assets/images/icon.png",
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
@@ -48,7 +49,7 @@ export default {
       package:
         ENV === "production"
           ? "com.abdelrahmanaziz23.ordertogether"
-          : ENV === "staging"
+          : ENV === "test"
           ? "com.abdelrahmanaziz23.ordertogetherstaging"
           : "com.abdelrahmanaziz23.ordertogetherdev",
 

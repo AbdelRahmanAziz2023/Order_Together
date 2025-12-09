@@ -10,13 +10,13 @@ const HomeHeader = () => {
         <Images.logoIcon width={80} height={80} />
         <CustomText
           text="Welcome to Order Together!"
-          textStyle={styles.welcomeText}
+          textStyle={[styles.welcomeText]}
         />
       </View>
 
       <CustomText
         text="Start exploring your orders and more"
-        textStyle={styles.subText}
+        textStyle={[styles.subText]}
       />
     </View>
   );
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     padding: 25,
     borderRadius: 15,
-   shadowColor: "#000",
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,

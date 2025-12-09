@@ -1,6 +1,3 @@
-import { Icons } from "@/src/constants/images";
-
-import React from "react";
 import { StyleSheet, View } from "react-native";
 import {
   KeyboardAwareScrollView,
@@ -8,6 +5,7 @@ import {
 } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Icons } from "@/src/constants/images";
 import LoginForm from "./LoginForm";
 import LoginHeader from "./LoginHeader";
 

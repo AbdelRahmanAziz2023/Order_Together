@@ -1,24 +1,19 @@
-export interface LoginBody {
+export interface LoginRequest {
   email: string;
   password: string;
 }
 
-export interface RegisterBody {
+export interface RegisterRequest {
   firstName: string;
-  secondName: string;
+  lastName: string;
   email: string;
   password: string;
 }
 
-export interface UserResponse {
-  id: string;
-  fullName: string;
-  email: string;
-  token: string;
-}
 
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: User;
 }
 
@@ -28,9 +23,10 @@ export interface User {
   lastName: string;
   email: string;
   avatarUrl: string;
+  role: string[];
 }
 
-export interface UpdateProfileBody {
+export interface UpdateProfileRequest {
   firstName: string;
   lastName: string;
   avatarUrl: string;
@@ -40,7 +36,7 @@ export interface ChangePasswordResponse {
   message: string;
 }
 
-export interface ChangePasswordBody {
+export interface ChangePasswordRequest {
   oldPassword: string;
   newPassword: string;
 }
