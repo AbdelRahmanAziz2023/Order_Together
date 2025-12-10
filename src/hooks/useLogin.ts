@@ -1,12 +1,9 @@
 import { useLoginMutation } from "@/src/services/api/endpoints/authEndpoints";
-import {
-  saveToken,
-  saveUser
-} from "@/src/store/expo-secure-store";
+import { saveRefreshToken, saveToken, saveUser } from "@/src/store/expo-secure-store";
 import { validateLogInInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 export const useLogin = () => {
   const router = useRouter();
@@ -20,7 +17,7 @@ export const useLogin = () => {
       const res = await login({ email, password }).unwrap();
       // Store token and user data
       await saveToken(res.accessToken);
-      //await saveRefreshToken(res.refreshToken);
+      await saveRefreshToken(res.refreshToken);
       await saveUser({
         id: res.user.id,
         firstName: res.user.firstName,
@@ -29,10 +26,21 @@ export const useLogin = () => {
         avatarUrl: res.user.avatarUrl,
         role: res.user.role,
       });
+
+      Toast.show({
+        type: "success",
+        text1: "Login Successful",
+        text2: "You are now logged in.",
+      });
       router.replace("/(app)/(home)");
     } catch (err: any) {
-      Alert.alert("Error", err.data.title);
-      console.log("LOGIN ERROR:", err);
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2:
+          err.data?.title ||
+          "An unexpected error occurred. Please try again later.",
+      });
     }
   };
 

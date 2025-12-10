@@ -11,7 +11,7 @@ const OrderHistoryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isError ? (
+      {!isError ? (
         <CustomError title="Error" message="Failed to load order history" />
       ) : isLoading ? (
         <OrderItemSkeletonList />

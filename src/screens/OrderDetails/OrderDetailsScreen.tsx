@@ -1,6 +1,8 @@
 import CustomHint from "@/src/components/common/CustomHint";
+import CustomText from "@/src/components/common/CustomText";
+import { Colors } from "@/src/constants/colors";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import DeliveryPaymentSection from "./DeliveryPaymentSection";
 import MembersRow from "./MembersRow";
 import OrderActions from "./OrderActions";
@@ -34,11 +36,12 @@ const OrderDetailsScreen = () => {
   const [ordersState, setOrdersState] = useState(dummyOrders);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [paymentInstapay, setPaymentInstapay] = useState("");
+  const [isHost, setIsHost] = useState(true);
 
   const isLocked = status === "locked";
   const isOpened = status === "opened";
 
-  const isCreator = ordersState.some((o) => o.isYou === true);
+  
 
   const subtotal = ordersState
     .flatMap((o) => o.items)
@@ -54,18 +57,18 @@ const OrderDetailsScreen = () => {
         <MembersRow
           status={status}
           setStatus={setStatus}
-          isHost={isCreator}
+          isHost={isHost}
           membersCount={ordersState.length}
         />
 
         {/* Order list of participants */}
         <OrderList
           orders={ordersState}
-          {...({ isOpened, isLocked, isCreator } as any)}
+          {...({ isOpened, isLocked, isHost } as any)}
         />
 
         {/* Inputs for Host when lock */}
-        {isLocked && isCreator && (
+        {isLocked && isHost && (
           <DeliveryPaymentSection
             deliveryFee={deliveryFee}
             setDeliveryFee={setDeliveryFee}
@@ -77,7 +80,7 @@ const OrderDetailsScreen = () => {
         <OrderTotals deliveryFee={deliveryFee} subtotal={subtotal} />
 
         {/* Hint to participant */}
-        {!isCreator && (
+        {!isHost && (
           <CustomHint
             message={
               isOpened
@@ -87,11 +90,15 @@ const OrderDetailsScreen = () => {
           />
         )}
 
+        <Pressable onPress={() => { setIsHost(!isHost)}} style={{ marginVertical: 20 ,borderWidth:1,borderColor:Colors.red,padding:10,borderRadius:8,alignItems:'center'}}>
+          <CustomText text="'Toggle' isHost true/false, press for test" textStyle={[{color:Colors.red}]} />
+        </Pressable>
+
         {/* Actoins Buttons */}
         <OrderActions
           isOpened={isOpened}
           isLocked={isLocked}
-          isCreator={isCreator}
+          isCreator={isHost}
           onChangeStatus={setStatus}
         />
       </View>

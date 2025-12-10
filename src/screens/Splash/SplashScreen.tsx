@@ -1,33 +1,19 @@
-import { getToken } from "@/src/store/expo-secure-store";
 import { useRouter } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, Easing, Image, StyleSheet, View } from "react-native";
 
+import useAuthStatus from "@/src/hooks/useAuthStatus";
 import { Icons } from "../../constants/images";
 
 const SplashScreen: React.FC = () => {
   const router = useRouter();
 
-  // Typed state: boolean or null while checking
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  // Use the custom hook for authentication logic
+  const isAuthenticated = useAuthStatus();
 
   // Typed animation refs
   const scaleAnim = useRef<Animated.Value>(new Animated.Value(0.5)).current;
   const fadeAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const checkAuthStatus = async (): Promise<void> => {
-      try {
-        const token = await getToken();
-        setIsAuthenticated(Boolean(token));
-      } catch (error) {
-        console.error("Error checking auth:", error);
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
 
   useEffect(() => {
     if (isAuthenticated === null) return; // still loading

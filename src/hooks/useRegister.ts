@@ -2,7 +2,7 @@ import { useRegisterMutation } from "@/src/services/api/endpoints/authEndpoints"
 import { validateSignUpInput } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 export const useRegister = () => {
   const router = useRouter();
@@ -23,17 +23,26 @@ export const useRegister = () => {
         password,
       }).unwrap();
 
-      console.log("REGISTER SUCCESS:", res);
-
+      Toast.show({
+        type: "success",
+        text1: "Registration Successful",
+        text2: "You can now log in with your credentials.",
+      });
       router.replace("/(auth)/Login");
     } catch (err: any) {
       if (err.status === 409) {
-        Alert.alert("Error", err.data.title);
-        console.log("REGISTER ERROR: ", err);
+        Toast.show({
+          type: "error",
+          text1: "Registration Failed",
+          text2: "Email already in use. Please use a different email.",
+        });
         return;
       }
-      Alert.alert("Error", err.data.title);
-      console.log("REGISTER ERROR: ", err);
+      Toast.show({
+        type: "error",
+        text1: "Registration Failed",
+        text2: "An unexpected error occurred. Please try again later.",
+      });
     }
   };
 

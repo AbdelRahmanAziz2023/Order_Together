@@ -3,6 +3,7 @@ import {
   ChangePasswordRequest,
   ChangePasswordResponse,
   LoginRequest,
+  LogoutRequest,
   RegisterRequest,
   UpdateProfileRequest,
   User,
@@ -45,10 +46,18 @@ const AuthEndpoints = baseApi.injectEndpoints({
         body: changePasswordBody,
       }),
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
+    logout: builder.mutation<void, LogoutRequest>({
+      query: (logoutBody) => ({
         url: "auth/logout",
         method: "POST",
+        body: logoutBody,
+      }),
+    }),
+    refreshToken: builder.mutation<AuthResponse, LogoutRequest>({
+      query: (refreshTokenBody) => ({
+        url: "auth/refresh-token",
+        method: "POST",
+        body: refreshTokenBody,
       }),
     }),
   }),
@@ -61,4 +70,5 @@ export const {
   useUpdateProfileMutation,
   useChangePasswordMutation,
   useLogoutMutation,
+  useRefreshTokenMutation,
 } = AuthEndpoints;

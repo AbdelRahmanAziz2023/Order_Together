@@ -1,16 +1,16 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
+import { RestaurantDto } from "@/src/types/restaurant.type";
 import React from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
 interface RestaurantCardProps {
-  id: number;
-  name: string;
+ item:RestaurantDto;
   onPress?: () => void;
 }
 
 export const RestaurantCard: React.FC<RestaurantCardProps> = ({
-  name,
+  item,
   onPress,
 }) => {
   return (
@@ -20,14 +20,14 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({
     >
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../../assets/images/logo-mustard.png")}
+          source={item.logoUrl ? { uri: item.logoUrl } : require("../../../assets/images/logo-mustard.png")}
           style={styles.logo}
-          resizeMode="contain"
+          resizeMode="stretch"
         />
       </View>
 
       <View style={styles.content}>
-        <CustomText text={name} textStyle={[styles.name]} />
+        <CustomText text={item.name} textStyle={[styles.name]} />
       </View>
     </Pressable>
   );
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray200,
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
+   
   },
   logo: {
     width: "100%",

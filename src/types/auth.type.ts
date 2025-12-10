@@ -40,3 +40,9 @@ export interface ChangePasswordRequest {
   oldPassword: string;
   newPassword: string;
 }
+
+
+export interface LogoutRequest {
+  userId: string;
+  token: string;
+}

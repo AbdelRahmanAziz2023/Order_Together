@@ -7,7 +7,7 @@ export interface OrdersListItem {
   restaurant: string;
   total: number;
   placedOn: string;
-  image: string;
+  image: string|null;
   isHost: boolean;
   status: string;
 }

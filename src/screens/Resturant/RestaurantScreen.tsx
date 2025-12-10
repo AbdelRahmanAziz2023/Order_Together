@@ -2,6 +2,7 @@ import CustomError from "@/src/components/common/CustomError";
 import RestaurantCardSkeletonList from "@/src/components/skeleton/RestaurantCardSkeletonList";
 import { Colors } from "@/src/constants/colors";
 import { useGetRestaurantsQuery } from "@/src/services/api/endpoints/restaurantEndpoints";
+import { RestaurantDto } from "@/src/types/restaurant.type";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -15,7 +16,7 @@ const RestaurantScreen: React.FC = () => {
     isError,
   } = useGetRestaurantsQuery();
 
-  const handleRestaurantPress = (restaurant: { id: number; name: string }) => {
+  const handleRestaurantPress = (restaurant: RestaurantDto) => {
     router.push({
       pathname: "/(app)/(home)/Menu",
       params: {
@@ -29,7 +30,7 @@ const RestaurantScreen: React.FC = () => {
     <View style={styles.container}>
       {isLoading ? (
         <RestaurantCardSkeletonList />
-      ) : !isError ? (
+      ) : isError ? (
         <CustomError
           title="Error"
           message="Failed to load restaurants. Please try again."

@@ -12,7 +12,7 @@ type OrderItemProps = {
     restaurant: string;
     total: number;
     placedOn: string;
-    image: string;
+    image: string|null;
     isHost: boolean;
     status: "Paid" | "Unpaid" | "Completed" | "Pending" | string;
   };
@@ -42,7 +42,7 @@ const OrderItem = ({ item }: OrderItemProps) => {
       {/* Header with image + status */}
       <View style={styles.headerRow}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: item.image }} style={styles.image} />
+          <Image source={item.image ?{ uri: item.image }:require("../../../assets/images/logo-mustard.png")} style={styles.image} />
         </View>
 
         <View style={[styles.statusBadge, statusBadgeStyles]}>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: Colors.lightred,
   },
 
   image: { width: "100%", height: "100%" },
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
   },
 
   orderDate: {
+    paddingTop: 10,
     fontSize: 13,
     color: "#999",
   },

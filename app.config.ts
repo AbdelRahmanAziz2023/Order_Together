@@ -58,9 +58,9 @@ export default {
 
     extra: {
       env: ENV,
-      eas: {
-        projectId: "ec3cbc4d-c89e-44f3-8acc-bd59bb5f4e81",
-      },
+     "eas": {
+        "projectId": "eee76858-f1fb-479e-8f93-392401d7fa58"
+      }
     },
   },
 };

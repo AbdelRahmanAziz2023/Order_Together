@@ -13,8 +13,7 @@ export const orders = [
     restaurant: "Pizza Hut",
     total: 120,
     placedOn: "2025-11-10",
-    image:
-      "https://cdn.logojoy.com/wp-content/uploads/20200430135707/restaurant-logo-9.png",
+    image: null,
     isHost: false,
     status: "Unpaid",
   },
@@ -33,8 +32,7 @@ export const orders = [
     restaurant: "Buffalo Burger",
     total: 240,
     placedOn: "2025-11-14",
-    image:
-      "https://static.vecteezy.com/system/resources/thumbnails/015/289/869/small/fast-food-logo-design-free-vector.jpg",
+    image: null,
     isHost: false,
     status: "Paid",
   },
@@ -43,8 +41,7 @@ export const orders = [
     restaurant: "Macarona El Prince",
     total: 175,
     placedOn: "2025-11-18",
-    image:
-      "https://cdn.logojoy.com/wp-content/uploads/20200430135707/restaurant-logo-12.png",
+    image: null,
     isHost: true,
     status: "Completed",
   },

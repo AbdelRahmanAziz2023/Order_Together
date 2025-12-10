@@ -7,9 +7,9 @@ import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
 
-// if (__DEV__) {
-//   require("../../ReactotronConfig");
-// }
+if (__DEV__) {
+  require("../../ReactotronConfig");
+}
 
 // SplashScreen.preventAutoHideAsync();
 SplashScreen.hideAsync();

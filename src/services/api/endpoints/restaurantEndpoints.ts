@@ -1,9 +1,7 @@
+import { RestaurantDto } from "@/src/types/restaurant.type";
 import { baseApi } from "../baseApi";
 
-export interface Restaurant {
-  id: number;
-  name: string;
-}
+
 
 export interface MenuItem {
   itemID: number;
@@ -16,7 +14,7 @@ export interface MenuItem {
 
 const RestaurantEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getRestaurants: builder.query<Restaurant[], void>({
+    getRestaurants: builder.query<RestaurantDto[], void>({
       query: () => ({
         url: "restaurants",
         method: "GET",

@@ -1,24 +1,24 @@
 import CustomEmptyList from "@/src/components/common/CustomEmptyList";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
-import { Restaurant } from "@/src/services/api/endpoints/restaurantEndpoints";
+import { RestaurantDto } from "@/src/types/restaurant.type";
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { RestaurantCard } from "./RestaurantCard";
 
 interface RestaurantListProps {
-  restaurants: Restaurant[];
-  onRestaurantPress?: (restaurant: Restaurant) => void;
+  restaurants: RestaurantDto[];
+  onRestaurantPress?: (restaurant: RestaurantDto) => void;
 }
 
 export const RestaurantList: React.FC<RestaurantListProps> = ({
   restaurants,
   onRestaurantPress,
 }) => {
-  const renderItem = ({ item }: { item: Restaurant }) => (
+  const renderItem = ({ item }: { item: RestaurantDto }) => (
     <RestaurantCard
-      id={item.id}
-      name={item.name}
+      
+      item={item}
       onPress={() => onRestaurantPress?.(item)}
     />
   );
