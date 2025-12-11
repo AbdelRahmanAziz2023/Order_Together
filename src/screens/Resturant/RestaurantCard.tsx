@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontFamily: "SenBold",
-    color: Colors.textPrimary,
+    color: Colors.gray600,
     marginBottom: 12,
   },
 });

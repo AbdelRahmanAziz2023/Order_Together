@@ -1,37 +1,32 @@
+import CustomEmptyList from '@/src/components/common/CustomEmptyList';
 import { Colors } from '@/src/constants/colors';
-import { MenuItem } from '@/src/services/api/endpoints/restaurantEndpoints';
+import { MenuItemDto } from '@/src/types/restaurant.type';
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { MenuItemCard } from './MenuItemCard';
 
 interface MenuListProps {
-  menuItems: MenuItem[];
-  onItemPress?: (item: MenuItem) => void;
+  menuItems: MenuItemDto[];
+  onItemPress?: (item: MenuItemDto) => void;
 }
 
 export const MenuList: React.FC<MenuListProps> = ({ menuItems, onItemPress }) => {
-  const renderItem = ({ item }: { item: MenuItem }) => (
+  const renderItem = ({ item }: { item: MenuItemDto }) => (
     <MenuItemCard
-      itemID={item.itemID}
-      name={item.name}
-      price={item.price}
-      allowCustomization={item.allowCustomization}
-      isActive={item.isActive}
+     item={item}
       onPress={() => onItemPress?.(item)}
     />
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>No menu items available</Text>
-    </View>
+    <CustomEmptyList title="No menu items" message="No menu items available." />
   );
 
   return (
     <FlatList
       data={menuItems}
       renderItem={renderItem}
-      keyExtractor={(item) => item.itemID.toString()}
+      keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContent}
       ListEmptyComponent={renderEmpty}
       showsVerticalScrollIndicator={false}

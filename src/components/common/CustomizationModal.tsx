@@ -1,9 +1,5 @@
 import { Colors } from "@/src/constants/colors";
-import {
-  selectCartItems,
-  updateItemQuantity,
-} from "@/src/store/slices/cartSlice";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -15,16 +11,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "./CustomButton";
 import CustomText from "./CustomText";
 import { QuantityController } from "./QuantityController";
 
 interface CustomizationModalProps {
   visible: boolean;
-  itemID: number;
+  itemID: string;
   itemName: string;
   existingNote?: string;
+  editNote: React.Dispatch<React.SetStateAction<string>>;
   onConfirm: (note: string) => void;
   onCancel: () => void;
 }
@@ -34,35 +30,29 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   itemID,
   itemName,
   existingNote = "",
+  editNote,
   onConfirm,
   onCancel,
 }) => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(selectCartItems);
-  const cartItem = cartItems.find((i) => i.itemID === itemID);
+  const [quantity, setQuantity] = useState(1);
 
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+  };
 
-  const [quantity, setQuantity] = useState(cartItem?.quantity || 1);
-  const [note, setNote] = useState(existingNote);
-
-  useEffect(() => {
-    if (visible) setNote(existingNote);
-  }, [visible, existingNote]);
-
-  const handleIncrease = () =>
-    dispatch(updateItemQuantity({ itemID, quantity: quantity + 1 }));
-  const handleDecrease = () =>
-    dispatch(
-      updateItemQuantity({ itemID, quantity: Math.max(1, quantity - 1) })
-    );
+  const handleDecrease = () => {
+    if (quantity > 1) setQuantity((prev) => prev - 1);
+  };
 
   const handleConfirm = () => {
     // Trim and normalize spaces: remove leading/trailing, collapse multiple spaces
-    const normalized = note.trim().replace(/\s+/g, " ");
+    const normalized = existingNote.trim().replace(/\s+/g, " ");
     onConfirm(normalized);
   };
 
-  const handleClearNote = () => setNote("");
+  const handleClearNote = () => {
+    editNote("");
+  };
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -104,7 +94,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                       text="Special Instructions"
                       textStyle={[styles.label]}
                     />
-                    {note.length > 0 && (
+                    {existingNote.length > 0 && (
                       <TouchableOpacity onPress={handleClearNote}>
                         <CustomText
                           text="Clear"
@@ -118,16 +108,17 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                     placeholder="e.g. Extra sauce, no onions..."
                     placeholderTextColor={Colors.textMuted}
                     multiline
-                    value={note}
+                    value={existingNote}
                     maxLength={50}
                     onChangeText={(text) => {
-                      // Collapse multiple spaces into single space, trim leading/trailing per line
                       const normalized = text.replace(/\s{2,}/g, " ");
-                      setNote(normalized);
+                      editNote(normalized);
                     }}
                   />
                   <View style={styles.charCountContainer}>
-                    <Text style={styles.charCount}>{note.length}/50</Text>
+                    <Text style={styles.charCount}>
+                      {existingNote.length}/50
+                    </Text>
                   </View>
                 </View>
 
@@ -160,9 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   keyboardView: {
-     flex: 1 ,
-   
-    },
+    flex: 1,
+  },
   scrollContent: {
     flex: 1,
     justifyContent: "center",
@@ -199,6 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
+    marginHorizontal: 50,
     borderBottomColor: Colors.border,
   },
   content: {

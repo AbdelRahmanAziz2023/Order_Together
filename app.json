@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Order Together",
+    "slug": "order-together",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "ordertogether",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      // "image": "./assets/images/splash.png",
+      // "resizeMode": "contain",
+      // "backgroundColor": "#ffffff"
+      "image": null,
+    },
+    "ios": {
+      "icon": "./assets/images/icon.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.abdelrahmanaziz23.ordertogether",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "icon": "./assets/images/icon.png",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/adabtive-icon.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.abdelrahmanaziz23.ordertogether",
+      "jsEngine": "hermes"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eee76858-f1fb-479e-8f93-392401d7fa58"
+      }
+    }
+  }
+}

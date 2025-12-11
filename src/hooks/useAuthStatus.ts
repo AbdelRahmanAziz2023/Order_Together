@@ -11,38 +11,51 @@ import { useRefreshTokenMutation } from "../services/api/endpoints/authEndpoints
 
 const useAuthStatus = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [refreshTokenFun] = useRefreshTokenMutation();
+  const [refreshToken] = useRefreshTokenMutation();
 
   useEffect(() => {
-    const checkAuthStatus = async (): Promise<void> => {
+    const checkAuthStatus = async () => {
       try {
         const token = await getToken();
-        const refreshToken = await getRefreshToken();
-        const userId = await getUser().then((user) => user?.id);
+        const refreshTokenStr = await getRefreshToken();
+        const user = await getUser();
+        const userId = user?.id;
 
-        if (!token) {
-          setIsAuthenticated(false);
-          return;
+        // No tokens → logged out
+        if (!token || !refreshTokenStr || !userId) {
+          return setIsAuthenticated(false);
         }
+
+        // Access token valid → authenticated
         if (!isTokenExpired(token)) {
-          setIsAuthenticated(true);
-          return;
+          return setIsAuthenticated(true);
         }
-        if (refreshToken && !isTokenExpired(refreshToken)) {
-          const res = await refreshTokenFun({
-            userId: userId ?? "",
-            token: refreshToken,
-          }).unwrap();
-          // Store new tokens
-          await saveToken(res.accessToken);
-          await saveRefreshToken(res.refreshToken);
-          setIsAuthenticated(true);
-          return;
+
+        // Access token expired → try refreshing
+        // !isTokenExpired(refreshTokenStr)
+        if (refreshTokenStr) {
+          try {
+            const res = await refreshToken({
+              userId,
+              token: refreshTokenStr,
+            }).unwrap();
+
+            await saveToken(res.accessToken);
+            await saveRefreshToken(res.refreshToken);
+
+            return setIsAuthenticated(true);
+          } catch (err) {
+            // Refresh failed → logout
+            console.log("Refresh-token failed:", err);
+            return setIsAuthenticated(false);
+          }
         }
-        setIsAuthenticated(false);
-      } catch (error) {
-        console.error("Error checking auth:", error);
-        setIsAuthenticated(false);
+
+        // Both tokens expired → fully logout
+        return setIsAuthenticated(false);
+      } catch (err) {
+        console.log("Auth error:", err);
+        return setIsAuthenticated(false);
       }
     };
 

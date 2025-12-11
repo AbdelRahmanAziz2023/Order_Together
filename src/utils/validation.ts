@@ -16,7 +16,8 @@ export const validateEmail = (email: string): boolean => {
 export const validatePassword = (password: string): boolean => {
   const trimmed = password.trim();
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-={}[\]|:;"'<>,.?/~`]{6,}$/;
 
   if (!passwordRegex.test(trimmed)) {
     Alert.alert(
@@ -37,14 +38,17 @@ export const validatePassword = (password: string): boolean => {
 export const validateName = (name: string, fieldName: string): boolean => {
   const trimmed = name.trim();
   const nameRegex =
-    /^(?![_*$!])[A-Za-z\u0600-\u06FF]{2,}(?:[ -]?[A-Za-z\u0600-\u06FF]{2,})*$/;
+    /^(?![_*$!])[A-Za-z\u0600-\u06FF]{2}[A-Za-z\u0600-\u06FF\s]{1,}$/;
 
   if (!nameRegex.test(trimmed)) {
     Alert.alert(
       "Invalid Name",
       `${fieldName} must:
 - Start with at least 2 letters
-- No special characters at start`
+- No special characters at start
+- Be at least 3 characters long
+- No hyhens or numbers
+`
     );
     return false;
   }

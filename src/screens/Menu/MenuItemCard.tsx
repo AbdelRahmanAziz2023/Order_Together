@@ -2,96 +2,66 @@ import { CustomizationModal } from "@/src/components/common/CustomizationModal";
 import CustomNote from "@/src/components/common/CustomNote";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
-import {
-  selectCartItems,
-  updateItemNote
-} from "@/src/store/slices/cartSlice";
+import { MenuItemDto } from "@/src/types/restaurant.type";
 
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 
 interface MenuItemCardProps {
-  itemID: number;
-  name: string;
-  price: number;
-  allowCustomization: boolean;
-  isActive: boolean;
+  item: MenuItemDto;
   onPress?: () => void;
 }
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({
-  itemID,
-  name,
-  price,
-  allowCustomization,
-  isActive,
+  item,
   onPress,
 }) => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(selectCartItems);
-
-  const cartItem = cartItems.find((i) => i.itemID === itemID);
-  const quantity = cartItem?.quantity ?? 0;
-  const customizationNote = cartItem?.customizationNote ?? "";
+  const [customizationNote, setCustomizationNote] = useState("");
 
   const [modalVisible, setModalVisible] = useState(false);
 
-
   const handleConfirmCustomization = (note: string) => {
-    dispatch(updateItemNote({ itemID, note }));
     setModalVisible(false);
   };
 
-
   const openCustomization = () => {
-    if (allowCustomization) setModalVisible(true);
-    else if (onPress) onPress();
+    setModalVisible(true);
+    onPress?.();
   };
 
   return (
     <>
       <Pressable
-        disabled={!isActive}
         onPress={openCustomization}
         style={({ pressed }) => [
           styles.card,
-          !isActive && styles.inactiveCard,
-          allowCustomization && isActive && styles.customizableBorder,
+          styles.customizableBorder,
           pressed && styles.cardPressed,
         ]}
       >
         {/* HEADER */}
         <View style={styles.header}>
-          <CustomText text={name} textStyle={[styles.name]} />
-
-          {!isActive && (
-            <View style={styles.badge}>
-              <CustomText text="Unavailable" textStyle={[styles.badgeText]} />
-            </View>
-          )}
+          <CustomText text={item.name} textStyle={[styles.name]} />
+          <CustomText text={item.description} textStyle={[styles.badgeText]} />
         </View>
-
         {/* PRICE */}
         <View style={styles.priceRow}>
-          <CustomText text={price.toFixed(2)} textStyle={[styles.price]} />
+          <CustomText text={item.price.toFixed(2)} textStyle={[styles.price]} />
           <CustomText text="EGP" textStyle={[styles.currency]} />
         </View>
 
         {/* CUSTOM NOTE */}
         {customizationNote ? (
-          <CustomNote
-            note={customizationNote}
-            onClear={() => dispatch(updateItemNote({ itemID, note: "" }))}
-          />
+          <CustomNote note={customizationNote} onClear={() => {setCustomizationNote("")}} />
         ) : null}
       </Pressable>
 
       <CustomizationModal
         visible={modalVisible}
-        itemID={itemID}
-        itemName={name}
+        itemID={item.id}
+        itemName={item.name}
         existingNote={customizationNote}
+        editNote={setCustomizationNote}
         onConfirm={handleConfirmCustomization}
         onCancel={() => setModalVisible(false)}
       />
@@ -122,7 +92,7 @@ const styles = StyleSheet.create({
 
   customizableBorder: {
     borderColor: Colors.mustard,
-    borderWidth: 2,
+    borderWidth: 1,
   },
 
   inactiveCard: {
@@ -130,8 +100,8 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    flexDirection: "row",
     justifyContent: "space-between",
+    gap: 4,
     marginBottom: 8,
   },
 

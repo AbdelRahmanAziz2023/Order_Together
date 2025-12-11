@@ -1,42 +1,22 @@
 import CustomError from "@/src/components/common/CustomError";
 import CustomHint from "@/src/components/common/CustomHint";
+import CustomText from "@/src/components/common/CustomText";
 import MenuItemCardSkeletonList from "@/src/components/skeleton/MenuItemCardSkeletonList";
 import { Colors } from "@/src/constants/colors";
 import { useGetRestaurantMenuQuery } from "@/src/services/api/endpoints/restaurantEndpoints";
-import { setRestaurant } from "@/src/store/slices/cartSlice";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch } from "react-redux";
 import { MenuList } from "./MenuList";
 
 const MenuScreen: React.FC = () => {
-  const { restaurantId, restaurantName } = useLocalSearchParams<{
-    restaurantId: string;
-    restaurantName: string;
+  const { restaurantShortCode } = useLocalSearchParams<{
+    restaurantShortCode: string;
   }>();
-  const dispatch = useDispatch();
 
-  const {
-    data: menuItems = [],
-    isLoading,
-    isError,
-  } = useGetRestaurantMenuQuery(Number(restaurantId), {
-    skip: !restaurantId,
-  });
-
-  // Set restaurant info in cart when menu loads
-  useEffect(() => {
-    if (restaurantId && restaurantName) {
-      dispatch(
-        setRestaurant({
-          id: Number(restaurantId),
-          name: restaurantName,
-        })
-      );
-    }
-  }, [restaurantId, restaurantName, dispatch]);
+  const { data, isLoading, isError } =
+    useGetRestaurantMenuQuery(restaurantShortCode);
 
   const handleMenuItemPress = (item: any) => {
     console.log("Menu item pressed:", item);
@@ -55,20 +35,18 @@ const MenuScreen: React.FC = () => {
     );
   }
 
-  const activeItems = menuItems.filter((item) => item.isActive);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{restaurantName || "Menu"}</Text>
-        <Text style={styles.subtitle}>
-          {activeItems.length} item{activeItems.length !== 1 ? "s" : ""}{" "}
-          available
-        </Text>
-        <CustomHint message="Tap to customize your order" />
+        <CustomText text={data?.name || "Menu"} textStyle={[styles.title]} />
+        <CustomText
+          text={` ${data?.menuItems.length} item${
+            data?.menuItems.length !== 1 ? "s" : ""} available`}
+        />
+       {data?.menuItems.length > 0 && <CustomHint message="Tap to customize your order" />}
       </View>
 
-      <MenuList menuItems={activeItems} onItemPress={handleMenuItemPress} />
+      <MenuList menuItems={data?.menuItems??[]} onItemPress={handleMenuItemPress} />
     </SafeAreaView>
   );
 };

@@ -9,6 +9,7 @@ const MenuItemCardSkeletonList = () => {
       keyExtractor={(item) => item.toString()}
       renderItem={() => <MenuItemCardSkeleton />}
       showsVerticalScrollIndicator={false}
+      style={{ paddingHorizontal: 5, marginTop: 20, marginBottom: 110 }}
     />
   );
 };

@@ -38,7 +38,7 @@ const OrderItem = ({ item }: OrderItemProps) => {
     : getPaidStatusStyle(status);
 
   return (
-    <Pressable style={styles.orderCard} onPress={onPress}>
+    <Pressable style={({ pressed }) => [styles.orderCard, pressed && styles.itemPressed]} onPress={onPress}>
       {/* Header with image + status */}
       <View style={styles.headerRow}>
         <View style={styles.imageContainer}>
@@ -128,7 +128,10 @@ const styles = StyleSheet.create({
     fontFamily: "SenBold",
     marginBottom: 4,
   },
-
+   itemPressed: {
+    transform: [{ scale: 0.97 }],
+    opacity: 0.9,
+  },
   orderDate: {
     paddingTop: 10,
     fontSize: 13,

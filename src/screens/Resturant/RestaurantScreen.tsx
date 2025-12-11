@@ -20,8 +20,7 @@ const RestaurantScreen: React.FC = () => {
     router.push({
       pathname: "/(app)/(home)/Menu",
       params: {
-        restaurantId: restaurant.id.toString(),
-        restaurantName: restaurant.name,
+        restaurantShortCode: restaurant.shortCode,
       },
     });
   };
