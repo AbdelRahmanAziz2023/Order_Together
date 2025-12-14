@@ -2,12 +2,10 @@ import { Colors } from "../constants/colors";
 
 const getStatusBadgeStyle = (status: string) => {
   switch (status) {
-    case "locked":
+    case "Locked":
       return { backgroundColor: Colors.lightred };
-    case "opened":
+    case "Open":
       return { backgroundColor: Colors.success };
-    case "placed":
-      return { backgroundColor: Colors.mustard };
     default:
       return { backgroundColor: "#EEE" };
   }

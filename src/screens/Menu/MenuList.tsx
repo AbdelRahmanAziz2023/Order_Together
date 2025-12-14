@@ -1,19 +1,25 @@
-import CustomEmptyList from '@/src/components/common/CustomEmptyList';
-import { Colors } from '@/src/constants/colors';
-import { MenuItemDto } from '@/src/types/restaurant.type';
-import React from 'react';
-import { FlatList, StyleSheet } from 'react-native';
-import { MenuItemCard } from './MenuItemCard';
+import CustomEmptyList from "@/src/components/common/CustomEmptyList";
+import { Colors } from "@/src/constants/colors";
+import { MenuItemDto } from "@/src/types/restaurant.type";
+import React from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { MenuItemCard } from "./MenuItemCard";
 
 interface MenuListProps {
   menuItems: MenuItemDto[];
   onItemPress?: (item: MenuItemDto) => void;
+  restaurantShortCode: string;
 }
 
-export const MenuList: React.FC<MenuListProps> = ({ menuItems, onItemPress }) => {
+export const MenuList: React.FC<MenuListProps> = ({
+  menuItems,
+  onItemPress,
+  restaurantShortCode,
+}) => {
   const renderItem = ({ item }: { item: MenuItemDto }) => (
     <MenuItemCard
-     item={item}
+      item={item}
+      shortCode={restaurantShortCode}
       onPress={() => onItemPress?.(item)}
     />
   );
@@ -41,13 +47,13 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 64,
   },
   emptyText: {
     fontSize: 16,
-    fontFamily: 'SenRegular',
+    fontFamily: "SenRegular",
     color: Colors.textMuted,
   },
 });

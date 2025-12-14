@@ -41,12 +41,19 @@ const MenuScreen: React.FC = () => {
         <CustomText text={data?.name || "Menu"} textStyle={[styles.title]} />
         <CustomText
           text={` ${data?.menuItems.length} item${
-            data?.menuItems.length !== 1 ? "s" : ""} available`}
+            data?.menuItems.length !== 1 ? "s" : ""
+          } available`}
         />
-       {data?.menuItems.length > 0 && <CustomHint message="Tap to customize your order" />}
+        {data?.menuItems.length! > 0 && (
+          <CustomHint message="Tap to customize your order" />
+        )}
       </View>
 
-      <MenuList menuItems={data?.menuItems??[]} onItemPress={handleMenuItemPress} />
+      <MenuList
+        menuItems={data?.menuItems!}
+        restaurantShortCode={restaurantShortCode}
+        onItemPress={handleMenuItemPress}
+      />
     </SafeAreaView>
   );
 };

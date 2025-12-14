@@ -2,38 +2,32 @@ import CustomButton from "@/src/components/common/CustomButton";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import getStatusBadgeStyle from "@/src/helper/getStatusBadgeStyle";
-import { ActiveCartData } from "@/src/types/cart.type";
-import { dummyActiveCart } from "@/src/utils/dummyData";
+import { ActiveCartResponse } from "@/src/types/cart.type";
 import { useRouter } from "expo-router";
 import { Image, StyleSheet, View } from "react-native";
 
 interface ActiveCartProps {
-  cartData?: ActiveCartData;
+  cartData?: ActiveCartResponse;
 }
 
-const ActiveCart: React.FC<ActiveCartProps> = ({
-  cartData = dummyActiveCart,
-}) => {
+const ActiveCart: React.FC<ActiveCartProps> = ({ cartData }) => {
   const router = useRouter();
 
   const handleGoToCart = () => {
     router.push({
       pathname: "/(app)/(home)/OrderDetails",
-      params: { cartId: cartData.cartId },
+      params: { cartId: cartData?.cartId ?? "" },
     });
   };
 
-  const statusText =
-    cartData.status.charAt(0).toUpperCase() + cartData.status.slice(1);
+  const cartStatus = cartData?.isLocked ? "Locked" : "Open";
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <CustomText text="Active Cart" textStyle={[styles.title]} />
-        <View
-          style={[styles.statusBadge, getStatusBadgeStyle(cartData.status)]}
-        >
-          <CustomText text={statusText} textStyle={[styles.statusText]} />
+        <View style={[styles.statusBadge, getStatusBadgeStyle(cartStatus)]}>
+          <CustomText text={cartStatus} textStyle={[styles.statusText]} />
         </View>
       </View>
 
@@ -41,24 +35,28 @@ const ActiveCart: React.FC<ActiveCartProps> = ({
         <View style={styles.leftWrapper}>
           <View style={styles.imageContainer}>
             <Image
-              source={{
-                uri: cartData.restaurant.image,
-              }}
+              source={
+                cartData?.restaurantLogoUrl
+                  ? {
+                      uri: cartData?.restaurantLogoUrl,
+                    }
+                  : require("../../../assets/images/logo-mustard.png")
+              }
               style={styles.image}
             />
           </View>
 
           <View style={styles.textGroup}>
             <CustomText
-              text={cartData.restaurant.name}
+              text={cartData?.restaurantName ?? "Restaurant Name"}
               textStyle={[styles.cartTitle]}
             />
             <CustomText
-              text={`Hosted by ${cartData.restaurant.hostedBy}`}
+              text={`Hosted by ${cartData?.hostName}`}
               textStyle={[styles.hostText]}
             />
             <CustomText
-              text={`Participants: ${cartData.participantsCount}`}
+              text={`Participants: ${cartData?.participantCount}`}
               textStyle={[styles.hostText]}
             />
           </View>
@@ -67,7 +65,7 @@ const ActiveCart: React.FC<ActiveCartProps> = ({
         <View style={styles.rightWrapper}>
           <CustomText text="Your Total" textStyle={[styles.totalLabel]} />
           <CustomText
-            text={`${cartData.totalPrice} EGP`}
+            text={`${cartData?.personalSubTotal} EGP`}
             textStyle={[styles.totalValue]}
           />
 
@@ -130,6 +128,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.white,
     overflow: "hidden",
+    backgroundColor: Colors.white,
   },
 
   image: {

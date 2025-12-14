@@ -60,10 +60,10 @@ export const validateLogInInput = (
   email: string,
   password: string
 ): boolean => {
-  if (!validateEmail(email) || !validatePassword(password)) {
+  if (  !validatePassword(password)) {
     return false;
   }
-
+// !validateEmail(email) ||
   return true;
 };
 

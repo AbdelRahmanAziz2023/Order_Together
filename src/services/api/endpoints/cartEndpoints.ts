@@ -29,11 +29,23 @@ const CartEndpoints = baseApi.injectEndpoints({
         url: `cart/${cartId}/summary`,
       }),
     }),
-    getActiveCart: builder.query<ActiveCartResponse, void>({
+    getActiveCart: builder.query<
+      ActiveCartResponse & { isNoContent: boolean },void>({
       query: () => ({
-        url: `cart/active`,
+        url: "cart/active",
+        responseHandler: (response) =>
+          response.status === 204 ? null : response.json(),
       }),
+      transformResponse: (response: ActiveCartResponse | null) => {
+        if (response === null) {
+          return { isNoContent: true } as ActiveCartResponse & {
+            isNoContent: boolean;
+          };
+        }
+        return { ...response, isNoContent: false };
+      }
     }),
+
     createCart: builder.mutation<CreateCartResponse, CreateCartRequest>({
       query: (body) => ({
         url: "cart/create",

@@ -18,8 +18,15 @@ const HomeScreen = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
 
-  const { data, isLoading, isError } = useGetActiveCartQuery();
-  const isActiveCart = data ? true : false;
+  const { data, isLoading, isError } = useGetActiveCartQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    }
+  );
+  const isActiveCart = data?.isNoContent ? false : true;
 
   const showPasscodePopup = () => {
     setIsVisible(true);
@@ -44,12 +51,12 @@ const HomeScreen = () => {
         />
         {isLoading ? (
           <ActiveCartSkeleton />
-        ) : !isError ? (
+        ) : isError ? (
           <CustomError title="Error" message="Failed to load active cart" />
         ) : isActiveCart ? (
-          <ActiveCartPlaceholder />
+          <ActiveCart cartData={data} />
         ) : (
-          <ActiveCart />
+          <ActiveCartPlaceholder />
         )}
 
         <RecentOrders />

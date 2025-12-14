@@ -82,7 +82,7 @@ export interface JoinCartResponse {
   message: string;
 }
 
-//// Request body Interfaces
+// Request body Interfaces
 export interface CartStateRequest {
   restaurantShortCode: string;
 }

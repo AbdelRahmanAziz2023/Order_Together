@@ -16,7 +16,7 @@ const CartItemEndpoint = baseApi.injectEndpoints({
         body: item,
       }),
     }),
-    removeItemFromCart: builder.mutation({
+    removeItemFromCart: builder.mutation<string, string>({
       query: (id) => ({
         url: `cart/items/${id}`,
         method: "DELETE",

@@ -20,8 +20,10 @@ interface CustomizationModalProps {
   itemID: string;
   itemName: string;
   existingNote?: string;
+  isEditing?: boolean;
+  isCreating?: boolean;
   editNote: React.Dispatch<React.SetStateAction<string>>;
-  onConfirm: (note: string) => void;
+  onConfirm: (quantity: number) => void;
   onCancel: () => void;
 }
 
@@ -30,6 +32,8 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   itemID,
   itemName,
   existingNote = "",
+  isEditing = false,
+  isCreating = false,
   editNote,
   onConfirm,
   onCancel,
@@ -45,9 +49,8 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   };
 
   const handleConfirm = () => {
-    // Trim and normalize spaces: remove leading/trailing, collapse multiple spaces
-    const normalized = existingNote.trim().replace(/\s+/g, " ");
-    onConfirm(normalized);
+  editNote(existingNote.trim().replace(/\s+/g, " "));
+    onConfirm(quantity);
   };
 
   const handleClearNote = () => {
@@ -88,7 +91,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                   />
                 </View>
                 {/* NOTE INPUT */}
-                <View style={styles.content}>
+                {!isEditing && <View style={styles.content}>
                   <View style={styles.labelRow}>
                     <CustomText
                       text="Special Instructions"
@@ -120,12 +123,12 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                       {existingNote.length}/50
                     </Text>
                   </View>
-                </View>
+                </View>}
 
                 {/* FOOTER */}
                 <View style={styles.footer}>
                   <CustomButton
-                    title="Add to Cart"
+                    title={isEditing ? "Edit Quantity" : isCreating ? "Create Order" : "Add to Cart"}
                     onPress={handleConfirm}
                     btnStyle={styles.confirmButton}
                   />
@@ -189,7 +192,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    marginHorizontal: 50,
     borderBottomColor: Colors.border,
   },
   content: {

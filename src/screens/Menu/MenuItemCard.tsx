@@ -2,26 +2,52 @@ import { CustomizationModal } from "@/src/components/common/CustomizationModal";
 import CustomNote from "@/src/components/common/CustomNote";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
+import {
+  useCreateCartMutation,
+  useGetCartStateQuery,
+} from "@/src/services/api/endpoints/cartEndpoints";
+import { useAddItemToCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
 import { MenuItemDto } from "@/src/types/restaurant.type";
 
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 interface MenuItemCardProps {
   item: MenuItemDto;
+  shortCode: string;
   onPress?: () => void;
 }
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   item,
+  shortCode,
   onPress,
 }) => {
   const [customizationNote, setCustomizationNote] = useState("");
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleConfirmCustomization = (note: string) => {
-    setModalVisible(false);
+  const { data, isLoading, isError } = useGetCartStateQuery({
+    restaurantShortCode: shortCode,
+  });
+
+  const [addItemToCart] = useAddItemToCartMutation();
+
+  const [createCart] = useCreateCartMutation();
+
+  const handleConfirmCustomization = (quntity: number) => {
+    try {
+      setCustomizationNote("");
+      setModalVisible(false);
+    } catch {
+      // Handle error if needed
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to add item to cart. Please try again.",
+      });
+    }
   };
 
   const openCustomization = () => {
@@ -52,7 +78,12 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
         {/* CUSTOM NOTE */}
         {customizationNote ? (
-          <CustomNote note={customizationNote} onClear={() => {setCustomizationNote("")}} />
+          <CustomNote
+            note={customizationNote}
+            onClear={() => {
+              setCustomizationNote("");
+            }}
+          />
         ) : null}
       </Pressable>
 
