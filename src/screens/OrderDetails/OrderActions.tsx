@@ -33,7 +33,7 @@ const OrderActions = ({
   };
 
   const onCheckoutPress = () => {
-    onChangeStatus("locked");
+    onChangeStatus("Locked");
   };
   return (
     <>

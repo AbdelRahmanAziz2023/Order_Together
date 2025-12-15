@@ -2,6 +2,7 @@ import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import * as Clipboard from "expo-clipboard";
 import { Pressable, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 type Props = {
   isEditing?: boolean;
@@ -15,7 +16,11 @@ const PaymentReceiver = ({
   const handleCopy = async () => {
     // Copy logic here
     await Clipboard.setStringAsync(textToCopy);
-    alert("Copied to clipboard 📋");
+    Toast.show({
+      type: "success",
+      text1: "Copied to clipboard",
+      text2: `${textToCopy} has been copied to your clipboard.`,
+    })
   };
   return (
     <View style={styles.wrapper}>
@@ -26,7 +31,7 @@ const PaymentReceiver = ({
 
       {/* Text Info */}
       <View style={{ flex: 1 }}>
-        <CustomText text="Instapay ID" textStyle={[styles.label]} />
+        <CustomText text="Instapay" textStyle={[styles.label]} />
         <CustomText text={textToCopy} textStyle={[styles.value]} />
       </View>
 

@@ -2,25 +2,27 @@
 import { CartItemDto } from "./cart.type";
 
 export type OrderRole = "HOST" | "PARTICIPANT";
-export type OrderStatus = "PAID" | "UNPAID" | "COMPLETED" | "PENDING_COLLECTION";
+export type OrderStatus = "PAID" | "UNPAID" | "COMPLETED" | "PENDING";
 
 export interface OrderHistoryItem {
 	orderId: string; // uuid
 	restaurantName: string;
-	date: string; // ISO date-time
-	role: OrderRole;
+	restaurantLogoUrl: string|null;
+	completedAt: Date; 
+	isHost: boolean;
 	status: OrderStatus;
-	amount: number;
+	myTotal: number;
 }
 
 export interface BillResponse {
 	restaurantName: string;
-	orderDate: string; // ISO date-time
+	restaurantLogoUrl: string | null;
+	orderTime: string;
 	hostName: string;
 	paymentInstructions?: string | null;
 	isPaid: boolean;
 	subTotal: number;
-	deliveryShare: number;
+	sharedFee: number;
 	totalDue: number;
 	items: CartItemDto[];
 }

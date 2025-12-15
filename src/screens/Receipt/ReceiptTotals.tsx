@@ -8,19 +8,19 @@ const ReceiptTotals = ({ subtotal, delivery, total }: { subtotal: number; delive
     <View style={styles.calcBox}>
       <View style={styles.row}>
         <CustomText text="Subtotal" textStyle={[styles.label]} />
-        <CustomText text={`${subtotal.toFixed(2)} EGP`} textStyle={[styles.value]} />
+        <CustomText text={`${subtotal} EGP`} textStyle={[styles.value]} />
       </View>
 
       <View style={styles.row}>
         <CustomText text="Shared Delivery" textStyle={[styles.label]} />
-        <CustomText text={`${delivery.toFixed(2)} EGP`} textStyle={[styles.value]} />
+        <CustomText text={`${delivery} EGP`} textStyle={[styles.value]} />
       </View>
     </View>
 
     <View style={styles.totalBox}>
       <CustomText text="Total Paid" textStyle={[styles.totalLabel]} />
       <Text style={styles.totalValue}>
-        {total.toFixed(2)} <Text style={styles.totalEGP}>EGP</Text>
+        {total} <Text style={styles.totalEGP}>EGP</Text>
       </Text>
     </View>
   </>

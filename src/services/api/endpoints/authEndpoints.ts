@@ -5,8 +5,6 @@ import {
   LoginRequest,
   LogoutRequest,
   RegisterRequest,
-  UpdateProfileRequest,
-  User,
 } from "../../../types/auth.type";
 import { baseApi } from "../baseApi";
 
@@ -24,16 +22,6 @@ const AuthEndpoints = baseApi.injectEndpoints({
         url: "auth/register",
         method: "POST",
         body: registerBody,
-      }),
-    }),
-    getProfile: builder.query<User, void>({
-      query: () => "auth/profile",
-    }),
-    updateProfile: builder.mutation<User, UpdateProfileRequest>({
-      query: (updateProfileBody) => ({
-        url: "auth/profile",
-        method: "PUT",
-        body: updateProfileBody,
       }),
     }),
     changePassword: builder.mutation<
@@ -66,8 +54,6 @@ const AuthEndpoints = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useGetProfileQuery,
-  useUpdateProfileMutation,
   useChangePasswordMutation,
   useLogoutMutation,
   useRefreshTokenMutation,

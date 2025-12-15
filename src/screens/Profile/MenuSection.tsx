@@ -6,20 +6,20 @@ import MenuItem from "./MenuItem";
 type Props = {
   onOrderHistoryPress: () => void;
   onNotificationsPress?: () => void;
-  onAccountSettingsPress?: () => void;
+  onEditProfilePress?: () => void;
 };
 
 const MenuSection = ({
   onOrderHistoryPress,
   onNotificationsPress,
-  onAccountSettingsPress,
+  onEditProfilePress,
 }: Props) => {
   return (
     <View style={styles.menuSection}>
        <MenuItem
         icon={Icons.activeUser}
-        title="Account Settings"
-        onPress={onAccountSettingsPress}
+        title="Edit Profile"
+        onPress={onEditProfilePress}
         iconStroke={Colors.textPrimary}
       />
       <MenuItem

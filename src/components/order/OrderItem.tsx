@@ -2,67 +2,66 @@ import { Colors } from "@/src/constants/colors";
 import { getPaidStatusStyle } from "@/src/helper/getPaidStausStyle";
 import { getPaymentStatusStyle } from "@/src/helper/getPaymentStatusStyle";
 import { getUserStatusStyle } from "@/src/helper/getUserStatusStyle";
+import { OrderHistoryItem } from "@/src/types/order.type";
 import { useRouter } from "expo-router";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import CustomText from "../common/CustomText";
 
-type OrderItemProps = {
-  item: {
-    id: string;
-    restaurant: string;
-    total: number;
-    placedOn: string;
-    image: string|null;
-    isHost: boolean;
-    status: "Paid" | "Unpaid" | "Completed" | "Pending" | string;
-  };
-};
+type Props={
+  item: OrderHistoryItem;
+}
 
-const OrderItem = ({ item }: OrderItemProps) => {
+const OrderItem = ({ item }: Props) => {
   const router = useRouter();
 
-  const { isHost, status } = item;
-
+  
 
 
   const onPress = () => {
     router.push({
-      pathname: isHost && status === "Pending" ? "/(app)/(home)/PaymentTracker" : "/(app)/(home)/Receipt",
-      params: { orderId: item.id, status: item.status },
+      pathname: item.isHost && item.status === "PENDING" ? "/(app)/(home)/PaymentTracker" : "/(app)/(home)/Receipt",
+      params: { orderId: item.orderId, status: item.status },
     });
   };
 
   // Host uses PaymentStatus, others use PaidStatus
-  const statusBadgeStyles = isHost
-    ? getPaymentStatusStyle(status)
-    : getPaidStatusStyle(status);
+  const statusBadgeStyles = item.isHost
+    ? getPaymentStatusStyle(item.status)
+    : getPaidStatusStyle(item.status);
+
+    const date = new Date(item.completedAt);
+    const formattedDate = date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
 
   return (
     <Pressable style={({ pressed }) => [styles.orderCard, pressed && styles.itemPressed]} onPress={onPress}>
       {/* Header with image + status */}
       <View style={styles.headerRow}>
         <View style={styles.imageContainer}>
-          <Image source={item.image ?{ uri: item.image }:require("../../../assets/images/logo-mustard.png")} style={styles.image} />
+          <Image source={item.restaurantLogoUrl ?{ uri: item.restaurantLogoUrl }:require("../../../assets/images/logo-mustard.png")} style={styles.image} />
         </View>
 
         <View style={[styles.statusBadge, statusBadgeStyles]}>
-          <CustomText text={status} textStyle={[styles.statusText, statusBadgeStyles ]} />
+          <CustomText text={item.status} textStyle={[styles.statusText, statusBadgeStyles ]} />
         </View>
       </View>
 
       {/* Restaurant Name */}
-      <CustomText text={item.restaurant} textStyle={[styles.restaurantName]} />
+      <CustomText text={item.restaurantName} textStyle={[styles.restaurantName]} />
 
       {/* Host Note OR Price */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }} >
-        <View style={[styles.statusBadge, getUserStatusStyle(isHost?"Host":"Participant")]}>
-          <CustomText text={isHost?"Host":"Participant"} textStyle={[styles.statusText, getUserStatusStyle(isHost?"Host":"Participant") ]} />
+        <View style={[styles.statusBadge, getUserStatusStyle(item.isHost?"Host":"Participant")]}>
+          <CustomText text={item.isHost?"Host":"Participant"} textStyle={[styles.statusText, getUserStatusStyle(item.isHost?"Host":"Participant") ]} />
         </View>
-        <CustomText text={`${item.total} EGP`} textStyle={[styles.orderTotal]} />
+        <CustomText text={`${item.myTotal} EGP`} textStyle={[styles.orderTotal]} />
       </View>
       {/* Order date */}
       <CustomText
-        text={`Placed on: ${item.placedOn}`}
+        text={`Placed on: ${formattedDate}`}
         textStyle={[styles.orderDate]}
       />
     </Pressable>

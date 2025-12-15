@@ -22,6 +22,7 @@ interface CustomizationModalProps {
   existingNote?: string;
   isEditing?: boolean;
   isCreating?: boolean;
+  currentQuantity?: number;
   editNote: React.Dispatch<React.SetStateAction<string>>;
   onConfirm: (quantity: number) => void;
   onCancel: () => void;
@@ -32,13 +33,14 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   itemID,
   itemName,
   existingNote = "",
+  currentQuantity = 1,
   isEditing = false,
   isCreating = false,
   editNote,
   onConfirm,
   onCancel,
 }) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(currentQuantity);
 
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
@@ -49,7 +51,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   };
 
   const handleConfirm = () => {
-  editNote(existingNote.trim().replace(/\s+/g, " "));
+    editNote(existingNote.trim().replace(/\s+/g, " "));
     onConfirm(quantity);
   };
 
@@ -91,7 +93,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                   />
                 </View>
                 {/* NOTE INPUT */}
-                {!isEditing && <View style={styles.content}>
+                <View style={styles.content}>
                   <View style={styles.labelRow}>
                     <CustomText
                       text="Special Instructions"
@@ -123,12 +125,18 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                       {existingNote.length}/50
                     </Text>
                   </View>
-                </View>}
+                </View>
 
                 {/* FOOTER */}
                 <View style={styles.footer}>
                   <CustomButton
-                    title={isEditing ? "Edit Quantity" : isCreating ? "Create Order" : "Add to Cart"}
+                    title={
+                      isEditing
+                        ? "Edit Item"
+                        : isCreating
+                        ? "Create Order"
+                        : "Add to Cart"
+                    }
                     onPress={handleConfirm}
                     btnStyle={styles.confirmButton}
                   />

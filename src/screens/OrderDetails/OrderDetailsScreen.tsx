@@ -30,7 +30,7 @@ const dummyOrders = [
 ];
 
 const OrderDetailsScreen = () => {
-  const [status, setStatus] = React.useState("opened");
+  const [status, setStatus] = React.useState("Open");
 
   // keep orders in local state so participant can "leave" in demo
   const [ordersState, setOrdersState] = useState(dummyOrders);
@@ -38,8 +38,8 @@ const OrderDetailsScreen = () => {
   const [paymentInstapay, setPaymentInstapay] = useState("");
   const [isHost, setIsHost] = useState(true);
 
-  const isLocked = status === "locked";
-  const isOpened = status === "opened";
+  const isLocked = status === "Locked";
+  const isOpened = status === "Open";
 
   
 

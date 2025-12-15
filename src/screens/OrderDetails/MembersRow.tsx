@@ -24,8 +24,8 @@ const MembersRow = ({
   isHost = false,
   membersCount = 3,
 }: Props) => {
-  const isLocked = status === "locked";
-  const isOpened = status === "opened";
+  const isLocked = status === "Locked";
+  const isOpened = status === "Open";
 
   const [leaveCart] = useLeaveCartMutation();
   const [unlockCart] = useUnlockCartMutation();
@@ -104,7 +104,7 @@ const MembersRow = ({
               else
               {
                 onUnlockPress();
-                setStatus("opened");
+                setStatus("Open");
               }
               
             }}

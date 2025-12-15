@@ -9,10 +9,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      // "image": "./assets/images/splash.png",
-      // "resizeMode": "contain",
-      // "backgroundColor": "#ffffff"
-      "image": null,
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+      // "image": null,
     },
     "ios": {
       "icon": "./assets/images/icon.png",

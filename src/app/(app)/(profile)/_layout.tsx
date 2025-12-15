@@ -16,6 +16,7 @@ export default function ProfileLayout() {
     }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="OrderHistory" options={{headerTitle: "Order History"}} />
+      <Stack.Screen name="EditProfile" options={{headerTitle: "Edit Profile"}} />
     </Stack>
   );
 }

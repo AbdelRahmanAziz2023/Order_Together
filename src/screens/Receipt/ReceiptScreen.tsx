@@ -11,25 +11,6 @@ import ReceiptHeader from "./ReceiptHeader";
 import ReceiptItemRow from "./ReceiptItemRow";
 import ReceiptTotals from "./ReceiptTotals";
 
-const dummyData = {
-  restaurant: "Koshary El Tahrir",
-  date: "Nov 15, 2025 • 01:45 PM",
-  status: "PAID IN FULL",
-  items: [
-    {
-      id: 1,
-      name: "Koshary Star",
-      note: "Extra Crispy Onions",
-      price: 35,
-      qty: 1,
-    },
-    { id: 2, name: "Rice Pudding", note: "", price: 10, qty: 1 },
-  ],
-  subtotal: 45,
-  delivery: 0,
-  total: 45,
-};
-
 const ReceiptScreen = () => {
   const { orderId, status: orderStatus } = useLocalSearchParams<{
     orderId: string;
@@ -38,18 +19,22 @@ const ReceiptScreen = () => {
 
   const { data, isLoading, isError } = useGetBillQuery(orderId);
 
-  // Use API data if available, fallback to dummy data
-  const billData = data || dummyData;
-  const { restaurant, date, status, items, subtotal, delivery, total } =
-    billData;
+  
 
-  const isPaidInFull = data?.isPaid ?? orderStatus !== "Unpaid";
+  const isPaidInFull = orderStatus === "PAID";
+  const formattedDate = new Date(data?.orderTime!).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       {isLoading ? (
         <ReceiptSkeleton />
-      ) : !isError ? (
+      ) : isError ? (
         <CustomError
           title="Error"
           message="Failed to load receipt. Please try again."
@@ -61,19 +46,19 @@ const ReceiptScreen = () => {
 
           {/* Header */}
           <ReceiptHeader
-            restaurant={restaurant}
-            date={date}
-            status={status}
-            isPaid={isPaidInFull}
+            restaurant={data?.restaurantName!}
+            date={formattedDate}
+            status={orderStatus}
+            isPaid={data?.isPaid!}
           />
 
           <View style={styles.itemsWrapper}>
             {/* Show unpaid widget */}
-            {!isPaidInFull && <PaymentReceiver textToCopy="ahmed@instapay" />}
+            {!isPaidInFull && <PaymentReceiver textToCopy={data?.paymentInstructions!} />}
 
             <FlatList
-              data={items}
-              keyExtractor={(item) => item.id.toString()}
+              data={data?.items}
+              keyExtractor={(item) => item.orderItemId.toString()}
               ItemSeparatorComponent={() => <View style={{ height: 18 }} />}
               renderItem={({ item }) => <ReceiptItemRow item={item} />}
               scrollEnabled={false}
@@ -85,9 +70,9 @@ const ReceiptScreen = () => {
 
           {/* Totals */}
           <ReceiptTotals
-            subtotal={subtotal}
-            delivery={delivery}
-            total={total}
+            subtotal={data?.subTotal!}
+            delivery={data?.sharedFee!}
+            total={data?.totalDue!}
           />
         </View>
       )}

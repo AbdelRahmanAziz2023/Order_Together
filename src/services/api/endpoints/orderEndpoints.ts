@@ -1,17 +1,18 @@
+import { BillResponse, OrderHistoryItem } from "@/src/types/order.type";
 import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getOrdersHistory: builder.query({
+    getOrdersHistory: builder.query<OrderHistoryItem[],number>({
       query: (limit = 5) => ({
         url: "/orders/history?limit=" + limit,
         method: "GET",
       }),
       // providesTags:["OrderHistory"],
     }),
-    getBill: builder.query({
+    getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
-        url: `/orders/${orderId}/bill`,
+        url: `/orders/${orderId}`,
         method: "GET",
       }),
       // providesTags:(result,error,arg)=>[

@@ -25,8 +25,11 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleEditProfile = () => {
+    router.push("/(app)/(profile)/EditProfile");
+  }
   const handleOrderHistory = () => {
-    router.push("/(app)/(profile)/OrderHistory");
+    router.push("/(app)/(home)/OrderHistory");
   };
 
   return (
@@ -34,7 +37,7 @@ const ProfileScreen = () => {
       <ScrollView style={styles.content}>
         <ProfileHeader />
 
-        <MenuSection onOrderHistoryPress={handleOrderHistory} />
+        <MenuSection onOrderHistoryPress={handleOrderHistory} onEditProfilePress={handleEditProfile}  />
 
         <View style={styles.logoutSection}>
           <CustomButton

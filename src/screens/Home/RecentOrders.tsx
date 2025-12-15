@@ -51,7 +51,6 @@ const RecentOrders = () => {
   const router = useRouter();
 
   const { data, isLoading, isError } = useGetOrdersHistoryQuery(5);
-
   const onPress = () => {
     router.push("/(app)/(home)/OrderHistory");
   };
@@ -69,10 +68,10 @@ const RecentOrders = () => {
 
       {isLoading ? (
         <OrderItemSkeletonList />
-      ) : !isError ? (
+      ) : isError ? (
         <CustomError title="Error" message="Failed to load recent orders" />
       ) : (
-        <OrdersList data={orders} />
+        <OrdersList data={data} />
       )}
     </View>
   );
