@@ -21,7 +21,7 @@ const ReceiptScreen = () => {
 
   
 
-  const isPaidInFull = orderStatus === "PAID";
+  
   const formattedDate = new Date(data?.orderTime!).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -42,7 +42,7 @@ const ReceiptScreen = () => {
       ) : (
         <View style={styles.card}>
           {/* Show PAID Stamp only if paid */}
-          {isPaidInFull && <PaidStamp />}
+          {data?.isPaid && <PaidStamp />}
 
           {/* Header */}
           <ReceiptHeader
@@ -54,7 +54,7 @@ const ReceiptScreen = () => {
 
           <View style={styles.itemsWrapper}>
             {/* Show unpaid widget */}
-            {!isPaidInFull && <PaymentReceiver textToCopy={data?.paymentInstructions!} />}
+            {!data?.isPaid && <PaymentReceiver textToCopy={data?.paymentInstructions!} />}
 
             <FlatList
               data={data?.items}
