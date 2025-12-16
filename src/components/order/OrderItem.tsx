@@ -19,7 +19,7 @@ const OrderItem = ({ item }: Props) => {
 
   const onPress = () => {
     router.push({
-      pathname: item.isHost && item.status === "PENDING" ? "/(app)/(home)/PaymentTracker" : "/(app)/(home)/Receipt",
+      pathname: item.isHost && item.status === "PENDING_COLLECTION" ? "/(app)/(home)/PaymentTracker" : "/(app)/(home)/Receipt",
       params: { orderId: item.orderId, status: item.status },
     });
   };

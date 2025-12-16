@@ -2,7 +2,7 @@
 import { CartItemDto } from "./cart.type";
 
 export type OrderRole = "HOST" | "PARTICIPANT";
-export type OrderStatus = "PAID" | "UNPAID" | "COMPLETED" | "PENDING";
+export type OrderStatus = "PAID" | "UNPAID" | "COMPLETED" | "PENDING_COLLECTION";
 
 export interface OrderHistoryItem {
 	orderId: string; // uuid
@@ -29,17 +29,22 @@ export interface BillResponse {
 
 export interface TrackerParticipant {
 	userId: string; // uuid
-	name: string;
-	amountOwed: number;
+	userName: string;
+	avatarUrl: string | null;
+	total: number;
 	isPaid: boolean;
 	isHost: boolean;
 }
 
 export interface TrackerResponse {
+	hostUserId: string; // uuid
 	orderTotal: number;
 	collectedAmount: number;
 	remainingAmount: number;
+	completedAt:Date;
 	paymentInstructions?: string | null;
+	restaurantName: string;
+	restaurantLogoUrl: string | null;
 	participants: TrackerParticipant[];
 }
 

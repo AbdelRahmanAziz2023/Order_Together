@@ -4,15 +4,16 @@ import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 type PaymentProgressProps = {
   collected: number; // e.g., 680
+  remaining:number;
   total: number; // e.g., 850
 };
 
-const PaymentProgress = ({ collected=600, total=850 }: PaymentProgressProps) => {
+const PaymentProgress = ({ collected=600, total=850, remaining }: PaymentProgressProps) => {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   const progressPercent = total > 0 ? Math.min(collected / total, 1) : 0;
-  const remaining = Math.max(total - collected, 0);
+  // const remaining = Math.max(total - collected, 0);
 
   useEffect(() => {
     // Animate progress fill

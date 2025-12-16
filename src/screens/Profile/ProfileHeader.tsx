@@ -1,22 +1,23 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { Icons } from "@/src/constants/images";
-import { getUser } from "@/src/store/expo-secure-store";
-import { User } from "@/src/types/auth.type";
-import { useEffect, useState } from "react";
+import { RootState } from "@/src/store/store";
 import { Image, StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProfileHeader = () => {
-  const [user, setUser] = useState<User>({id: "", firstName: "", lastName: "", email: "", avatarUrl: "", role: []});
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
+  // ✅ Do NOT depend on redux user
+  // const { data, isLoading } = useGetProfileQuery(user?.id!);
 
-  const loadUserData = async () => {
-    const userData = await getUser();
-    setUser(userData!);
-  };
+  // ✅ Sync RTKQ → Redux
+  // useEffect(() => {
+  //   if (data) {
+  //     dispatch(setUser(data as User));
+  //   }
+  // }, [data, dispatch]);
 
   return (
     <View style={styles.profileCard}>
@@ -30,11 +31,13 @@ const ProfileHeader = () => {
           <Icons.user width={60} height={60} stroke={Colors.red} />
         )}
       </View>
+
       <CustomText
-        text={(user?.firstName + " " + user?.lastName) || "User"}
+        text={`${user?.firstName ?? ""} ${user?.lastName ?? ""}` || "User"}
         textStyle={[styles.userName]}
       />
-      <CustomText text={user?.email || "Email"} textStyle={[styles.userEmail]} />
+
+      <CustomText text={user?.email ?? "Email"} textStyle={[styles.userEmail]} />
     </View>
   );
 };

@@ -1,24 +1,30 @@
 import CustomButton from "@/src/components/common/CustomButton";
 import { Colors } from "@/src/constants/colors";
+import { Icons } from "@/src/constants/images";
 import { useLogoutMutation } from "@/src/services/api/endpoints/authEndpoints";
-import { clearAuth, getRefreshToken, getUser } from "@/src/store/expo-secure-store";
+import { clearAuth, getRefreshToken } from "@/src/store/expo-secure-store";
+import { clearUser } from "@/src/store/slices/userSlice";
+import { RootState } from "@/src/store/store";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 import MenuSection from "./MenuSection";
 import ProfileHeader from "./ProfileHeader";
 
 const ProfileScreen = () => {
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
 
   const [logout]= useLogoutMutation();
 
   const handleLogout = async () => {
     try {
-      const userId= await getUser().then((user) => user?.id);
       const refreshToken= await getRefreshToken();
-      await logout({ userId: userId??'', token: refreshToken??'' }).unwrap();
+      await logout({ userId: user?.id??'', token: refreshToken??'' }).unwrap();
       await clearAuth();
+      dispatch(clearUser());
       router.replace("/(auth)/Login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -43,7 +49,8 @@ const ProfileScreen = () => {
           <CustomButton
             title="Logout"
             onPress={handleLogout}
-            btnStyle={{ backgroundColor: Colors.red }}
+            Icon={Icons.logout}
+            btnStyle={{ backgroundColor: Colors.red ,marginTop:20 }}
           />
         </View>
       </ScrollView>

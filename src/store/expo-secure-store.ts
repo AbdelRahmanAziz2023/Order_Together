@@ -1,9 +1,7 @@
 // src/store/expo-secure-store.ts
 import * as SecureStore from "expo-secure-store";
-import { User } from "../types/auth.type";
 
 const TOKEN_KEY = "auth_token";
-const USER_KEY = "user_data";
 const REFRESH_TOKEN_KEY = "refresh_token";
 
 export const saveToken = async (token: string): Promise<void> => {
@@ -60,40 +58,11 @@ export const removeRefreshToken = async (): Promise<void> => {
   }
 };
 
-export const saveUser = async (user: User): Promise<void> => {
-  try {
-    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(user));
-  } catch (error) {
-    console.error("Error saving user:", error);
-    throw error;
-  }
-};
-
-export const getUser = async (): Promise<User | null> => {
-  try {
-    const userData = await SecureStore.getItemAsync(USER_KEY);
-    return userData ? JSON.parse(userData) : null;
-  } catch (error) {
-    console.error("Error getting user:", error);
-    return null;
-  }
-};
-
-export const removeUser = async (): Promise<void> => {
-  try {
-    await SecureStore.deleteItemAsync(USER_KEY);
-  } catch (error) {
-    console.error("Error removing user:", error);
-    throw error;
-  }
-};
-
 export const clearAuth = async (): Promise<void> => {
   try {
     await Promise.all([
       SecureStore.deleteItemAsync(TOKEN_KEY),
       SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
-      SecureStore.deleteItemAsync(USER_KEY),
     ]);
   } catch (error) {
     console.error("Error clearing auth data:", error);

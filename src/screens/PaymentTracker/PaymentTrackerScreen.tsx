@@ -11,17 +11,25 @@ import PaymentProgress from "./PaymentProgress";
 import PaymentReceiver from "./PaymentReceiver";
 import PaymentTrackerHeader from "./PaymentTrackerHeader";
 
-type Props = {};
 
-const PaymentTrackerScreen = ({}: Props) => {
-  const [collectedAmount, setCollectedAmount] = useState<number>(0);
+
+const PaymentTrackerScreen = () => {
   const calculateCollected = (amount: number): void => {
     setCollectedAmount((prev) => prev + amount);
   };
 
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
 
-  const { isLoading, isError } = useGetTrackerQuery(orderId);
+  const {data ,isLoading, isError } = useGetTrackerQuery(orderId);
+  const [collectedAmount, setCollectedAmount] = useState<number>(data?.collectedAmount!);
+
+const formmatedDate = new Date(data?.completedAt!).toLocaleDateString("en-GB", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
   return (
     <ScrollView
@@ -30,7 +38,7 @@ const PaymentTrackerScreen = ({}: Props) => {
     >
       {isLoading ? (
         <PaymentTrackerSkeleton />
-      ) : !isError ? (
+      ) : isError ? (
         <CustomError
           title="Error"
           message="Failed to load payment tracker. Please try again."
@@ -39,19 +47,19 @@ const PaymentTrackerScreen = ({}: Props) => {
         <>
           <View style={styles.dataSection}>
             <PaymentTrackerHeader
-              restaurantName={"Buffalo Burger"}
-              orderDate={"Nov 21, 2025 • Total Bill:"}
-              orderTotal={850}
+              restaurantName={data?.restaurantName!}
+              orderDate={formmatedDate}
+              orderTotal={data?.orderTotal!}
             />
 
             {/* Payment Receiver */}
-            <PaymentReceiver />
+            <PaymentReceiver textToCopy={data?.paymentInstructions!} />
 
             {/* Payment Progress */}
-            <PaymentProgress collected={collectedAmount} total={850} />
+            <PaymentProgress remaining={data?.remainingAmount!} collected={collectedAmount} total={data?.orderTotal!} />
           </View>
-          <ParticipantsHeader count={5} />
-          <PaymentList calculateTotal={calculateCollected} />
+          <ParticipantsHeader count={data?.participants!.length!} />
+          <PaymentList participants={data?.participants} calculateTotal={calculateCollected} />
         </>
       )}
     </ScrollView>

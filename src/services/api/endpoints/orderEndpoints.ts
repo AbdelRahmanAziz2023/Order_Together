@@ -1,4 +1,4 @@
-import { BillResponse, OrderHistoryItem } from "@/src/types/order.type";
+import { BillResponse, OrderHistoryItem, TrackerResponse } from "@/src/types/order.type";
 import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
@@ -12,14 +12,14 @@ const OrderEndpoints = baseApi.injectEndpoints({
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
-        url: `/orders/${orderId}`,
+        url: `/orders/${orderId}/bill`,
         method: "GET",
       }),
       // providesTags:(result,error,arg)=>[
       //     {type:"Bill",id:arg},
       // ],
     }),
-    getTracker: builder.query({
+    getTracker: builder.query<TrackerResponse,string>({
       query: (orderId) => ({
         url: `/orders/${orderId}/tracker`,
         method: "GET",

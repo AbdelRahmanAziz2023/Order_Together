@@ -1,4 +1,3 @@
-import { CartBanner } from "@/src/components/common/CartBanner";
 import { TabBarIcon } from "@/src/components/common/TabBarIcon";
 import { Colors } from "@/src/constants/colors";
 import { Icons } from "@/src/constants/images";
@@ -60,7 +59,6 @@ export default function AppLayout() {
           }}
         />
       </Tabs>
-      <CartBanner />
     </View>
   );
 }

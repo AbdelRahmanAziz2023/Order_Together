@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
-import { store } from "../store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "../store/store";
 
 if (__DEV__) {
   require("../../ReactotronConfig");
@@ -29,11 +30,13 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
+    <PersistGate loading={null} persistor={persistor}>
     <Provider store={store}>
       <KeyboardProvider>
         <Stack screenOptions={{ headerShown: false }} />
         <Toast />
       </KeyboardProvider>
     </Provider>
+    </PersistGate>
   );
 }

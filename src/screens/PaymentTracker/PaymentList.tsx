@@ -1,4 +1,5 @@
 import { useTogglePaidStatusMutation } from "@/src/services/api/endpoints/orderEndpoints";
+import { TrackerParticipant } from "@/src/types/order.type";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
@@ -9,53 +10,22 @@ import {
   View,
 } from "react-native";
 
-type Participant = {
-  id: string;
-  name: string;
-  initials: string;
-  amount: number;
-  status: "host" | "paid" | "unpaid";
-  autoPaid?: boolean;
-};
 
-const participantsData: Participant[] = [
-  {
-    id: "1",
-    name: "You (Host)",
-    initials: "YO",
-    amount: 260,
-    status: "host",
-    autoPaid: true,
-  },
-  {
-    id: "2",
-    name: "Sarah Ahmed",
-    initials: "SA",
-    amount: 150,
-    status: "unpaid",
-  },
-  {
-    id: "3",
-    name: "Mohamed Khaled",
-    initials: "MK",
-    amount: 170,
-    status: "unpaid",
-  },
-  { id: "4", name: "Omar", initials: "OM", amount: 270, status: "unpaid" },
-];
+
+
 
 type Props = {
   calculateTotal: (amount: number) => void;
-  participants?: Participant[];
+  participants?: TrackerParticipant[];
   skipInitialHostAutoPaid?: boolean;
 };
 
 const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: Props) => {
-  const list = participants && participants.length ? participants : participantsData;
+  const list = participants!;
 
   const [toggles, setToggles] = useState<{ [key: string]: boolean }>(() =>
     list.reduce((acc, p) => {
-      if (p.status !== "host") acc[p.id] = p.status === "paid";
+      if (p.isHost) acc[p.userId] = p.isPaid;
       return acc;
     }, {} as { [key: string]: boolean })
   );
@@ -65,17 +35,15 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
   // Host auto-paid amount (run once)
   useEffect(() => {
     if (skipInitialHostAutoPaid) return;
-    const host = list.find((p) => p.autoPaid || p.status === "host");
-    if (host && host.autoPaid) {
-      calculateTotal(host.amount);
+    const host = list.find((p) => p.isHost);
+    if (host) {
+      calculateTotal(host.total);
     }
-    // we only want to run this on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleSwitch = useCallback(
     async (id: string) => {
-      const participant = list.find((p) => p.id === id);
+      const participant = list.find((p) => p.userId === id);
       if (!participant) return;
 
       const isCurrentlyPaid = !!toggles[id];
@@ -84,7 +52,7 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
        // await togglePaid({ userId: id, isPaid: !isCurrentlyPaid }).unwrap();
 
         // Update total
-        calculateTotal(isCurrentlyPaid ? -participant.amount : participant.amount);
+        calculateTotal(isCurrentlyPaid ? -participant.total : participant.total);
 
         // Toggle state
         setToggles((prev) => ({ ...prev, [id]: !isCurrentlyPaid }));
@@ -96,9 +64,9 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
     [toggles, list, togglePaid, calculateTotal]
   );
 
-  const renderItem = ({ item }: { item: Participant }) => {
-    const isHost = item.status === "host";
-    const isPaid = toggles[item.id];
+  const renderItem = ({ item }: { item: TrackerParticipant }) => {
+    const isHost = item.isHost;
+    const isPaid = toggles[item.userId];
     const currentStatus = isHost ? "host" : isPaid ? "paid" : "unpaid";
 
     const containerStyle = [
@@ -119,24 +87,24 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
               currentStatus === "unpaid" && styles.unpaidAvatar,
             ]}
           >
-            <Text style={styles.avatarText}>{item.initials}</Text>
+            <Text style={styles.avatarText}>{item.avatarUrl}</Text>
           </View>
 
           <View>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{item.userName}</Text>
             <Text
               style={[
                 styles.amount,
                 currentStatus === "unpaid" && styles.unpaidAmount,
               ]}
             >
-              {item.amount.toFixed(2)} EGP
+              {item.total} EGP
             </Text>
           </View>
         </View>
 
         <View style={styles.actions}>
-          {item.autoPaid && (
+          {item.isHost && (
             <View style={styles.autoPaid}>
               <Text style={styles.autoPaidText}>Auto-Paid</Text>
             </View>
@@ -148,7 +116,7 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
                 styles.toggle,
                 isPaid ? styles.toggleOn : styles.toggleOff,
               ]}
-              onPress={() => toggleSwitch(item.id)}
+              onPress={() => toggleSwitch(item.userId)}
             >
               <View
                 style={[
@@ -166,10 +134,11 @@ const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: 
   return (
     <FlatList
       data={list}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.userId}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+      scrollEnabled={false}
     />
   );
 };

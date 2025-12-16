@@ -1,28 +1,29 @@
 import { isTokenExpired } from "@/src/helper/isTokenExpired";
 import {
-    getRefreshToken,
-    getToken,
-    getUser,
-    saveRefreshToken,
-    saveToken,
+  getRefreshToken,
+  getToken,
+  saveRefreshToken,
+  saveToken,
 } from "@/src/store/expo-secure-store";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useRefreshTokenMutation } from "../services/api/endpoints/authEndpoints";
+import { RootState } from "../store/store";
 
 const useAuthStatus = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [refreshToken] = useRefreshTokenMutation();
-
+  const user = useSelector((state: RootState) => state.user.user);
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         const token = await getToken();
         const refreshTokenStr = await getRefreshToken();
-        const user = await getUser();
         const userId = user?.id;
+        console.log("Checking auth status:", { token, refreshTokenStr, userId });
 
         // No tokens → logged out
-        if (!token || !refreshTokenStr || !userId) {
+        if (!token || !refreshTokenStr) {
           return setIsAuthenticated(false);
         }
 
@@ -36,7 +37,7 @@ const useAuthStatus = () => {
         if (refreshTokenStr) {
           try {
             const res = await refreshToken({
-              userId,
+              userId: userId ?? "",
               token: refreshTokenStr,
             }).unwrap();
 
