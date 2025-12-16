@@ -6,7 +6,7 @@ import { StyleSheet, View } from "react-native";
 interface Props {
   restaurantName: string;
   orderDate: string;
-  orderTotal: number | string;
+  orderTotal: number;
   imageEmoji?: string;
 }
 
@@ -19,14 +19,14 @@ const PaymentTrackerHeader = ({
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <CustomText text={imageEmoji} textStyle={styles.image} />
+        <CustomText text={imageEmoji} textStyle={[styles.image]} />
       </View>
 
-      <CustomText text={restaurantName} textStyle={styles.title} />
+      <CustomText text={restaurantName} textStyle={[styles.title]} />
 
       <View style={styles.infoContainer}>
-        <CustomText text={orderDate} textStyle={styles.date} />
-        <CustomText text={`${Number(orderTotal).toFixed(2)} EGP`} textStyle={styles.price} />
+        <CustomText text={orderDate} textStyle={[styles.date]} />
+        <CustomText text={`${orderTotal} EGP`} textStyle={[styles.price]} />
       </View>
     </View>
   );

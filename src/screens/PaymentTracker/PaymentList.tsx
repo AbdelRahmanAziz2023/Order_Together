@@ -1,68 +1,25 @@
-import { useTogglePaidStatusMutation } from "@/src/services/api/endpoints/orderEndpoints";
+import usePaymentList from "@/src/hooks/usePaymentList";
 import { TrackerParticipant } from "@/src/types/order.type";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import {
-  Alert,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
-
-
-
 
 
 type Props = {
   calculateTotal: (amount: number) => void;
   participants?: TrackerParticipant[];
-  skipInitialHostAutoPaid?: boolean;
+  orderId: string;
 };
 
-const PaymentList = ({ calculateTotal, participants, skipInitialHostAutoPaid }: Props) => {
-  const list = participants!;
+const PaymentList = ({ calculateTotal, participants, orderId }: Props) => {
+  const list = participants ?? [];
 
-  const [toggles, setToggles] = useState<{ [key: string]: boolean }>(() =>
-    list.reduce((acc, p) => {
-      if (p.isHost) acc[p.userId] = p.isPaid;
-      return acc;
-    }, {} as { [key: string]: boolean })
-  );
-
-  const [togglePaid, { isLoading }] = useTogglePaidStatusMutation();
-
-  // Host auto-paid amount (run once)
-  useEffect(() => {
-    if (skipInitialHostAutoPaid) return;
-    const host = list.find((p) => p.isHost);
-    if (host) {
-      calculateTotal(host.total);
-    }
-  }, []);
-
-  const toggleSwitch = useCallback(
-    async (id: string) => {
-      const participant = list.find((p) => p.userId === id);
-      if (!participant) return;
-
-      const isCurrentlyPaid = !!toggles[id];
-
-      try {
-       // await togglePaid({ userId: id, isPaid: !isCurrentlyPaid }).unwrap();
-
-        // Update total
-        calculateTotal(isCurrentlyPaid ? -participant.total : participant.total);
-
-        // Toggle state
-        setToggles((prev) => ({ ...prev, [id]: !isCurrentlyPaid }));
-      } catch (error) {
-        console.log("Error toggling paid status:", error);
-        Alert.alert("Error", "Failed to update payment status. Please try again.");
-      }
-    },
-    [toggles, list, togglePaid, calculateTotal]
-  );
+  const { toggles, toggleSwitch } = usePaymentList({ participants: list, orderId, calculateTotal });
 
   const renderItem = ({ item }: { item: TrackerParticipant }) => {
     const isHost = item.isHost;

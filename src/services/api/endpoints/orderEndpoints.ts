@@ -7,8 +7,11 @@ const OrderEndpoints = baseApi.injectEndpoints({
       query: (limit = 5) => ({
         url: "/orders/history?limit=" + limit,
         method: "GET",
+        refetchOnMountOrArgChange:true,
+        refetchOnReconnect:true,
       }),
-      // providesTags:["OrderHistory"],
+      providesTags:["Tracker"],
+      
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
@@ -24,25 +27,22 @@ const OrderEndpoints = baseApi.injectEndpoints({
         url: `/orders/${orderId}/tracker`,
         method: "GET",
       }),
-      // providesTags:(result,error,arg)=>[
-      //     {type:"Tracker",id:arg},
-      // ],
+      providesTags:['Tracker'],
     }),
     placeOrder: builder.mutation({
       query: () => ({
         url: `/orders/place`,
         method: "POST",
       }),
-      //   invalidatesTags: ["ActiveCart"],
+      invalidatesTags: ["ActiveCart"],
     }),
-    togglePaidStatus: builder.mutation({
-      query: ({ orderId, userId }) => ({
+    togglePaidStatus: builder.mutation<{message: string}, { orderId: string; userId: string, body: any }>({
+      query: ({ orderId, userId,body }) => ({
         url: `/orders/${orderId}/participants/${userId}/payment`,
         method: "PATCH",
+        body,
       }),
-      //   invalidatesTags:(result,error,arg)=>[
-      //       {type:"Tracker",id:arg},
-      //   ],
+     invalidatesTags:['Tracker']
     }),
   }),
 });

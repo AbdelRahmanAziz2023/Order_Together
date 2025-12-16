@@ -1,19 +1,22 @@
+import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 
 type PaymentProgressProps = {
-  collected: number; // e.g., 680
+  collected: number;
   remaining:number;
-  total: number; // e.g., 850
+  total: number; 
 };
 
-const PaymentProgress = ({ collected=600, total=850, remaining }: PaymentProgressProps) => {
+const PaymentProgress = ({ collected, total,  }: PaymentProgressProps) => {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   const progressPercent = total > 0 ? Math.min(collected / total, 1) : 0;
-  // const remaining = Math.max(total - collected, 0);
+  const remaining = Math.max(total - collected, 0);
+
+
 
   useEffect(() => {
     // Animate progress fill
@@ -44,10 +47,8 @@ const PaymentProgress = ({ collected=600, total=850, remaining }: PaymentProgres
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.rowBetween}>
-        <Text style={styles.badge}>Collected</Text>
-        <Text style={styles.amount}>
-          {collected} / {total}
-        </Text>
+       <CustomText text="Collected" textStyle={[styles.badge]} />
+       <CustomText text={`${collected.toFixed(2)} / ${total.toFixed(2)} EGP`} textStyle={[styles.amount]} />
       </View>
 
       {/* Progress Bar */}
@@ -71,9 +72,7 @@ const PaymentProgress = ({ collected=600, total=850, remaining }: PaymentProgres
       </View>
 
       {/* Remaining Amount */}
-      <Text style={styles.remaining}>
-        Remaining: {remaining} EGP
-      </Text>
+      <CustomText text={`Remaining: ${remaining.toFixed(2)} EGP`} textStyle={[styles.remaining]} />
     </View>
   );
 };
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     fontSize: 10,
-    fontWeight: "700",
+    fontFamily: "SenBold",
     textTransform: "uppercase",
     paddingVertical: 2,
     paddingHorizontal: 8,
@@ -123,6 +122,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "40%",
     height: "100%",
+    borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.3)",
   },
   remaining: {

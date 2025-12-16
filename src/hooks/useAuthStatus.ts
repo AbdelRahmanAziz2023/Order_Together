@@ -20,7 +20,6 @@ const useAuthStatus = () => {
         const token = await getToken();
         const refreshTokenStr = await getRefreshToken();
         const userId = user?.id;
-        console.log("Checking auth status:", { token, refreshTokenStr, userId });
 
         // No tokens → logged out
         if (!token || !refreshTokenStr) {

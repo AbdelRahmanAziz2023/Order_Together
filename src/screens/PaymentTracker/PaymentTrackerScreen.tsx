@@ -3,7 +3,7 @@ import PaymentTrackerSkeleton from "@/src/components/skeleton/PaymentTrackerSkel
 import { Colors } from "@/src/constants/colors";
 import { useGetTrackerQuery } from "@/src/services/api/endpoints/orderEndpoints";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import ParticipantsHeader from "./ParticipantsHeader";
 import PaymentList from "./PaymentList";
@@ -21,7 +21,13 @@ const PaymentTrackerScreen = () => {
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
 
   const {data ,isLoading, isError } = useGetTrackerQuery(orderId);
-  const [collectedAmount, setCollectedAmount] = useState<number>(data?.collectedAmount!);
+ const [collectedAmount, setCollectedAmount] = useState<number>(0);
+
+useEffect(() => {
+  if (data?.collectedAmount !== undefined) {
+    setCollectedAmount(data.collectedAmount);
+  }
+}, [data?.collectedAmount]);
 
 const formmatedDate = new Date(data?.completedAt!).toLocaleDateString("en-GB", {
   month: "short",
@@ -59,7 +65,7 @@ const formmatedDate = new Date(data?.completedAt!).toLocaleDateString("en-GB", {
             <PaymentProgress remaining={data?.remainingAmount!} collected={collectedAmount} total={data?.orderTotal!} />
           </View>
           <ParticipantsHeader count={data?.participants!.length!} />
-          <PaymentList participants={data?.participants} calculateTotal={calculateCollected} />
+          <PaymentList orderId={orderId} participants={data?.participants} calculateTotal={calculateCollected} />
         </>
       )}
     </ScrollView>

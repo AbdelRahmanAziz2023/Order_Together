@@ -1,13 +1,13 @@
 import {
-    clearAuth,
-    getRefreshToken,
-    saveRefreshToken,
-    saveToken,
+  clearAuth,
+  getRefreshToken,
+  saveRefreshToken,
+  saveToken,
 } from "@/src/store/expo-secure-store";
 import {
-    BaseQueryFn,
-    FetchArgs,
-    FetchBaseQueryError,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { rawBaseQuery } from "./rawBaseQuery";
 
@@ -38,7 +38,7 @@ export const baseQueryWithReauth: BaseQuery = async (
       refreshPromise = (async () => {
         try {
           const res = await fetch(
-            "https://api.mahmoud-osama.com/api/auth/refresh",
+            "https://api.mahmoud-osama.com/api/auth/refreshToken",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -47,6 +47,7 @@ export const baseQueryWithReauth: BaseQuery = async (
           );
 
           if (!res.ok) {
+            
             return null;
           }
 
