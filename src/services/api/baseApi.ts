@@ -5,8 +5,11 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   tagTypes: ["Profile","Tracker","ActiveCart","OrderHistory","Bill"],
   baseQuery: baseQueryWithReauth,
+  keepUnusedDataFor: 30,
+  refetchOnReconnect: true,
+  refetchOnMountOrArgChange: true,
+  refetchOnFocus: true,
   endpoints: (builder) => ({}),
 });
 
-// export hooks from other endpoints (authApi will inject endpoints)
 export default baseApi;

@@ -1,4 +1,4 @@
-import { BillResponse, OrderHistoryItem, TrackerResponse } from "@/src/types/order.type";
+import { BillResponse, OrderHistoryItem, PlaceOrderRequest, TrackerResponse } from "@/src/types/order.type";
 import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
@@ -7,11 +7,7 @@ const OrderEndpoints = baseApi.injectEndpoints({
       query: (limit = 5) => ({
         url: "/orders/history?limit=" + limit,
         method: "GET",
-        refetchOnMountOrArgChange:true,
-        refetchOnReconnect:true,
       }),
-      providesTags:["Tracker"],
-      
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
@@ -29,10 +25,11 @@ const OrderEndpoints = baseApi.injectEndpoints({
       }),
       providesTags:['Tracker'],
     }),
-    placeOrder: builder.mutation({
-      query: () => ({
+    placeOrder: builder.mutation<any,PlaceOrderRequest>({
+      query: (body) => ({
         url: `/orders/place`,
         method: "POST",
+        body,
       }),
       invalidatesTags: ["ActiveCart"],
     }),
