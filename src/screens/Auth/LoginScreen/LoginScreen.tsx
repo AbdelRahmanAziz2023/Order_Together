@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import {
   KeyboardAwareScrollView,
@@ -5,49 +6,65 @@ import {
 } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Icons } from "@/src/constants/images";
+import AuthHead from "../AuthHead";
+import BackgroundIcon from "../BackgroundIcon";
 import LoginForm from "./LoginForm";
-import LoginHeader from "./LoginHeader";
 
-const LoginScreen = () => {
+const LoginScreen: React.FC = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView
-        bottomOffset={0}
-        keyboardDismissMode="interactive"
-        style={styles.container}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <View style={styles.iconWrapper}>
-          <Icons.authBack width="100%" height={350} />
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Scrollable content */}
+        <KeyboardAwareScrollView
+          keyboardDismissMode="interactive"
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <BackgroundIcon />
 
-        <View style={styles.content}>
-          <LoginHeader />
+          <AuthHead
+            title="Login"
+            description="Please log in to your existing account"
+            style={styles.header}
+          />
+        </KeyboardAwareScrollView>
 
-          <KeyboardStickyView
-            offset={{ closed: 0, opened: 500 }}
-            style={{ width: "100%" }}
-          >
-            <LoginForm />
-          </KeyboardStickyView>
-        </View>
-      </KeyboardAwareScrollView>
+        {/* Sticky bottom (NOT inside scroll) */}
+        <KeyboardStickyView>
+          <LoginForm />
+        </KeyboardStickyView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#4A0000" },
-  iconWrapper: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: -1,
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#4A0000",
   },
-  content: { flex: 1, justifyContent: "space-between" },
+  container: {
+    flex: 1,
+  },
+
+  scrollContent: {
+    flexGrow: 1,
+  },
+
+ 
+  header: {
+    flex: 0.6,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingHorizontal: 20,
+   
+  },
+
+ 
+
+  sticky: {
+    width: "100%",
+  },
 });
 
 export default LoginScreen;

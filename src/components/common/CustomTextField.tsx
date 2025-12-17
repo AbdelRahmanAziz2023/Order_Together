@@ -43,7 +43,7 @@ const CustomTextField = ({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <CustomText text={name} />
       <View style={styles.textFieldContainer}>
         <TextInput

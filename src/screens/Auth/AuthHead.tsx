@@ -1,14 +1,15 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import CustomText from "../../components/common/CustomText";
 
 type Props = {
   title: string;
   description: string;
+  style?: ViewStyle;
 };
 
-const AuthHead = ({ title, description }: Props) => {
+const AuthHead = ({ title, description, style }: Props) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <CustomText text={title} textStyle={[styles.title]} />
       <CustomText text={description} textStyle={[styles.description]} />
     </View>
