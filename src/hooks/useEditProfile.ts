@@ -27,7 +27,6 @@ const useEditProfile = (): UseEditProfileReturn => {
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [formDataFile, setFormDataFile] = useState<FormData | null>(null);
-  const [id, setId] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const [uploadImage] = useUploadImageMutation();
@@ -37,22 +36,24 @@ const useEditProfile = (): UseEditProfileReturn => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
-      setFirstName(user?.firstName || "");
-      setLastName(user?.lastName || "");
-      setImage(user?.avatarUrl || null);
-      setId(user?.id || "");
+    setFirstName(user?.firstName || "");
+    setLastName(user?.lastName || "");
+    setImage(user?.avatarUrl || null);
   }, []);
 
   const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert("Permission Denied", "Permission to access camera roll is required!");
+      Alert.alert(
+        "Permission Denied",
+        "Permission to access camera roll is required!"
+      );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
@@ -69,9 +70,12 @@ const useEditProfile = (): UseEditProfileReturn => {
     setFormDataFile(null);
   };
 
-  const openCamera = async ()=>{
-    Alert.alert("Not implemented", "Camera functionality is not implemented yet.");
-  }
+  const openCamera = async () => {
+    Alert.alert(
+      "Not implemented",
+      "Camera functionality is not implemented yet."
+    );
+  };
 
   const onSave = async () => {
     setIsSaving(true);
@@ -83,8 +87,14 @@ const useEditProfile = (): UseEditProfileReturn => {
         avatarUrl = res.uri;
       }
 
-      await updateProfile({ id, body: { firstName, lastName, avatarUrl } }).unwrap();
-      dispatch(updateUser({firstName: firstName,lastName: lastName,avatarUrl: avatarUrl }));
+      await updateProfile({ firstName, lastName, avatarUrl }).unwrap();
+      dispatch(
+        updateUser({
+          firstName: firstName,
+          lastName: lastName,
+          avatarUrl: avatarUrl,
+        })
+      );
       Toast.show({
         type: "success",
         text1: "Profile updated",
@@ -96,7 +106,11 @@ const useEditProfile = (): UseEditProfileReturn => {
       return true;
     } catch (error) {
       setIsSaving(false);
-      Toast.show({ type: "error", text1: "Error", text2: "Failed to update profile. Please try again." });
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to update profile. Please try again.",
+      });
       console.error("Failed to update profile:", error);
       return false;
     }

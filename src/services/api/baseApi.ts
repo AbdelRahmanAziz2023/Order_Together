@@ -6,9 +6,9 @@ export const baseApi = createApi({
   tagTypes: ["Profile","Tracker","ActiveCart","OrderHistory","Bill"],
   baseQuery: baseQueryWithReauth,
   keepUnusedDataFor: 30,
-  refetchOnReconnect: true,
-  refetchOnMountOrArgChange: true,
-  refetchOnFocus: true,
+  // refetchOnReconnect: true,
+  // refetchOnMountOrArgChange: true,
+  // refetchOnFocus: true,
   endpoints: (builder) => ({}),
 });
 

@@ -43,6 +43,5 @@ export interface ChangePasswordRequest {
 
 
 export interface LogoutRequest {
-  userId: string;
   token: string;
 }

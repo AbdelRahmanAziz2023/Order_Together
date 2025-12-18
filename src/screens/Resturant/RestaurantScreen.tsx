@@ -25,21 +25,20 @@ const RestaurantScreen: React.FC = () => {
     });
   };
 
+  if (isLoading) return <RestaurantCardSkeletonList />;
+
+  if (isError) return <CustomError
+        title="Error"
+        message="Failed to load restaurants. Please try again."
+      />
+    
+
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <RestaurantCardSkeletonList />
-      ) : isError ? (
-        <CustomError
-          title="Error"
-          message="Failed to load restaurants. Please try again."
-        />
-      ) : (
         <RestaurantList
           restaurants={restaurants}
           onRestaurantPress={handleRestaurantPress}
         />
-      )}
     </View>
   );
 };

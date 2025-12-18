@@ -4,17 +4,15 @@ import { Icons } from "@/src/constants/images";
 import { useLogoutMutation } from "@/src/services/api/endpoints/authEndpoints";
 import { clearAuth, getRefreshToken } from "@/src/store/expo-secure-store";
 import { clearUser } from "@/src/store/slices/userSlice";
-import { RootState } from "@/src/store/store";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import MenuSection from "./MenuSection";
 import ProfileHeader from "./ProfileHeader";
 
 const ProfileScreen = () => {
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch();
 
   const [logout]= useLogoutMutation();
@@ -22,7 +20,7 @@ const ProfileScreen = () => {
   const handleLogout = async () => {
     try {
       const refreshToken= await getRefreshToken();
-      await logout({ userId: user?.id??'', token: refreshToken??'' }).unwrap();
+      await logout({ token: refreshToken??'' }).unwrap();
       await clearAuth();
       dispatch(clearUser());
       router.replace("/(auth)/Login");

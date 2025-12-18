@@ -38,7 +38,7 @@ export const baseQueryWithReauth: BaseQuery = async (
       refreshPromise = (async () => {
         try {
           const res = await fetch(
-            "https://api.mahmoud-osama.com/api/auth/refreshToken",
+            "https://api.mahmoud-osama.com/api/auth/refresh",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },

@@ -3,9 +3,9 @@ import { baseApi } from "../baseApi";
 
 const ProfileEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query<User, string>({
-      query: (id) => ({
-        url: `users/${id}`,
+    getProfile: builder.query<User, void>({
+      query: () => ({
+        url: `users/me`,
         method: "GET",
         refetchOnMountOrArgChange: false,
         refetchOnFocus: false,
@@ -15,9 +15,9 @@ const ProfileEndpoints = baseApi.injectEndpoints({
       }),
       providesTags: ["Profile"],
     }),
-    updateProfile: builder.mutation<User, { id: string; body: any }>({
-      query: ({ id, body }) => ({
-        url: `users/${id}`,
+    updateProfile: builder.mutation<User, any>({
+      query: (body) => ({
+        url: `users/me`,
         method: "PUT",
         body,
       }),
