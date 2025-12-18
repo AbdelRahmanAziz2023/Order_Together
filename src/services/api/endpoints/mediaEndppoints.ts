@@ -4,7 +4,7 @@ import { baseApi } from "../baseApi";
 
 const MediaEndpoints = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        uploadImage: builder.mutation<{uri: string},FormData>({
+        uploadImage: builder.mutation<{url: string},FormData>({
             query: (body) => ({
                 url: `media/upload`,
                 method: "POST",

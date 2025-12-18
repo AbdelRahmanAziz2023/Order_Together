@@ -42,12 +42,11 @@ export const baseQueryWithReauth: BaseQuery = async (
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refreshToken }),
+              body: JSON.stringify({ token: refreshToken }),
             }
           );
 
           if (!res.ok) {
-            
             return null;
           }
 

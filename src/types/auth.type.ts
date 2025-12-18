@@ -29,7 +29,7 @@ export interface User {
 export interface UpdateProfileRequest {
   firstName: string;
   lastName: string;
-  avatarUrl: string;
+  avatarUrl: string | null;
 }
 
 export interface ChangePasswordResponse {

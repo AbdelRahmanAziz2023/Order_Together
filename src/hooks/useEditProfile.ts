@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../store/slices/userSlice";
+import { setUser } from "../store/slices/userSlice";
 import { RootState } from "../store/store";
 
 type UseEditProfileReturn = {
@@ -84,17 +84,18 @@ const useEditProfile = (): UseEditProfileReturn => {
 
       if (formDataFile) {
         const res = await uploadImage(formDataFile).unwrap();
-        avatarUrl = res.uri;
+        avatarUrl = res.url;
       }
+      await updateProfile({
+        firstName,
+        lastName,
+        avatarUrl,
+      })
+        .unwrap()
+        .then((res) => {
+          dispatch(setUser(res.user));
+        });
 
-      await updateProfile({ firstName, lastName, avatarUrl }).unwrap();
-      dispatch(
-        updateUser({
-          firstName: firstName,
-          lastName: lastName,
-          avatarUrl: avatarUrl,
-        })
-      );
       Toast.show({
         type: "success",
         text1: "Profile updated",

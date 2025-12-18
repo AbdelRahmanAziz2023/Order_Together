@@ -3,7 +3,7 @@ import {
   getRefreshToken,
   getToken,
   saveRefreshToken,
-  saveToken,
+  saveToken
 } from "@/src/store/expo-secure-store";
 import { useEffect, useState } from "react";
 import { useRefreshTokenMutation } from "../services/api/endpoints/authEndpoints";
@@ -11,6 +11,7 @@ import { useRefreshTokenMutation } from "../services/api/endpoints/authEndpoints
 const useAuthStatus = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [refreshToken] = useRefreshTokenMutation();
+  
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {

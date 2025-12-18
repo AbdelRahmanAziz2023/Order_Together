@@ -89,7 +89,7 @@ const EditProfileScreen = () => {
 
             <View style={styles.saveButton}>
               <CustomButton
-                title="Save"
+                title={isSaving? "Saving..." : "Save"}
                 onPress={handleSave}
                 isDisabled={firstName.trim() === "" || lastName.trim() === "" || isSaving}
               />

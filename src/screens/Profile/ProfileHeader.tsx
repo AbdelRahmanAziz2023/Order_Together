@@ -6,18 +6,22 @@ import { Image, StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 const ProfileHeader = () => {
-  const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch();
 
-  // ✅ Do NOT depend on redux user
-  // const { data, isLoading } = useGetProfileQuery(user?.id!);
+  // const { data, isLoading, isSuccess } = useGetProfileQuery();
 
-  // ✅ Sync RTKQ → Redux
   // useEffect(() => {
-  //   if (data) {
-  //     dispatch(setUser(data as User));
+  //   if (isSuccess && data) {
+  //     dispatch(setUser(data));
   //   }
-  // }, [data, dispatch]);
+  // }, [isSuccess, data, dispatch]);
+
+  const user = useSelector((state: RootState) => state.user.user);
+
+  const fullName =
+    user?.firstName || user?.lastName
+      ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+      : "User";
 
   return (
     <View style={styles.profileCard}>
@@ -25,7 +29,7 @@ const ProfileHeader = () => {
         {user?.avatarUrl ? (
           <Image
             source={{ uri: user.avatarUrl }}
-            style={{ width: 60, height: 60, borderRadius: 150 }}
+            style={styles.avatarImage}
           />
         ) : (
           <Icons.user width={60} height={60} stroke={Colors.red} />
@@ -33,14 +37,18 @@ const ProfileHeader = () => {
       </View>
 
       <CustomText
-        text={`${user?.firstName ?? ""} ${user?.lastName ?? ""}` || "User"}
+        text={fullName}
         textStyle={[styles.userName]}
       />
 
-      <CustomText text={user?.email ?? "Email"} textStyle={[styles.userEmail]} />
+      <CustomText
+        text={user?.email ?? "Email"}
+        textStyle={[styles.userEmail]}
+      />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   profileCard: {
@@ -61,10 +69,15 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 150,
     borderWidth: 2,
-    borderColor: Colors.black,
+    borderColor: Colors.red,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 100,
   },
   userName: {
     fontSize: 22,

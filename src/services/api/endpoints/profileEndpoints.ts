@@ -1,4 +1,4 @@
-import { User } from "@/src/types/auth.type";
+import { UpdateProfileRequest, User } from "@/src/types/auth.type";
 import { baseApi } from "../baseApi";
 
 const ProfileEndpoints = baseApi.injectEndpoints({
@@ -7,15 +7,10 @@ const ProfileEndpoints = baseApi.injectEndpoints({
       query: () => ({
         url: `users/me`,
         method: "GET",
-        refetchOnMountOrArgChange: false,
-        refetchOnFocus: false,
-        refetchOnReconnect: false,
-        refetchOnMount: false,
-        keepUnusedDataFor: 0,
       }),
       providesTags: ["Profile"],
     }),
-    updateProfile: builder.mutation<User, any>({
+    updateProfile: builder.mutation<{user:User}, UpdateProfileRequest>({
       query: (body) => ({
         url: `users/me`,
         method: "PUT",

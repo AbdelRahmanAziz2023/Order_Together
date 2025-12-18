@@ -3,9 +3,8 @@ import ActiveCartSkeleton from "@/src/components/skeleton/ActiveCartSkeleton";
 import { Colors } from "@/src/constants/colors";
 
 import { useGetActiveCartQuery } from "@/src/services/api/endpoints/cartEndpoints";
-import { getToken } from "@/src/store/expo-secure-store";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ActiveCart from "./ActiveCart";
@@ -18,15 +17,6 @@ import RecentOrders from "./RecentOrders";
 const HomeScreen = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
-
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getToken();
-      console.log("HomeScreen Token:", token);
-    };
-    fetchToken();
-  }, []);
 
   const { data, isLoading, isError } = useGetActiveCartQuery();
   const isActiveCart = data?.isNoContent ? false : true;

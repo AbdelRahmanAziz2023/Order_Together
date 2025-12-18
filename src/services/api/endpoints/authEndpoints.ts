@@ -43,7 +43,7 @@ const AuthEndpoints = baseApi.injectEndpoints({
     }),
     refreshToken: builder.mutation<AuthResponse, LogoutRequest>({
       query: (refreshTokenBody) => ({
-        url: "auth/refreshToken",
+        url: "auth/refresh",
         method: "POST",
         body: refreshTokenBody,
       }),
