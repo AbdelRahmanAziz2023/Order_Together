@@ -1,6 +1,7 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import * as Clipboard from "expo-clipboard";
+import { Copy } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -38,7 +39,7 @@ const PaymentReceiver = ({
       {/* Actions */}
       <View style={styles.actions}>
         <Pressable onPress={handleCopy}>
-          <CustomText text="Copy" textStyle={[styles.actionText]} />
+          <Copy size={25} color={Colors.gray600} />
         </Pressable>
 
         {isEditing && (

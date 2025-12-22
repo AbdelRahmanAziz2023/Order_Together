@@ -22,6 +22,7 @@ export const usePasscodeModal = () => {
       const result: any = await cartPreview({ joinCode: normalized }).unwrap();
       const cartId = result?.cartId;
 
+
       if (!cartId) {
         Alert.alert("Error", "No cart found for that passcode");
         setPasscode("");
@@ -30,7 +31,7 @@ export const usePasscodeModal = () => {
 
       router.push({
         pathname: "/(app)/(home)/OrderDetails",
-        params: { cartId },
+        params: { cartId , restaurantShortCode: result?.restaurantShortCode},
       });
       resetForm();
     } catch (error: any) {

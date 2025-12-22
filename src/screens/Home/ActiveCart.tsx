@@ -16,7 +16,7 @@ const ActiveCart: React.FC<ActiveCartProps> = ({ cartData }) => {
   const handleGoToCart = () => {
     router.push({
       pathname: "/(app)/(home)/OrderDetails",
-      params: { cartId: cartData?.cartId ?? "" },
+      params: { cartId: cartData?.cartId ?? "", restaurantShortCode: cartData?.restaurantShortCode ?? "" },
     });
   };
 

@@ -1,71 +1,111 @@
+import CustomButton from "@/src/components/common/CustomButton";
 import CustomError from "@/src/components/common/CustomError";
+import CustomText from "@/src/components/common/CustomText";
 import OrdersList from "@/src/components/order/OrdersList";
 import OrderItemSkeletonList from "@/src/components/skeleton/OrderItemSkeletonList";
 import { Colors } from "@/src/constants/colors";
 import { useGetOrdersHistoryQuery } from "@/src/services/api/endpoints/orderEndpoints";
-import { StyleSheet } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const LIMIT = 5;
+
 const OrderHistoryScreen = () => {
-  const { data, isLoading, isError } = useGetOrdersHistoryQuery(10);
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, isError, isFetching } = useGetOrdersHistoryQuery(
+    { page, limit: LIMIT },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  // Initial loading
+  if (isLoading) return <OrderItemSkeletonList />;
+
+  // Error
+  if (isError) {
+    return <CustomError title="Error" message="Failed to load order history" />;
+  }
+
+  // Empty state (first page)
+  if (!data?.length && page === 1) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <CustomText text="No orders found" />
+      </SafeAreaView>
+    );
+  }
+
+  const hasPrevPage = page > 1;
+  const hasNextPage = data?.length === LIMIT;
 
   return (
     <SafeAreaView style={styles.container}>
-      {isError ? (
-        <CustomError title="Error" message="Failed to load order history" />
-      ) : isLoading ? (
-        <OrderItemSkeletonList />
-      ) : (
-        <OrdersList data={data} />
-      )}
+      <OrdersList data={data!} />
+
+     { hasNextPage && hasPrevPage && <View style={styles.paginationRow}>
+        {/* Prev */}
+       { hasPrevPage && <CustomButton
+          title="< Prev"
+          onPress={() => setPage((p) => Math.max(1, p - 1))}
+          isDisabled={isFetching}
+          btnStyle={styles.btn}
+        />}
+
+        <CustomText text={`${page}`} textStyle={[styles.pageText]} />
+
+        {/* Next */}
+       { hasNextPage && <CustomButton
+          title="Next >"
+          onPress={() => setPage((p) => p + 1)}
+          isDisabled={isFetching}
+          btnStyle={styles.btn}
+        />}
+      </View>}
     </SafeAreaView>
   );
 };
+
+export default OrderHistoryScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
   },
-  header: {
+
+  paginationRow: {
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    gap: 50,
+    marginBottom: 120,
   },
-  backButton: {
-    width: 40,
-    height: 40,
+
+  btn: {
+    backgroundColor: Colors.red,
+    borderColor: Colors.red,
+    borderWidth: 1,
+    borderRadius: 100,
+    width: 80,
+    height: 32,
     justifyContent: "center",
     alignItems: "center",
   },
-  headerTitle: {
-    fontSize: 20,
+
+  disabledBtn: {
+    opacity: 0.4,
+  },
+
+  pageText: {
+    color: Colors.red,
     fontFamily: "SenBold",
-    color: Colors.textPrimary,
-  },
-  content: {
-    flex: 1,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingTop: 100,
-  },
-  emptyText: {
     fontSize: 18,
-    fontFamily: "SenBold",
-    color: Colors.textPrimary,
-    marginBottom: 10,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: Colors.textSecondary,
+    borderColor: Colors.red,
+    borderWidth: 1,
+    borderRadius: 100,
+    padding: 10,
+    textAlign: "center",
   },
 });
-
-export default OrderHistoryScreen;

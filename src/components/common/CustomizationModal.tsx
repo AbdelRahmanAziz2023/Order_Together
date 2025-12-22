@@ -21,6 +21,7 @@ interface CustomizationModalProps {
   itemName: string;
   existingNote?: string;
   isEditing?: boolean;
+  isJoining?: boolean;
   isCreating?: boolean;
   currentQuantity?: number;
   editNote: React.Dispatch<React.SetStateAction<string>>;
@@ -35,6 +36,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   existingNote = "",
   currentQuantity = 1,
   isEditing = false,
+  isJoining = false,
   isCreating = false,
   editNote,
   onConfirm,
@@ -135,6 +137,8 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                         ? "Edit Item"
                         : isCreating
                         ? "Create Order"
+                        : isJoining
+                        ? "Join Cart"
                         : "Add to Cart"
                     }
                     onPress={handleConfirm}

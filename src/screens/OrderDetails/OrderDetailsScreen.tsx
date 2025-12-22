@@ -1,8 +1,12 @@
 import CustomHint from "@/src/components/common/CustomHint";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
+import { useGetCartSummaryQuery } from "@/src/services/api/endpoints/cartEndpoints";
+import { usePlaceOrderMutation } from "@/src/services/api/endpoints/orderEndpoints";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 import DeliveryPaymentSection from "./DeliveryPaymentSection";
 import MembersRow from "./MembersRow";
 import OrderActions from "./OrderActions";
@@ -30,6 +34,10 @@ const dummyOrders = [
 ];
 
 const OrderDetailsScreen = () => {
+  const { cartId ,restaurantShortCode } = useLocalSearchParams<{ cartId: string,restaurantShortCode:string }>();
+
+  const { data, isLoading, isError } = useGetCartSummaryQuery(cartId);
+
   const [status, setStatus] = React.useState("Open");
 
   // keep orders in local state so participant can "leave" in demo
@@ -39,9 +47,36 @@ const OrderDetailsScreen = () => {
   const [isHost, setIsHost] = useState(true);
 
   const isLocked = status === "Locked";
-  const isOpened = status === "Open";
+  const router = useRouter();
 
-  
+  const [placeOrder] = usePlaceOrderMutation();
+
+  const onPlaceOrder = async () => {
+    try {
+      // const res = await placeOrder({
+      //   orderSessionId: cartId,
+      //   paymentInstructions: paymentInstapay,
+      //   deliveryFee: deliveryFee,
+      // }).unwrap();
+      router.replace({
+        pathname: "/(app)/(home)/OrderPlaced",
+        //params: { orderId: res.id, status: res.status },
+      });
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Error placing order",
+        text2: "Please try again",
+      });
+    }
+  };
+
+  const onAddItem=()=>{
+    router.push({
+      pathname:'/(app)/(home)/Menu',
+      params:{cartId:cartId,restaurantShortCode:restaurantShortCode}
+    })
+  }
 
   const subtotal = ordersState
     .flatMap((o) => o.items)
@@ -62,10 +97,7 @@ const OrderDetailsScreen = () => {
         />
 
         {/* Order list of participants */}
-        <OrderList
-          orders={ordersState}
-          {...({ isOpened, isLocked, isHost } as any)}
-        />
+        <OrderList orders={ordersState} {...({ isLocked, isHost } as any)} />
 
         {/* Inputs for Host when lock */}
         {isLocked && isHost && (
@@ -83,22 +115,38 @@ const OrderDetailsScreen = () => {
         {!isHost && (
           <CustomHint
             message={
-              isOpened
+              !isLocked
                 ? "Waiting for Host to lock order..."
                 : "Host is finalizing the order..."
             }
           />
         )}
 
-        <Pressable onPress={() => { setIsHost(!isHost)}} style={{ marginVertical: 20 ,borderWidth:1,borderColor:Colors.red,padding:10,borderRadius:8,alignItems:'center'}}>
-          <CustomText text="'Toggle' isHost true/false, press for test" textStyle={[{color:Colors.red}]} />
+        <Pressable
+          onPress={() => {
+            setIsHost(!isHost);
+          }}
+          style={{
+            marginVertical: 20,
+            borderWidth: 1,
+            borderColor: Colors.red,
+            padding: 10,
+            borderRadius: 8,
+            alignItems: "center",
+          }}
+        >
+          <CustomText
+            text="'Toggle' isHost true/false, press for test"
+            textStyle={[{ color: Colors.red }]}
+          />
         </Pressable>
 
         {/* Actoins Buttons */}
         <OrderActions
-          isOpened={isOpened}
           isLocked={isLocked}
-          isCreator={isHost}
+          isHost={isHost}
+          onPlaceOrder={onPlaceOrder}
+          onAddItem={onAddItem}
           onChangeStatus={setStatus}
         />
       </View>

@@ -1,14 +1,15 @@
+import CustomText from "@/src/components/common/CustomText";
 import usePaymentList from "@/src/hooks/usePaymentList";
 import { TrackerParticipant } from "@/src/types/order.type";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
-  View
+  View,
 } from "react-native";
-
 
 type Props = {
   calculateTotal: (amount: number) => void;
@@ -16,86 +17,124 @@ type Props = {
   orderId: string;
 };
 
-const PaymentList = ({ calculateTotal, participants, orderId }: Props) => {
+/* Toggle constants (no magic numbers) */
+const TOGGLE_WIDTH = 44;
+const TOGGLE_HEIGHT = 24;
+const TOGGLE_PADDING = 2;
+const CIRCLE_SIZE = 16;
+
+const PaymentList: React.FC<Props> = ({
+  calculateTotal,
+  participants,
+  orderId,
+}) => {
   const list = participants ?? [];
 
-  const { toggles, toggleSwitch } = usePaymentList({ participants: list, orderId, calculateTotal });
+  const { toggles, toggleSwitch } = usePaymentList({
+    participants: list,
+    orderId,
+    calculateTotal,
+  });
 
-  const renderItem = ({ item }: { item: TrackerParticipant }) => {
-    const isHost = item.isHost;
-    const isPaid = toggles[item.userId];
-    const currentStatus = isHost ? "host" : isPaid ? "paid" : "unpaid";
+  const renderItem = useCallback(
+    ({ item }: { item: TrackerParticipant }) => {
+      const isHost = item.isHost;
+      const isPaid = Boolean(toggles[item.userId]);
 
-    const containerStyle = [
-      styles.card,
-      currentStatus === "host" && styles.hostCard,
-      currentStatus === "paid" && styles.paidCard,
-      currentStatus === "unpaid" && styles.unpaidCard,
-    ];
+      const currentStatus: "host" | "paid" | "unpaid" = isHost
+        ? "host"
+        : isPaid
+        ? "paid"
+        : "unpaid";
 
-    return (
-      <View style={containerStyle}>
-        <View style={styles.info}>
-          <View
-            style={[
-              styles.avatar,
-              currentStatus === "host" && styles.hostAvatar,
-              currentStatus === "paid" && styles.paidAvatar,
-              currentStatus === "unpaid" && styles.unpaidAvatar,
-            ]}
-          >
-            <Text style={styles.avatarText}>{item.avatarUrl}</Text>
-          </View>
+      const translateX = isPaid
+        ? TOGGLE_WIDTH - CIRCLE_SIZE - TOGGLE_PADDING * 2
+        : 0;
 
-          <View>
-            <Text style={styles.name}>{item.userName}</Text>
-            <Text
+      return (
+        <View
+          style={[
+            styles.card,
+            currentStatus === "host" && styles.hostCard,
+            currentStatus === "paid" && styles.paidCard,
+            currentStatus === "unpaid" && styles.unpaidCard,
+          ]}
+        >
+          {/* Left Section */}
+          <View style={styles.info}>
+            <View
               style={[
-                styles.amount,
-                currentStatus === "unpaid" && styles.unpaidAmount,
+                styles.avatar,
+                currentStatus === "host" && styles.hostAvatar,
+                currentStatus === "paid" && styles.paidAvatar,
+                currentStatus === "unpaid" && styles.unpaidAvatar,
               ]}
             >
-              {item.total} EGP
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.actions}>
-          {item.isHost && (
-            <View style={styles.autoPaid}>
-              <Text style={styles.autoPaidText}>Auto-Paid</Text>
+              {item.avatarUrl ? (
+                <Image
+                  source={{ uri: item.avatarUrl }}
+                  style={StyleSheet.absoluteFillObject}
+                />
+              ) : (
+                <CustomText
+                  text={item.userName?.[0]?.toUpperCase() ?? "?"}
+                  textStyle={[styles.avatarText]}
+                />
+              )}
             </View>
-          )}
 
-          {!isHost && (
-            <Pressable
-              style={[
-                styles.toggle,
-                isPaid ? styles.toggleOn : styles.toggleOff,
-              ]}
-              onPress={() => toggleSwitch(item.userId)}
-            >
-              <View
+            <View>
+              <Text style={styles.name}>{item.userName}</Text>
+              <Text
                 style={[
-                  styles.toggleCircle,
-                  { transform: [{ translateX: isPaid ? 20 : 2 }] },
+                  styles.amount,
+                  currentStatus === "unpaid" && styles.unpaidAmount,
                 ]}
-              />
-            </Pressable>
-          )}
+              >
+                {item.total} EGP
+              </Text>
+            </View>
+          </View>
+
+          {/* Right Section */}
+          <View style={styles.actions}>
+            {isHost && (
+              <View style={styles.autoPaid}>
+                <Text style={styles.autoPaidText}>Auto-Paid</Text>
+              </View>
+            )}
+
+            {!isHost && (
+              <Pressable
+                style={[
+                  styles.toggle,
+                  isPaid ? styles.toggleOn : styles.toggleOff,
+                ]}
+                onPress={() => toggleSwitch(item.userId)}
+              >
+                <View
+                  style={[
+                    styles.toggleCircle,
+                    { transform: [{ translateX }] },
+                  ]}
+                />
+              </Pressable>
+            )}
+          </View>
         </View>
-      </View>
-    );
-  };
+      );
+    },
+    [toggles, toggleSwitch]
+  );
 
   return (
     <FlatList
       data={list}
-      keyExtractor={(item) => item.userId}
+      keyExtractor={(item) => item.userId.toString()}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
-      scrollEnabled={false}
+      scrollEnabled={list.length > 5}
     />
   );
 };
@@ -112,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 
-  // Card States
+  /* Card States */
   hostCard: {
     backgroundColor: "#F9FAFB",
     borderColor: "#E5E7EB",
@@ -137,11 +176,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 
-  // Avatar styles
+  /* Avatar */
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
+    overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -186,21 +226,21 @@ const styles = StyleSheet.create({
     color: "#4B5563",
   },
 
-  // Toggle
+  /* Toggle */
   toggle: {
-    width: 44,
-    height: 24,
-    borderRadius: 12,
+    width: TOGGLE_WIDTH,
+    height: TOGGLE_HEIGHT,
+    borderRadius: TOGGLE_HEIGHT / 2,
     justifyContent: "center",
-    padding: 2,
+    padding: TOGGLE_PADDING,
   },
   toggleOn: { backgroundColor: "#22C55E" },
   toggleOff: { backgroundColor: "#E5E7EB" },
 
   toggleCircle: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
+    borderRadius: CIRCLE_SIZE / 2,
     backgroundColor: "#fff",
   },
 });

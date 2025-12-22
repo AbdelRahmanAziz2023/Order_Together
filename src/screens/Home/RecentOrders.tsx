@@ -10,7 +10,10 @@ import { Pressable, StyleSheet, View } from "react-native";
 const RecentOrders = () => {
   const router = useRouter();
 
-  const { data, isLoading, isError } = useGetOrdersHistoryQuery(5);
+  const { data, isLoading, isError } = useGetOrdersHistoryQuery({
+    page: 1,
+    limit: 3,
+  });
   const onPress = () => {
     router.push("/(app)/(home)/OrderHistory");
   };

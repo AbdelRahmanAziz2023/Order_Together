@@ -3,11 +3,18 @@ import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getOrdersHistory: builder.query<OrderHistoryItem[],number>({
-      query: (limit = 5) => ({
-        url: "/orders/history?limit=" + limit,
+    getOrdersHistory: builder.query<OrderHistoryItem[],{page: number; limit: number}>({
+      query: ({page = 1, limit = 5}) => ({
+        url: "/orders/history",
         method: "GET",
+        params: { page, limit },
       }),
+      // serializeQueryArgs: ({endpointName}) => endpointName,
+      // merge: (currentCache, newItems)=>{
+      //   currentCache.push(...newItems);
+      //   return currentCache
+      // }
+
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({

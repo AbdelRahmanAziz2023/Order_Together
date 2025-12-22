@@ -9,17 +9,20 @@ interface MenuListProps {
   menuItems: MenuItemDto[];
   onItemPress?: (item: MenuItemDto) => void;
   restaurantShortCode: string;
+  cartId: string;
 }
 
 export const MenuList: React.FC<MenuListProps> = ({
   menuItems,
   onItemPress,
   restaurantShortCode,
+  cartId,
 }) => {
   const renderItem = ({ item }: { item: MenuItemDto }) => (
     <MenuItemCard
       item={item}
       shortCode={restaurantShortCode}
+      cartId={cartId}
       onPress={() => onItemPress?.(item)}
     />
   );

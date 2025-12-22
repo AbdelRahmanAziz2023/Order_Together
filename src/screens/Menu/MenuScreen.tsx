@@ -11,8 +11,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MenuList } from "./MenuList";
 
 const MenuScreen: React.FC = () => {
-  const { restaurantShortCode } = useLocalSearchParams<{
+  const { restaurantShortCode, cartId } = useLocalSearchParams<{
     restaurantShortCode: string;
+    cartId: string;
   }>();
 
   const { data, isLoading, isError } =
@@ -52,6 +53,7 @@ const MenuScreen: React.FC = () => {
       <MenuList
         menuItems={data?.menuItems!}
         restaurantShortCode={restaurantShortCode}
+        cartId={cartId}
         onItemPress={handleMenuItemPress}
       />
     </SafeAreaView>

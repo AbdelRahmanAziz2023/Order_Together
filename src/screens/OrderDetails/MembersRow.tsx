@@ -1,6 +1,10 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
-import { useDeleteCartMutation, useLeaveCartMutation, useUnlockCartMutation } from "@/src/services/api/endpoints/cartEndpoints";
+import {
+  useDeleteCartMutation,
+  useLeaveCartMutation,
+  useUnlockCartMutation,
+} from "@/src/services/api/endpoints/cartEndpoints";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -29,23 +33,22 @@ const MembersRow = ({
 
   const [leaveCart] = useLeaveCartMutation();
   const [unlockCart] = useUnlockCartMutation();
-  const [cancelOrder]= useDeleteCartMutation();
+  const [cancelOrder] = useDeleteCartMutation();
 
   const router = useRouter();
 
   const onUnlockPress = async () => {
     try {
       //await unlockCart().unwrap();
-    }catch(e){
+    } catch (e) {
       console.log(e);
       Toast.show({
         type: "error",
         text1: "Error unlocking cart",
         text2: "Please try again",
-      })
+      });
     }
-    
-  }
+  };
 
   const onCancelPress = async () => {
     try {
@@ -95,20 +98,18 @@ const MembersRow = ({
       <View>
         {isHost ? (
           <Pressable
-            style={styles.textButton}
+            style={({ pressed }) => [
+              styles.textButton,
+              pressed && styles.textButtonPressed,
+            ]}
             onPress={() => {
-              if (isOpened)
-              {
+              if (isOpened) {
                 onCancelPress();
-              }
-              else
-              {
+              } else {
                 onUnlockPress();
                 setStatus("Open");
               }
-              
             }}
-
           >
             <CustomText
               text={isOpened ? "Cancel" : "Unlock"}
@@ -117,7 +118,13 @@ const MembersRow = ({
           </Pressable>
         ) : (
           isOpened && (
-            <Pressable onPress={onLeavePress} style={styles.textButton}>
+            <Pressable
+              onPress={onLeavePress}
+              style={({ pressed }) => [
+                styles.textButton,
+                pressed && styles.textButtonPressed,
+              ]}
+            >
               <CustomText text="Leave" textStyle={[styles.actionText]} />
             </Pressable>
           )
@@ -145,6 +152,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: Colors.lightred,
+  },
+  textButtonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.97 }],
   },
 });
 

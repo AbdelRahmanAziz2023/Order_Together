@@ -3,7 +3,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  tagTypes: ["Profile","Tracker","ActiveCart","OrderHistory","Bill"],
+  tagTypes: ["Profile","Tracker","ActiveCart","OrderHistory","Bill","CartState"],
   baseQuery: baseQueryWithReauth,
   keepUnusedDataFor: 30,
   refetchOnReconnect: true,

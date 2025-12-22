@@ -2,58 +2,34 @@ import { CustomizationModal } from "@/src/components/common/CustomizationModal";
 import CustomNote from "@/src/components/common/CustomNote";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
-import {
-  useCreateCartMutation,
-  useGetCartStateQuery,
-} from "@/src/services/api/endpoints/cartEndpoints";
-import { useAddItemToCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
+import { useMenuItemCard } from "@/src/hooks/useMenuItemCard";
 import { MenuItemDto } from "@/src/types/restaurant.type";
 
-import React, { useState } from "react";
+import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 interface MenuItemCardProps {
   item: MenuItemDto;
   shortCode: string;
+  cartId?: string;
   onPress?: () => void;
 }
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   item,
   shortCode,
+  cartId,
   onPress,
 }) => {
-  const [customizationNote, setCustomizationNote] = useState("");
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const { data, isLoading, isError } = useGetCartStateQuery({
-    restaurantShortCode: shortCode,
-  });
-
-  const [addItemToCart] = useAddItemToCartMutation();
-
-  const [createCart] = useCreateCartMutation();
-
-  const handleConfirmCustomization = (quntity: number) => {
-    try {
-      setCustomizationNote("");
-      setModalVisible(false);
-    } catch {
-      // Handle error if needed
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to add item to cart. Please try again.",
-      });
-    }
-  };
-
-  const openCustomization = () => {
-    setModalVisible(true);
-    onPress?.();
-  };
+  const {
+    customizationNote,
+    setCustomizationNote,
+    modalVisible,
+    openCustomization,
+    closeCustomization,
+    handleConfirmCustomization,
+    cartState
+  } = useMenuItemCard({ item, shortCode, cartId, onPress });
 
   return (
     <>
@@ -92,9 +68,11 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         itemID={item.id}
         itemName={item.name}
         existingNote={customizationNote}
+        isCreating={!cartId}
+        isJoining={cartState?.state === "NO_SHAREDCART" && !!cartId}
         editNote={setCustomizationNote}
         onConfirm={handleConfirmCustomization}
-        onCancel={() => setModalVisible(false)}
+        onCancel={closeCustomization}
       />
     </>
   );
