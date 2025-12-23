@@ -26,17 +26,38 @@ export const OrderCard = ({
   onEdit,
 }: Props) => {
   const isYou = !!order.isYou;
+  const isHost = !!order.isHost;
+  const roleStyle = isHost
+    ? styles.hostCard
+    : isYou
+    ? styles.youCard
+    : styles.participantCard;
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, roleStyle]}>
       <Pressable style={styles.rowHeader} onPress={onToggle}>
         <View style={styles.left}>
-          <Text
-            style={[styles.name, isYou && { color: Colors.red }]}
-            numberOfLines={1}
-          >
-            {order.name}
-          </Text>
+          <View style={styles.nameRow}>
+            <Text
+              style={[styles.name, isYou && { color: Colors.red }]}
+              numberOfLines={1}
+            >
+              {order.name}
+            </Text>
+
+            {isHost && (
+              <View style={styles.hostBadge}>
+                <CustomText text="Host" textStyle={[styles.hostBadgeText]} />
+              </View>
+            )}
+
+            {isYou && !isHost && (
+              <View style={styles.youBadge}>
+                <CustomText text="You" textStyle={[styles.youBadgeText]} />
+              </View>
+            )}
+          </View>
+
           <CustomText text={`${itemCount} items`} textStyle={[styles.meta]} />
         </View>
 
@@ -97,5 +118,43 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: Colors.border,
     paddingTop: 12,
+  },
+
+  // Role specific
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  hostBadge: {
+    backgroundColor: Colors.mustard,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  hostBadgeText: { fontSize: 12, color: Colors.white },
+
+  youBadge: {
+    backgroundColor: Colors.red,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  youBadgeText: { fontSize: 12, color: Colors.white },
+
+  hostCard: {
+    borderColor: Colors.mustard,
+    backgroundColor: Colors.yellow100,
+  },
+
+  youCard: {
+    borderColor: Colors.red,
+    backgroundColor: Colors.red100,
+  },
+
+  participantCard: {
+    borderColor: Colors.border,
+    backgroundColor: Colors.white,
   },
 });

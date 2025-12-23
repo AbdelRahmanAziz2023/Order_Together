@@ -3,7 +3,7 @@ import { useOrderList } from "@/src/hooks/useOrderList";
 import React from "react";
 import { OrderCard } from "./OrderCard";
 
-const OrderList = ({ orders }: { orders: any }) => {
+const OrderList = ({ orders }: { orders: any[] }) => {
   const {
     expanded,
     toggle,
@@ -19,7 +19,7 @@ const OrderList = ({ orders }: { orders: any }) => {
 
   return (
     <>
-      {orders.map((order, index) => (
+      {orders.map((order: any, index: number) => (
         <OrderCard
           key={index}
           order={order}

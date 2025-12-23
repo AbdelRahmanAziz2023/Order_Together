@@ -19,12 +19,14 @@ type Props = {
   status: string;
   setStatus: (s: string) => void;
   membersCount?: number;
+  isItems?: boolean;
   isHost?: boolean;
 };
 
 const MembersRow = ({
   status,
   setStatus,
+  isItems = false,
   isHost = false,
   membersCount = 3,
 }: Props) => {
@@ -90,7 +92,7 @@ const MembersRow = ({
     <View style={styles.membersRow}>
       <View style={{ flex: 1 }}>
         <CustomText
-          text={`${membersCount} members`}
+          text={`${membersCount} ${isItems ? "items" : "members"}`}
           textStyle={[styles.membersText]}
         />
       </View>

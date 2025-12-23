@@ -6,17 +6,18 @@ import CustomText from "./CustomText";
 type Props = {
   message: string;
   style?: ViewStyle;
+  Color?: string;
 };
 
-const CustomHint = ({ message, style }: Props) => {
+const CustomHint = ({ message, style, Color }: Props) => {
   return (
     <View style={[styles.hint, style]}>
       <Ionicons
         name="information-circle-outline"
         size={14}
-        color={Colors.mustard}
+        color={Color || Colors.mustard}
       />
-      <CustomText text={message} textStyle={[styles.hintText]} />
+      <CustomText text={message} textStyle={[styles.hintText, { color: Color || Colors.mustard }]} />
     </View>
   );
 };

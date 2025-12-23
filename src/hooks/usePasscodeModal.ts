@@ -22,19 +22,17 @@ export const usePasscodeModal = () => {
       const result: any = await cartPreview({ joinCode: normalized }).unwrap();
       const cartId = result?.cartId;
 
-
-      if (!cartId) {
-        Alert.alert("Error", "No cart found for that passcode");
-        setPasscode("");
-        return;
-      }
-
       router.push({
         pathname: "/(app)/(home)/OrderDetails",
         params: { cartId , restaurantShortCode: result?.restaurantShortCode},
       });
       resetForm();
     } catch (error: any) {
+      if (error?.status === 404) {
+        Alert.alert("Not Found", "No cart found for that passcode");
+        resetForm();
+        return;
+      }
       console.log("Error joining cart:", error);
       const message = error || "Failed to join cart";
       Alert.alert("Error", message);

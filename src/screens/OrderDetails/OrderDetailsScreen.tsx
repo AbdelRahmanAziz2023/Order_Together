@@ -2,7 +2,6 @@ import CustomHint from "@/src/components/common/CustomHint";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { useGetCartSummaryQuery } from "@/src/services/api/endpoints/cartEndpoints";
-import { usePlaceOrderMutation } from "@/src/services/api/endpoints/orderEndpoints";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
@@ -12,44 +11,58 @@ import MembersRow from "./MembersRow";
 import OrderActions from "./OrderActions";
 import OrderHeader from "./OrderHeader";
 import OrderList from "./OrderList";
+import OrdersByItem from "./OrdersByItem";
 import OrderTotals from "./OrderTotals";
+import ShowType from "./ShowType";
 
 const dummyOrders = [
   {
-    name: "Slaeh Salem",
+    name: "Saleh Salem",
+    isHost: true,
     items: [
       { label: "1x طعمية", price: 11.5 },
       { label: "1x صوابع عادي", price: 15.5 },
     ],
   },
   {
-    name: "mahmoud osama",
+    name: "Mahmoud Osama",
     items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
   },
   {
-    name: "Abdelrahman Aziz (You)",
+    name: "Mohammad Tarek",
+    items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
+  },
+  {
+    name: "Ahmed Fayez",
+    items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
+  },
+  {
+    name: "Abdelrahman Aziz",
     isYou: true,
     items: [{ label: "4x طعمية ع فول", price: 15.5 }],
   },
 ];
 
 const OrderDetailsScreen = () => {
-  const { cartId ,restaurantShortCode } = useLocalSearchParams<{ cartId: string,restaurantShortCode:string }>();
+  const { cartId, restaurantShortCode } = useLocalSearchParams<{
+    cartId: string;
+    restaurantShortCode: string;
+  }>();
 
-  const { data, isLoading, isError } = useGetCartSummaryQuery(cartId);
+  const { data } = useGetCartSummaryQuery(cartId);
 
   const [status, setStatus] = React.useState("Open");
 
   // keep orders in local state so participant can "leave" in demo
-  const [ordersState, setOrdersState] = useState(dummyOrders);
+  const [ordersState] = useState(dummyOrders);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [paymentInstapay, setPaymentInstapay] = useState("");
+  const [showDataPerItem, setShowDataPerItem] = useState(false);
   const [isHost, setIsHost] = useState(true);
+  const [isInspector, setIsInspector] = useState(true);
 
   const isLocked = status === "Locked";
   const router = useRouter();
-
-  const [placeOrder] = usePlaceOrderMutation();
 
   const onPlaceOrder = async () => {
     try {
@@ -62,7 +75,7 @@ const OrderDetailsScreen = () => {
         pathname: "/(app)/(home)/OrderPlaced",
         //params: { orderId: res.id, status: res.status },
       });
-    } catch (e) {
+    } catch {
       Toast.show({
         type: "error",
         text1: "Error placing order",
@@ -71,12 +84,12 @@ const OrderDetailsScreen = () => {
     }
   };
 
-  const onAddItem=()=>{
+  const onAddItem = () => {
     router.push({
-      pathname:'/(app)/(home)/Menu',
-      params:{cartId:cartId,restaurantShortCode:restaurantShortCode}
-    })
-  }
+      pathname: "/(app)/(home)/Menu",
+      params: { cartId: cartId, restaurantShortCode: restaurantShortCode },
+    });
+  };
 
   const subtotal = ordersState
     .flatMap((o) => o.items)
@@ -88,17 +101,47 @@ const OrderDetailsScreen = () => {
         {/* Order header */}
         <OrderHeader status={status} />
 
+        {/* Hint for inspector */}
+        {!isHost && isInspector && <CustomHint
+              Color={!isLocked ? Colors.success : Colors.red}
+              style={
+                !isLocked
+                  ? {
+                      backgroundColor: Colors.green100,
+                      borderColor: Colors.success,
+                    }
+                  : { backgroundColor: Colors.red100, borderColor: Colors.red }
+              }
+              message={
+                !isLocked
+                  ? "You are an inspector, add item to join"
+                  : "This cart is locked, you so late"
+              }
+            />
+}
         {/* members row */}
         <MembersRow
           status={status}
           setStatus={setStatus}
+          isItems={showDataPerItem}
           isHost={isHost}
           membersCount={ordersState.length}
         />
 
-        {/* Order list of participants */}
-        <OrderList orders={ordersState} {...({ isLocked, isHost } as any)} />
+        {/* Show by item or by participant */}
+        <ShowType
+          showDataPerItem={showDataPerItem}
+          onByItemPress={() => setShowDataPerItem(true)}
+          onByParticipantPress={() => setShowDataPerItem(false)}
+        />
 
+        {/* Orders aggregated by item (uses same endpoint data). Toggle logic not implemented */}
+        {showDataPerItem && <OrdersByItem cartSummary={data} />}
+
+        {/* Order list of participants */}
+        {!showDataPerItem && (
+          <OrderList orders={ordersState} {...({ isLocked, isHost } as any)} />
+        )}
         {/* Inputs for Host when lock */}
         {isLocked && isHost && (
           <DeliveryPaymentSection
@@ -112,7 +155,7 @@ const OrderDetailsScreen = () => {
         <OrderTotals deliveryFee={deliveryFee} subtotal={subtotal} />
 
         {/* Hint to participant */}
-        {!isHost && (
+        {!isHost && !isInspector && (
           <CustomHint
             message={
               !isLocked
