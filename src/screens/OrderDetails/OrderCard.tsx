@@ -1,16 +1,17 @@
 // components/OrderCard.tsx
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
+import { RootState } from "@/src/store/store";
+import { CartStateUser, CartStateUserItem } from "@/src/types/cart.type";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 import { CartOrderItem } from "./CartOrderItem";
 
 type Props = {
-  order: any;
+  order: CartStateUser;
   index: number;
   isExpanded: boolean;
-  total: number;
-  itemCount: number;
   onToggle: () => void;
   onDelete: (id: string) => void;
   onEdit: (item: { id: string; name: string }) => void;
@@ -19,19 +20,24 @@ type Props = {
 export const OrderCard = ({
   order,
   isExpanded,
-  total,
-  itemCount,
   onToggle,
   onDelete,
   onEdit,
 }: Props) => {
-  const isYou = !!order.isYou;
+  const user = useSelector((state: RootState) => state.user.user);
+
+  // Determine if this order belongs to the current user. Support both server-side 'participantId' (number) and mapped 'isYou' flag.
+  const isYou =
+    !!user &&
+    order.participantId !== undefined &&
+    String(user.id) === String(order.userId);
+
   const isHost = !!order.isHost;
-  const roleStyle = isHost
-    ? styles.hostCard
-    : isYou
-    ? styles.youCard
-    : styles.participantCard;
+
+  // Compose role styles: host and you can both apply
+  const roleStyle: any[] = [styles.participantCard];
+  if (isHost) roleStyle.push(styles.hostCard);
+  if (isYou) roleStyle.push(styles.youCard);
 
   return (
     <View style={[styles.card, roleStyle]}>
@@ -51,33 +57,38 @@ export const OrderCard = ({
               </View>
             )}
 
-            {isYou && !isHost && (
+            {isYou && (
               <View style={styles.youBadge}>
                 <CustomText text="You" textStyle={[styles.youBadgeText]} />
               </View>
             )}
           </View>
 
-          <CustomText text={`${itemCount} items`} textStyle={[styles.meta]} />
+          <CustomText
+            text={`${order.items.length} items`}
+            textStyle={[styles.meta]}
+          />
         </View>
 
         <View style={styles.right}>
-          <CustomText text={`${total.toFixed(2)} EGP`} textStyle={[styles.total]} />
+          <CustomText
+            text={`${order.subtotal.toFixed(2)} EGP`}
+            textStyle={[styles.total]}
+          />
           <CustomText text={isExpanded ? "▾" : "▸"} textStyle={[styles.chev]} />
         </View>
       </Pressable>
 
       {isExpanded && (
         <View style={styles.expandedContent}>
-          {order.items.map((item:any) => (
+          {order.items.map((item: CartStateUserItem) => (
             <CartOrderItem
-              key={item.label}
-              label={item.label}
-              price={item.price}
+              key={item.orderItemId}
+              item={item}
               isYou={isYou}
-              onDelete={() => onDelete(item.label)}
+              onDelete={() => onDelete(item.orderItemId.toString())}
               onEdit={() =>
-                onEdit({ id: item.label, name: item.label })
+                onEdit({ id: item.orderItemId.toString(), name: item.name })
               }
             />
           ))}
@@ -87,9 +98,8 @@ export const OrderCard = ({
   );
 };
 
-
 const styles = StyleSheet.create({
-    card: {
+  card: {
     backgroundColor: Colors.white,
     borderRadius: 12,
     padding: 12,

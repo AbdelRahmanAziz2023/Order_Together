@@ -33,7 +33,7 @@ export const usePasscodeModal = () => {
         resetForm();
         return;
       }
-      console.log("Error joining cart:", error);
+      console.debug("Error joining cart:", error);
       const message = error || "Failed to join cart";
       Alert.alert("Error", message);
     }

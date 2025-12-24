@@ -1,29 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
 
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import OrderPlacedButtons from "./OrderPlacedButtons";
 import OrderPlacedHeader from "./OrderPlacedHeader";
 import OrderPlacedReceipt from "./OrderPlacedReceipt";
 
-const OrderPlacedScreen = ({}) => {
-  const redirectSeconds = 1000;
+const OrderPlacedScreen = () => {
+  const redirectSeconds = 10;
   const restaurant = "McDonalds";
   const totalPaid = 100;
   const participants = 5;
   const [timeLeft, setTimeLeft] = useState(redirectSeconds);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
+  const {orderId} = useLocalSearchParams<{orderId: string}>();
+
   const router = useRouter();
 
   const onReturnDashboard = () => {
-    console.log("Return to dashboard");
+    console.debug("Return to dashboard");
     router.replace("/(app)/(home)");
   };
 
   const onTrackPayments = () => {
-    console.log("Track payments");
-    router.replace("/(app)/(home)/PaymentTracker");
+    console.debug("Track payments");
+    router.replace({
+      pathname: "/(app)/(home)/TrackPayments",
+      params: {orderId:orderId}
+    });
   };
 
   // Countdown

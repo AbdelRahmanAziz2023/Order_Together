@@ -1,6 +1,6 @@
 // hooks/useOrderList.ts
 import { useRemoveItemFromCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Toast from "react-native-toast-message";
 
 export const useOrderList = (orders:any) => {
@@ -15,19 +15,6 @@ export const useOrderList = (orders:any) => {
 
   const toggle = (index: number) =>
     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
-
-  const totals = useMemo(
-    () =>
-      orders.map((o) =>
-        o.items.reduce((sum:any, item:any) => sum + item.price, 0)
-      ),
-    [orders]
-  );
-
-  const itemCounts = useMemo(
-    () => orders.map((o) => o.items.length),
-    [orders]
-  );
 
   const onDelete = async (itemId: string) => {
     try {
@@ -51,7 +38,6 @@ export const useOrderList = (orders:any) => {
 
   const onConfirm = (quantity: number) => {
     setVisible(false);
-    console.log("Confirm quantity:", quantity);
   };
 
   const onCancel = () => {
@@ -62,8 +48,6 @@ export const useOrderList = (orders:any) => {
   return {
     expanded,
     toggle,
-    totals,
-    itemCounts,
     visible,
     selectedItem,
     onDelete,

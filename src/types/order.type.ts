@@ -52,7 +52,7 @@ export interface TrackerResponse {
 }
 
 export interface PlaceOrderRequest {
-  orderSessionId: string;
+  cartId: string;
   paymentInstructions: string;
   deliveryFee: number;
 }

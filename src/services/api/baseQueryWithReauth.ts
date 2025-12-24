@@ -47,6 +47,7 @@ export const baseQueryWithReauth: BaseQuery = async (
           );
 
           if (!res.ok) {
+            console.error("Refresh token request failed", res);
             return null;
           }
 

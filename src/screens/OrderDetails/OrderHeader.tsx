@@ -12,14 +12,17 @@ type Props = {
   inviteCode?: string;
 };
 
-const OrderHeader = ({ status, inviteCode = "INV-2345" }: Props) => {
+const OrderHeader = ({ status, inviteCode }: Props) => {
+  const isOpen = status === "Open";
+
   const handleCopy = async () => {
+    if (!inviteCode) return;
     await Clipboard.setStringAsync(inviteCode);
     Toast.show({
       type: "success",
       text1: "Copied to clipboard",
       text2: `${inviteCode} has been copied to your clipboard.`,
-    })
+    });
   };
 
   return (
@@ -31,24 +34,19 @@ const OrderHeader = ({ status, inviteCode = "INV-2345" }: Props) => {
       <View style={styles.row}>
         {/* Status */}
         <View style={[styles.statusBadge, getStatusBadgeStyle(status)]}>
-          <CustomText text={status} textStyle={[styles.statusText]} />
+          <CustomText text={isOpen ? "Open" : "Locked"} textStyle={[styles.statusText]} />
         </View>
 
         {/* Invite Code */}
-        {status === "Open"&& <Pressable
-          style={({ pressed }) => [
-            styles.inviteCode,
-            pressed && styles.invitePressed,
-          ]}
-          onPress={handleCopy}
-        >
-          <CustomText
-            text={inviteCode}
-            textStyle={[styles.inviteCodeText]}
-          />
-
-          <Copy size={16} color={Colors.mustard} />
-        </Pressable>}
+        {isOpen && inviteCode && (
+          <Pressable
+            style={({ pressed }) => [styles.inviteCode, pressed && styles.invitePressed]}
+            onPress={handleCopy}
+          >
+            <CustomText text={inviteCode} textStyle={[styles.inviteCodeText]} />
+            <Copy size={16} color={Colors.mustard} />
+          </Pressable>
+        )}
       </View>
     </View>
   );

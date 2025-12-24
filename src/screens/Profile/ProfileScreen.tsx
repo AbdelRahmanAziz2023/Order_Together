@@ -26,6 +26,9 @@ const ProfileScreen = () => {
       router.replace("/(auth)/Login");
     } catch (error) {
       console.error("Logout error:", error);
+      await clearAuth();
+      dispatch(clearUser());
+      router.replace("/(auth)/Login");
     }
   };
 

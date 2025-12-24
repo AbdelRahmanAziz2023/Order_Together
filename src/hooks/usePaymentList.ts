@@ -64,7 +64,7 @@ useEffect(() => {
           text2: isCurrentlyPaid ? "Participant marked as unpaid" : "Participant marked as paid",
         });
       } catch (error) {
-        console.log("Error toggling paid status:", error);
+        console.debug("Error toggling paid status:", error);
         Toast.show({
           type: "error",
           text1: "Error",

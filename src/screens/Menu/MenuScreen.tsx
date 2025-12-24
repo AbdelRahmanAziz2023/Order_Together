@@ -20,7 +20,7 @@ const MenuScreen: React.FC = () => {
     useGetRestaurantMenuQuery(restaurantShortCode);
 
   const handleMenuItemPress = (item: any) => {
-    console.log("Menu item pressed:", item);
+    console.debug("Menu item pressed:", item);
   };
 
   if (isLoading) {

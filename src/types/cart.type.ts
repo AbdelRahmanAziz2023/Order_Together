@@ -13,12 +13,40 @@ export interface ActiveCartData {
   status: "opened" | "closed" | "pending";
 }
 
+export interface CartStateUserItem {
+  orderItemId: number;
+  name: string;
+  price: number;
+  qty: number;
+  note: string | null;
+}
+
+export interface CartStateAggregateItem {
+  aggregateId: string;
+  name: string;
+  price: number;
+  qty: number;
+  note: string | null;
+}
+
+export interface CartStateUser {
+  userId: string;
+  participantId: number;
+  name: string;
+  avatarUrl: string | null;
+  isHost: boolean;
+  subtotal: number;
+  items: CartStateUserItem[];
+}
+
 export interface CartStateResponseData {
   cartId: string;
-  joinCode: string;
-  restaurantName: string;
   restaurantShortCode: string;
-  restaurantLogoUrl: string;
+  isLocked: boolean;
+  joinCode: string;
+  subtotal: number;
+  users: CartStateUser[];
+  items: CartStateAggregateItem[];
 }
 
 export interface CartStateResponse {

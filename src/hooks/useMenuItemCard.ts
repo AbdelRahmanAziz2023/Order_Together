@@ -1,11 +1,12 @@
 import {
-    useCreateCartMutation,
-    useGetCartStateMutation,
-    useJoinCartMutation,
-    useLeaveCartMutation,
+  useCreateCartMutation,
+  useGetCartStateMutation,
+  useJoinCartMutation,
+  useLeaveCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
 import { useAddItemToCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
 import { MenuItemDto } from "@/src/types/restaurant.type";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import Toast from "react-native-toast-message";
@@ -35,6 +36,7 @@ export function useMenuItemCard({
   const [joinCart] = useJoinCartMutation();
   const [leaveCart] = useLeaveCartMutation();
 
+  const router = useRouter();
   /* ================= Fetch Cart State ================= */
   useEffect(() => {
     if (!shortCode) return;
@@ -73,32 +75,26 @@ export function useMenuItemCard({
           /* ===== User is Cart Creator ===== */
           case "CREATOR": {
             if (!cartId) {
-              await createCart({
+              const res = await createCart({
                 menuItemId: item.id,
                 quantity: quantity,
                 note: customizationNote,
               }).unwrap();
 
+              router.back();
+              router.back();
+              router.push({
+                pathname: "/(app)/(home)/OrderDetails",
+                params: { cartId: res.cartId, restaurantShortCode: shortCode },
+              });
+              
               Toast.show({
                 type: "success",
                 text1: "Cart created",
                 text2: "Item added successfully",
               });
             } else {
-              await joinCart({
-                cartId,
-                intitailItem: {
-                  menuItemId: item.id,
-                  qty: quantity,
-                  note: customizationNote,
-                },
-              }).unwrap();
-
-              Toast.show({
-                type: "success",
-                text1: "Joined cart",
-                text2: "Item added",
-              });
+             
             }
             break;
           }
@@ -108,7 +104,21 @@ export function useMenuItemCard({
             await addItemToCart({
               cartId: cartState.cartSummary!.cartId,
               menuItemId: item.id,
-              qty: quantity,
+              quantity: quantity,
+              note: customizationNote,
+            }).unwrap();
+
+            Toast.show({
+              type: "success",
+              text1: "Item added to cart",
+            });
+            break;
+          }
+          case "HOST": {
+            await addItemToCart({
+              cartId: cartState.cartSummary!.cartId,
+              menuItemId: item.id,
+              quantity: quantity,
               note: customizationNote,
             }).unwrap();
 
@@ -121,6 +131,22 @@ export function useMenuItemCard({
 
           /* ===== User is in another cart ===== */
           case "SPECTOR": {
+            if(cartState.cartSummary===null) {
+                 await joinCart({
+                cartId: cartId!,
+                intitailItem: {
+                  menuItemId: item.id,
+                  qty: quantity,
+                  note: customizationNote,
+                },
+              }).unwrap();
+
+              Toast.show({
+                type: "success",
+                text1: "Joined cart",
+                text2: "Item added",
+              });
+            }            
             Alert.alert(
               "You are in another group",
               "Leave current group to add items here?",

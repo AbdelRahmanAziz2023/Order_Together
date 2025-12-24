@@ -10,11 +10,6 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
-type OrderItem = {
-  label?: string;
-  price?: number;
-};
-
 type Props = {
   status: string;
   setStatus: (s: string) => void;
@@ -30,12 +25,11 @@ const MembersRow = ({
   isHost = false,
   membersCount = 3,
 }: Props) => {
-  const isLocked = status === "Locked";
-  const isOpened = status === "Open";
+  const isOpen = status === "Open";
 
-  const [leaveCart] = useLeaveCartMutation();
-  const [unlockCart] = useUnlockCartMutation();
-  const [cancelOrder] = useDeleteCartMutation();
+  useLeaveCartMutation();
+  useUnlockCartMutation();
+  useDeleteCartMutation();
 
   const router = useRouter();
 
@@ -43,7 +37,7 @@ const MembersRow = ({
     try {
       //await unlockCart().unwrap();
     } catch (e) {
-      console.log(e);
+      console.debug(e);
       Toast.show({
         type: "error",
         text1: "Error unlocking cart",
@@ -61,7 +55,7 @@ const MembersRow = ({
         text1: "You canceled the order",
       });
     } catch (e) {
-      console.log(e);
+      console.debug(e);
       Toast.show({
         type: "error",
         text1: "Error canceling order",
@@ -79,7 +73,7 @@ const MembersRow = ({
         text1: "You left the cart",
       });
     } catch (e) {
-      console.log(e);
+      console.debug(e);
       Toast.show({
         type: "error",
         text1: "Error leaving cart",
@@ -92,7 +86,7 @@ const MembersRow = ({
     <View style={styles.membersRow}>
       <View style={{ flex: 1 }}>
         <CustomText
-          text={`${membersCount} ${isItems ? "items" : "members"}`}
+          text={`${membersCount} ${isItems ? "Items" : "Members"}`}
           textStyle={[styles.membersText]}
         />
       </View>
@@ -105,7 +99,7 @@ const MembersRow = ({
               pressed && styles.textButtonPressed,
             ]}
             onPress={() => {
-              if (isOpened) {
+              if (isOpen) {
                 onCancelPress();
               } else {
                 onUnlockPress();
@@ -114,12 +108,12 @@ const MembersRow = ({
             }}
           >
             <CustomText
-              text={isOpened ? "Cancel" : "Unlock"}
+              text={isOpen ? "Cancel" : "Unlock"}
               textStyle={[styles.actionText]}
             />
           </Pressable>
         ) : (
-          isOpened && (
+          isOpen && (
             <Pressable
               onPress={onLeavePress}
               style={({ pressed }) => [

@@ -43,7 +43,7 @@ const useAuthStatus = () => {
             return setIsAuthenticated(true);
           } catch (err) {
             // Refresh failed → logout
-            console.log("Refresh-token failed:", err);
+            console.debug("Refresh-token failed:", err);
             return setIsAuthenticated(false);
           }
         }
@@ -51,7 +51,7 @@ const useAuthStatus = () => {
         // Both tokens expired → fully logout
         return setIsAuthenticated(false);
       } catch (err) {
-        console.log("Auth error:", err);
+        console.debug("Auth error:", err);
         return setIsAuthenticated(false);
       }
     };

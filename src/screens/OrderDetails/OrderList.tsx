@@ -1,14 +1,13 @@
 import { CustomizationModal } from "@/src/components/common/CustomizationModal";
 import { useOrderList } from "@/src/hooks/useOrderList";
+import { CartStateUser } from "@/src/types/cart.type";
 import React from "react";
 import { OrderCard } from "./OrderCard";
 
-const OrderList = ({ orders }: { orders: any[] }) => {
+const OrderList = ({ orders }: { orders: CartStateUser[] }) => {
   const {
     expanded,
     toggle,
-    totals,
-    itemCounts,
     visible,
     selectedItem,
     onDelete,
@@ -19,14 +18,12 @@ const OrderList = ({ orders }: { orders: any[] }) => {
 
   return (
     <>
-      {orders.map((order: any, index: number) => (
+      {orders.map((order: CartStateUser, index: number) => (
         <OrderCard
           key={index}
           order={order}
           index={index}
           isExpanded={!!expanded[index]}
-          total={totals[index]}
-          itemCount={itemCounts[index]}
           onToggle={() => toggle(index)}
           onDelete={onDelete}
           onEdit={onEdit}

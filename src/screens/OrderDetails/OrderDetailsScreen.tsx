@@ -1,11 +1,8 @@
 import CustomHint from "@/src/components/common/CustomHint";
-import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
-import { useGetCartSummaryQuery } from "@/src/services/api/endpoints/cartEndpoints";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useCartDetailsLogic } from "../../hooks/useCartDetailsLogic";
 import DeliveryPaymentSection from "./DeliveryPaymentSection";
 import MembersRow from "./MembersRow";
 import OrderActions from "./OrderActions";
@@ -15,117 +12,63 @@ import OrdersByItem from "./OrdersByItem";
 import OrderTotals from "./OrderTotals";
 import ShowType from "./ShowType";
 
-const dummyOrders = [
-  {
-    name: "Saleh Salem",
-    isHost: true,
-    items: [
-      { label: "1x طعمية", price: 11.5 },
-      { label: "1x صوابع عادي", price: 15.5 },
-    ],
-  },
-  {
-    name: "Mahmoud Osama",
-    items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
-  },
-  {
-    name: "Mohammad Tarek",
-    items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
-  },
-  {
-    name: "Ahmed Fayez",
-    items: [{ label: "1x صوابع كانتشب", price: 18.5 }],
-  },
-  {
-    name: "Abdelrahman Aziz",
-    isYou: true,
-    items: [{ label: "4x طعمية ع فول", price: 15.5 }],
-  },
-];
-
 const OrderDetailsScreen = () => {
-  const { cartId, restaurantShortCode } = useLocalSearchParams<{
-    cartId: string;
-    restaurantShortCode: string;
-  }>();
-
-  const { data } = useGetCartSummaryQuery(cartId);
-
-  const [status, setStatus] = React.useState("Open");
-
-  // keep orders in local state so participant can "leave" in demo
-  const [ordersState] = useState(dummyOrders);
-  const [deliveryFee, setDeliveryFee] = useState(0);
-  const [paymentInstapay, setPaymentInstapay] = useState("");
-  const [showDataPerItem, setShowDataPerItem] = useState(false);
-  const [isHost, setIsHost] = useState(true);
-  const [isInspector, setIsInspector] = useState(true);
-
-  const isLocked = status === "Locked";
-  const router = useRouter();
-
-  const onPlaceOrder = async () => {
-    try {
-      // const res = await placeOrder({
-      //   orderSessionId: cartId,
-      //   paymentInstructions: paymentInstapay,
-      //   deliveryFee: deliveryFee,
-      // }).unwrap();
-      router.replace({
-        pathname: "/(app)/(home)/OrderPlaced",
-        //params: { orderId: res.id, status: res.status },
-      });
-    } catch {
-      Toast.show({
-        type: "error",
-        text1: "Error placing order",
-        text2: "Please try again",
-      });
-    }
-  };
-
-  const onAddItem = () => {
-    router.push({
-      pathname: "/(app)/(home)/Menu",
-      params: { cartId: cartId, restaurantShortCode: restaurantShortCode },
-    });
-  };
-
-  const subtotal = ordersState
-    .flatMap((o) => o.items)
-    .reduce((sum, item) => sum + item.price, 0);
+  const {
+    cartState,
+    status,
+    setStatus,
+    deliveryFee,
+    setDeliveryFee,
+    setPaymentInstapay,
+    showDataPerItem,
+    setShowDataPerItem,
+    isHost,
+    isInspector,
+    subtotal,
+    isLocked,
+    onPlaceOrder,
+    onAddItem,
+  } = useCartDetailsLogic();
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
         {/* Order header */}
-        <OrderHeader status={status} />
+        <OrderHeader
+          status={status}
+          inviteCode={cartState?.cartSummary?.joinCode}
+        />
 
         {/* Hint for inspector */}
-        {!isHost && isInspector && <CustomHint
-              Color={!isLocked ? Colors.success : Colors.red}
-              style={
-                !isLocked
-                  ? {
-                      backgroundColor: Colors.green100,
-                      borderColor: Colors.success,
-                    }
-                  : { backgroundColor: Colors.red100, borderColor: Colors.red }
-              }
-              message={
-                !isLocked
-                  ? "You are an inspector, add item to join"
-                  : "This cart is locked, you so late"
-              }
-            />
-}
+        {!isHost && isInspector && (
+          <CustomHint
+            Color={!isLocked ? Colors.success : Colors.red}
+            style={
+              !isLocked
+                ? {
+                    backgroundColor: Colors.green100,
+                    borderColor: Colors.success,
+                  }
+                : { backgroundColor: Colors.red100, borderColor: Colors.red }
+            }
+            message={
+              !isLocked
+                ? "You are an inspector, add item to join"
+                : "This cart is locked, you so late"
+            }
+          />
+        )}
         {/* members row */}
         <MembersRow
-          status={status}
+          status={status!}
           setStatus={setStatus}
           isItems={showDataPerItem}
           isHost={isHost}
-          membersCount={ordersState.length}
+          membersCount={
+            showDataPerItem
+              ? cartState?.cartSummary?.items?.length ?? 0
+              : cartState?.cartSummary?.users?.length ?? 0
+          }
         />
 
         {/* Show by item or by participant */}
@@ -135,12 +78,11 @@ const OrderDetailsScreen = () => {
           onByParticipantPress={() => setShowDataPerItem(false)}
         />
 
-        {/* Orders aggregated by item (uses same endpoint data). Toggle logic not implemented */}
-        {showDataPerItem && <OrdersByItem cartSummary={data} />}
-
-        {/* Order list of participants */}
-        {!showDataPerItem && (
-          <OrderList orders={ordersState} {...({ isLocked, isHost } as any)} />
+        {/* Orders aggregated by item (uses same endpoint data). Toggle between item/participant */}
+        {showDataPerItem ? (
+          <OrdersByItem cartSummary={cartState?.cartSummary} />
+        ) : (
+          <OrderList orders={cartState?.cartSummary?.users! ?? []} />
         )}
         {/* Inputs for Host when lock */}
         {isLocked && isHost && (
@@ -164,25 +106,6 @@ const OrderDetailsScreen = () => {
             }
           />
         )}
-
-        <Pressable
-          onPress={() => {
-            setIsHost(!isHost);
-          }}
-          style={{
-            marginVertical: 20,
-            borderWidth: 1,
-            borderColor: Colors.red,
-            padding: 10,
-            borderRadius: 8,
-            alignItems: "center",
-          }}
-        >
-          <CustomText
-            text="'Toggle' isHost true/false, press for test"
-            textStyle={[{ color: Colors.red }]}
-          />
-        </Pressable>
 
         {/* Actoins Buttons */}
         <OrderActions
