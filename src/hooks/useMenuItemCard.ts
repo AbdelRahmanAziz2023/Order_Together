@@ -1,15 +1,15 @@
 import {
     useCreateCartMutation,
-    useGetActiveCartQuery,
-    useGetCartStateQuery,
+    useGetCartStateMutation,
     useJoinCartMutation,
     useLeaveCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
 import { useAddItemToCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
 import { MenuItemDto } from "@/src/types/restaurant.type";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import Toast from "react-native-toast-message";
+import { CartStateResponse } from "../types/cart.type";
 
 interface UseMenuItemCardProps {
   item: MenuItemDto;
@@ -26,17 +26,36 @@ export function useMenuItemCard({
 }: UseMenuItemCardProps) {
   const [customizationNote, setCustomizationNote] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [cartState, setCartState] = useState<CartStateResponse | null>(null);
 
-  const { data, isLoading, isError } = useGetCartStateQuery({
-    restaurantShortCode: shortCode,
-  });
+  const [getCartState, { isLoading, isError }] = useGetCartStateMutation();
 
   const [addItemToCart] = useAddItemToCartMutation();
   const [createCart] = useCreateCartMutation();
   const [joinCart] = useJoinCartMutation();
   const [leaveCart] = useLeaveCartMutation();
-  const { data: activeCart } = useGetActiveCartQuery();
 
+  /* ================= Fetch Cart State ================= */
+  useEffect(() => {
+    if (!shortCode) return;
+
+    const fetchCartState = async () => {
+      try {
+        const res = await getCartState({
+          cartId: cartId ?? null,
+          restaurantShortCode: shortCode,
+        }).unwrap();
+
+        setCartState(res);
+      } catch {
+        setCartState(null);
+      }
+    };
+
+    fetchCartState();
+  }, [cartId, shortCode]);
+
+  /* ================= Modal Handlers ================= */
   const openCustomization = () => {
     setModalVisible(true);
     onPress?.();
@@ -44,118 +63,112 @@ export function useMenuItemCard({
 
   const closeCustomization = () => setModalVisible(false);
 
-  const handleConfirmCustomization = async (quantity: number) => {
-    console.log("Confirm quantity:", quantity);
-    try {
-      switch (data?.state) {
-        case "NO_SHAREDCART":
-          if (!cartId) {
-            // await joinCart({
-            //   cartId: cartId,
-            //   intitailItem: {
-            //     menuItemId: item.id,
-            //     qty: quantity,
-            //     note: customizationNote,
-            //   },
-            // }).unwrap();
+  /* ================= Confirm Logic ================= */
+  const handleConfirmCustomization = useCallback(
+    async (quantity: number) => {
+      if (!cartState) return;
 
-            Toast.show({
-              type: "success",
-              text1: "You joined the cart",
-              text2: "Item added to cart",
-            });
-          } else {
-            // await createCart({
-            //   restaurantId: shortCode,
-            //   intitailItem: {
-            //     menuItemId: item.id,
-            //     qty: quantity,
-            //     note: customizationNote,
-            //   },
-            // }).unwrap();
+      try {
+        switch (cartState.mode) {
+          /* ===== User is Cart Creator ===== */
+          case "CREATOR": {
+            if (!cartId) {
+              await createCart({
+                menuItemId: item.id,
+                quantity: quantity,
+                note: customizationNote,
+              }).unwrap();
 
-            Toast.show({
-              type: "success",
-              text1: "Cart created successfully",
-              text2: "Item added to cart",
-            });
-          }
-          break;
-        case "MEMBER_IN_THIS_GROUP":
-          //   await addItemToCart({
-          //     cartId: data?.data?.cartId,
-          //     menuItemId: item.id,
-          //     note: customizationNote,
-          //     qty: quantity,
-          //   }).unwrap();
+              Toast.show({
+                type: "success",
+                text1: "Cart created",
+                text2: "Item added successfully",
+              });
+            } else {
+              await joinCart({
+                cartId,
+                intitailItem: {
+                  menuItemId: item.id,
+                  qty: quantity,
+                  note: customizationNote,
+                },
+              }).unwrap();
 
-          Toast.show({
-            type: "success",
-            text1: "Item added to cart",
-          });
-
-          break;
-        case "MEMBER_IN_ANOTHER_GROUP": {
-          // Check if user is host of active cart
-          const isHost =
-            (activeCart &&
-              !(
-                "isNoContent" in activeCart && (activeCart as any).isNoContent
-              ) &&
-              (activeCart as any).isHost) ||
-            false;
-
-          if (isHost) {
-            Alert.alert(
-              "Host of another group",
-              "You're the host of another group. You cannot leave the cart. Transfer host or delete the cart first.",
-              [{ text: "OK", style: "cancel" }]
-            );
+              Toast.show({
+                type: "success",
+                text1: "Joined cart",
+                text2: "Item added",
+              });
+            }
             break;
           }
 
-          Alert.alert(
-            "You are in another group",
-            "Leave current group to add items to this cart?",
-            [
-              { text: "Return", style: "cancel" },
-              {
-                text: "Leave",
-                style: "destructive",
-                onPress: async () => {
-                  try {
-                    // await leaveCart().unwrap();
-                    Toast.show({ type: "success", text1: "You left the cart" });
+          /* ===== User is Member ===== */
+          case "MEMBER": {
+            await addItemToCart({
+              cartId: cartState.cartSummary!.cartId,
+              menuItemId: item.id,
+              qty: quantity,
+              note: customizationNote,
+            }).unwrap();
 
-                    setCustomizationNote("");
-                    setModalVisible(false);
-                  } catch {
-                    Toast.show({
-                      type: "error",
-                      text1: "Error",
-                      text2: "Failed to leave and add item. Please try again.",
-                    });
-                  }
+            Toast.show({
+              type: "success",
+              text1: "Item added to cart",
+            });
+            break;
+          }
+
+          /* ===== User is in another cart ===== */
+          case "SPECTOR": {
+            Alert.alert(
+              "You are in another group",
+              "Leave current group to add items here?",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Leave & Continue",
+                  style: "destructive",
+                  onPress: async () => {
+                    try {
+                      await leaveCart().unwrap();
+
+                      Toast.show({
+                        type: "success",
+                        text1: "Left previous cart",
+                      });
+
+                      setCustomizationNote("");
+                      setModalVisible(false);
+                    } catch {
+                      Toast.show({
+                        type: "error",
+                        text1: "Failed to leave cart",
+                      });
+                    }
+                  },
                 },
-              },
-            ]
-          );
+              ]
+            );
+            return; // ⛔ prevent modal auto-close
+          }
 
-          break;
+          default:
+            return;
         }
-        default:
-      }
 
-      setCustomizationNote("");
-      setModalVisible(false);
-    } catch {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to add item to cart. Please try again.",
-      });
-    }
-  };
+        setCustomizationNote("");
+        setModalVisible(false);
+      } catch {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to add item to cart",
+        });
+      }
+    },
+    [cartState, cartId, customizationNote]
+  );
 
   return {
     customizationNote,
@@ -166,6 +179,6 @@ export function useMenuItemCard({
     handleConfirmCustomization,
     isLoading,
     isError,
-    cartState: data,
+    cartState,
   };
 }

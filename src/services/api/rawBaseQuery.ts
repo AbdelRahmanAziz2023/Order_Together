@@ -1,10 +1,9 @@
-import { API_URL } from "@/src/config/env";
 import { getToken } from "@/src/store/expo-secure-store";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Platform } from "react-native";
 
 export const rawBaseQuery = fetchBaseQuery({
-  baseUrl: API_URL, // <- change to your API base
+  baseUrl: "https://api2.mahmoud-osama.com/api/", // <- change to your API base
   prepareHeaders: async (headers) => {
     // 🔐 Auth token
     const token = await getToken();

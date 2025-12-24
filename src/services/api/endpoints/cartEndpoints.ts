@@ -14,12 +14,13 @@ import { baseApi } from "../baseApi";
 
 const CartEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCartState: builder.query<CartStateResponse, CartStateRequest>({
-      query: (params) => ({
+    getCartState: builder.mutation<CartStateResponse, CartStateRequest>({
+      query: (body) => ({
         url: "cart/state",
-        params, // ✅ GET uses query params
+        method: "POST",
+        body,
       }),
-      providesTags: ["CartState"],
+      // providesTags: ["CartState"],
     }),
 
     getCartSummary: builder.query<CartSummaryResponse, string>({
@@ -49,7 +50,7 @@ const CartEndpoints = baseApi.injectEndpoints({
 
     createCart: builder.mutation<CreateCartResponse, CreateCartRequest>({
       query: (body) => ({
-        url: "cart/create",
+        url: "cart",
         method: "POST",
         body,
       }),
@@ -100,7 +101,7 @@ const CartEndpoints = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetCartStateQuery,
+  useGetCartStateMutation,
   useGetCartSummaryQuery,
   useGetActiveCartQuery,
   useCreateCartMutation,

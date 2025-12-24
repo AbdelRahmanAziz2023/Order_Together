@@ -13,8 +13,6 @@ export interface ActiveCartData {
   status: "opened" | "closed" | "pending";
 }
 
-
-
 export interface CartStateResponseData {
   cartId: string;
   joinCode: string;
@@ -24,8 +22,9 @@ export interface CartStateResponseData {
 }
 
 export interface CartStateResponse {
-  state: "NO_SHAREDCART" | "MEMBER_IN_THIS_GROUP" | "MEMBER_IN_ANOTHER_GROUP";
-  data: CartStateResponseData | null;
+  mode: "CREATOR" | "HOST" | "MEMBER" | "SPECTOR";
+  cartSummary: CartStateResponseData | null;
+  conflictInfo: CartStateResponseData | null;
 }
 
 export interface CreateCartResponse {
@@ -84,16 +83,14 @@ export interface JoinCartResponse {
 
 // Request body Interfaces
 export interface CartStateRequest {
+  cartId: string | null;
   restaurantShortCode: string;
 }
 
 export interface CreateCartRequest {
-  restaurantId: string;
-  intitailItem: {
-    menuItemId: string;
-    qty: number;
-    note?: string;
-  };
+  menuItemId: string;
+  quantity: number;
+  note: string;
 }
 
 export interface JoinCartRequest {

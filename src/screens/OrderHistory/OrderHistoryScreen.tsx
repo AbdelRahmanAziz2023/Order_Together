@@ -27,14 +27,7 @@ const OrderHistoryScreen = () => {
     return <CustomError title="Error" message="Failed to load order history" />;
   }
 
-  // Empty state (first page)
-  if (!data?.length && page === 1) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <CustomText text="No orders found" />
-      </SafeAreaView>
-    );
-  }
+  
 
   const hasPrevPage = page > 1;
   const hasNextPage = data?.length === LIMIT;
