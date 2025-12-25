@@ -5,37 +5,45 @@ import {
   useLeaveCartMutation,
   useUnlockCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
+import { toggleCartState } from "@/src/store/slices/cartSlice";
+import { RootState } from "@/src/store/store";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
-  status: string;
-  setStatus: (s: string) => void;
   membersCount?: number;
   isItems?: boolean;
   isHost?: boolean;
+  isSpectator?: boolean;
+  cartId: string;
 };
 
 const MembersRow = ({
-  status,
-  setStatus,
   isItems = false,
   isHost = false,
+  isSpectator = false,
   membersCount = 3,
+  cartId,
 }: Props) => {
-  const isOpen = status === "Open";
-
   useLeaveCartMutation();
-  useUnlockCartMutation();
+  const [unlockCart] = useUnlockCartMutation();
   useDeleteCartMutation();
 
+  const isLocked = useSelector((state: RootState) => state.cart.isLocked);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const onUnlockPress = async () => {
     try {
-      //await unlockCart().unwrap();
+      await unlockCart(cartId).unwrap();
+      dispatch(toggleCartState(false));
+      Toast.show({
+        type: "success",
+        text1: "You unlocked the cart",
+      });
     } catch (e) {
       console.debug(e);
       Toast.show({
@@ -91,41 +99,42 @@ const MembersRow = ({
         />
       </View>
 
-      <View>
-        {isHost ? (
-          <Pressable
-            style={({ pressed }) => [
-              styles.textButton,
-              pressed && styles.textButtonPressed,
-            ]}
-            onPress={() => {
-              if (isOpen) {
-                onCancelPress();
-              } else {
-                onUnlockPress();
-                setStatus("Open");
-              }
-            }}
-          >
-            <CustomText
-              text={isOpen ? "Cancel" : "Unlock"}
-              textStyle={[styles.actionText]}
-            />
-          </Pressable>
-        ) : (
-          isOpen && (
+      {!isSpectator && (
+        <View>
+          {isHost ? (
             <Pressable
-              onPress={onLeavePress}
               style={({ pressed }) => [
                 styles.textButton,
                 pressed && styles.textButtonPressed,
               ]}
+              onPress={() => {
+                if (!isLocked) {
+                  onCancelPress();
+                } else {
+                  onUnlockPress();
+                }
+              }}
             >
-              <CustomText text="Leave" textStyle={[styles.actionText]} />
+              <CustomText
+                text={isLocked ? "Unlock" : "Cancel"}
+                textStyle={[styles.actionText]}
+              />
             </Pressable>
-          )
-        )}
-      </View>
+          ) : (
+            !isLocked && (
+              <Pressable
+                onPress={onLeavePress}
+                style={({ pressed }) => [
+                  styles.textButton,
+                  pressed && styles.textButtonPressed,
+                ]}
+              >
+                <CustomText text="Leave" textStyle={[styles.actionText]} />
+              </Pressable>
+            )
+          )}
+        </View>
+      )}
     </View>
   );
 };

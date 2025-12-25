@@ -1,3 +1,4 @@
+import AppAlertProvider from "@/src/components/common/AppAlert";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -12,7 +13,7 @@ if (__DEV__) {
   require("../../ReactotronConfig");
 }
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 SplashScreen.hideAsync();
 
 export default function RootLayout() {
@@ -34,6 +35,7 @@ export default function RootLayout() {
     <Provider store={store}>
       <KeyboardProvider>
         <Stack screenOptions={{ headerShown: false }} />
+        <AppAlertProvider />
         <Toast />
       </KeyboardProvider>
     </Provider>

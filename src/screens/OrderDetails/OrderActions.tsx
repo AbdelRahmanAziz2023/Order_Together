@@ -9,13 +9,12 @@ const OrderActions = ({
   isHost,
   onChangeStatus,
   onPlaceOrder,
+  onLockCart,
   onAddItem
 }: any) => {
     
 
-  const onCheckout = () => {
-    onChangeStatus("Locked");
-  };
+  
   return (
     <>
       {/* -------------------- OPENED -------------------- */}
@@ -29,10 +28,10 @@ const OrderActions = ({
           />
           {isHost && (
             <CustomButton
-              title="Lock & Checkout"
+              title="Lock to Checkout"
               btnStyle={styles.leaveBtn}
               Icon={Icons.check}
-              onPress={onCheckout}
+              onPress={onLockCart}
             />
           )}
         </>

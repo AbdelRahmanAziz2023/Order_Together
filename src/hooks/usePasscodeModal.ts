@@ -3,8 +3,9 @@ import { validatePasscode } from "@/src/utils/validation";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
-export const usePasscodeModal = () => {
+export const usePasscodeModal = (onClose: () => void) => {
   const router = useRouter();
   const [passcode, setPasscode] = useState("");
   const [cartPreview, { isLoading, isError }] = useCartPreviewMutation();
@@ -21,15 +22,20 @@ export const usePasscodeModal = () => {
     try {
       const result: any = await cartPreview({ joinCode: normalized }).unwrap();
       const cartId = result?.cartId;
-
+      onClose();
       router.push({
         pathname: "/(app)/(home)/OrderDetails",
-        params: { cartId , restaurantShortCode: result?.restaurantShortCode},
+        params: { cartId, restaurantShortCode: result?.restaurantShortCode },
       });
       resetForm();
     } catch (error: any) {
       if (error?.status === 404) {
-        Alert.alert("Not Found", "No cart found for that passcode");
+        onClose();
+        Toast.show({
+          type: "info",
+          text1: "Not found",
+          text2: "The cart you are trying to join does not exist.",
+        });
         resetForm();
         return;
       }

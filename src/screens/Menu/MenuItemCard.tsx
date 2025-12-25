@@ -12,14 +12,12 @@ interface MenuItemCardProps {
   item: MenuItemDto;
   shortCode: string;
   cartId?: string;
-  onPress?: () => void;
 }
 
 export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   item,
   shortCode,
   cartId,
-  onPress,
 }) => {
   const {
     customizationNote,
@@ -29,7 +27,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
     closeCustomization,
     handleConfirmCustomization,
     cartState
-  } = useMenuItemCard({ item, shortCode, cartId, onPress });
+  } = useMenuItemCard({ item, shortCode, cartId });
 
   return (
     <>
@@ -69,7 +67,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         itemName={item.name}
         existingNote={customizationNote}
         isCreating={!cartId}
-        isJoining={cartState?.state === "NO_SHAREDCART" && !!cartId}
+        isJoining={cartState?.mode === "SPECTATOR"}
         editNote={setCustomizationNote}
         onConfirm={handleConfirmCustomization}
         onCancel={closeCustomization}

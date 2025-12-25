@@ -5,9 +5,10 @@ import OrderItem from "./OrderItem";
 
 interface OrdersListProps {
   data: OrderHistoryItem[];
+  isScrollable?: boolean;
 }
 
-const OrdersList = ({ data }: OrdersListProps) => {
+const OrdersList = ({ data, isScrollable=false }: OrdersListProps) => {
   return (
     <FlatList
       data={data}
@@ -21,7 +22,7 @@ const OrdersList = ({ data }: OrdersListProps) => {
       }
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.ordersList}
-      scrollEnabled={false}
+      scrollEnabled={isScrollable}
     />
   );
 };

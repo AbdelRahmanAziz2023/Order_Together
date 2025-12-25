@@ -62,6 +62,7 @@ const CartEndpoints = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["ActiveCart", "CartState"],
     }),
     joinCart: builder.mutation<JoinCartResponse, JoinCartRequest>({
       query: (body) => ({
@@ -90,12 +91,14 @@ const CartEndpoints = baseApi.injectEndpoints({
         url: `cart/${cartId}/lock`,
         method: "POST",
       }),
+      invalidatesTags: ["ActiveCart", "CartState"],
     }),
     unlockCart: builder.mutation<any, string>({
       query: (cartId) => ({
         url: `cart/${cartId}/unlock`,
         method: "POST",
       }),
+      invalidatesTags: ["ActiveCart", "CartState"],
     }),
   }),
 });

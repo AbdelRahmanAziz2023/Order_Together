@@ -13,7 +13,7 @@ const AuthFoot = ({ targetName, textButton, question }: Props) => {
   const router = useRouter();
 
   const onPress = () => {
-    router.replace(`/(auth)/${targetName}`);
+    router.push(`/(auth)/${targetName}`);
   };
 
   return (

@@ -1,18 +1,21 @@
 // components/OrderItem.tsx
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
+import { RootState } from "@/src/store/store";
 import { CartStateUserItem } from "@/src/types/cart.type";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 type Props = {
   item: CartStateUserItem;
   isYou: boolean;
-  onDelete: () => void;
-  onEdit: () => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
 };
 
 export const CartOrderItem = ({ item, isYou, onDelete, onEdit }: Props) => {
+  const isLocked = useSelector((state: RootState) => state.cart.isLocked);
   return (
     <View>
       <View style={styles.itemRow}>
@@ -23,7 +26,9 @@ export const CartOrderItem = ({ item, isYou, onDelete, onEdit }: Props) => {
         />
       </View>
 
-      {isYou && (
+      {item.note && <CustomText text={item.note} textStyle={[styles.note]} />}
+
+      {!isLocked && isYou && (
         <View style={styles.actions}>
           <Pressable onPress={onDelete}>
             <CustomText text="Delete" textStyle={[styles.delete]} />
@@ -44,6 +49,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemText: { fontFamily: "SenBold" },
+  note: {
+    fontFamily: "SenSemiBold",
+    color: Colors.gray400,
+    fontSize: 12,
+  },
   price: { fontFamily: "SenBold" },
   actions: {
     flexDirection: "row",

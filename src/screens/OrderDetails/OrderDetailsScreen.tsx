@@ -1,7 +1,9 @@
 import CustomHint from "@/src/components/common/CustomHint";
 import { Colors } from "@/src/constants/colors";
+import { RootState } from "@/src/store/store";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 import { useCartDetailsLogic } from "../../hooks/useCartDetailsLogic";
 import DeliveryPaymentSection from "./DeliveryPaymentSection";
 import MembersRow from "./MembersRow";
@@ -15,32 +17,32 @@ import ShowType from "./ShowType";
 const OrderDetailsScreen = () => {
   const {
     cartState,
-    status,
-    setStatus,
     deliveryFee,
     setDeliveryFee,
     setPaymentInstapay,
     showDataPerItem,
     setShowDataPerItem,
     isHost,
-    isInspector,
+    isSpectator,
     subtotal,
-    isLocked,
     onPlaceOrder,
     onAddItem,
+    onLockCart,
   } = useCartDetailsLogic();
+
+  const isLocked=useSelector((state: RootState) => state.cart.isLocked);
+ 
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
         {/* Order header */}
         <OrderHeader
-          status={status}
           inviteCode={cartState?.cartSummary?.joinCode}
         />
 
         {/* Hint for inspector */}
-        {!isHost && isInspector && (
+        {!isHost && isSpectator && (
           <CustomHint
             Color={!isLocked ? Colors.success : Colors.red}
             style={
@@ -60,10 +62,10 @@ const OrderDetailsScreen = () => {
         )}
         {/* members row */}
         <MembersRow
-          status={status!}
-          setStatus={setStatus}
           isItems={showDataPerItem}
           isHost={isHost}
+          isSpectator={isSpectator}
+          cartId={cartState?.cartSummary?.cartId ?? ""}
           membersCount={
             showDataPerItem
               ? cartState?.cartSummary?.items?.length ?? 0
@@ -90,6 +92,7 @@ const OrderDetailsScreen = () => {
             deliveryFee={deliveryFee}
             setDeliveryFee={setDeliveryFee}
             setPaymentInstapay={setPaymentInstapay}
+            membersCount={cartState?.cartSummary?.users?.length ?? 0}
           />
         )}
 
@@ -97,7 +100,7 @@ const OrderDetailsScreen = () => {
         <OrderTotals deliveryFee={deliveryFee} subtotal={subtotal} />
 
         {/* Hint to participant */}
-        {!isHost && !isInspector && (
+        {!isHost && !isSpectator && (
           <CustomHint
             message={
               !isLocked
@@ -113,7 +116,7 @@ const OrderDetailsScreen = () => {
           isHost={isHost}
           onPlaceOrder={onPlaceOrder}
           onAddItem={onAddItem}
-          onChangeStatus={setStatus}
+          onLockCart={() =>{ onLockCart();}}
         />
       </View>
     </ScrollView>

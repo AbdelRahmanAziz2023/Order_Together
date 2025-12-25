@@ -12,7 +12,7 @@ const RecentOrders = () => {
 
   const { data, isLoading, isError } = useGetOrdersHistoryQuery({
     page: 1,
-    limit: 3,
+    pageSize: 3,
   });
   const onPress = () => {
     router.push("/(app)/(home)/OrderHistory");

@@ -49,10 +49,18 @@ export interface CartStateResponseData {
   items: CartStateAggregateItem[];
 }
 
+export interface ConflictInfo {
+  activeCartId: string;
+  restaurantName: string;
+  restaurantShortCode: string;
+  restaurantLogoUrl: string;
+  isHost: boolean;
+}
+
 export interface CartStateResponse {
-  mode: "CREATOR" | "HOST" | "MEMBER" | "SPECTOR";
+  mode: "CREATOR" | "HOST" | "MEMBER" | "SPECTATOR";
   cartSummary: CartStateResponseData | null;
-  conflictInfo: CartStateResponseData | null;
+  conflictInfo: ConflictInfo | null;
 }
 
 export interface CreateCartResponse {
@@ -78,7 +86,7 @@ export interface CartItemDto {
   menuItemId: string;
   name: string;
   price: number;
-  qty: number;
+  quantity: number;
   note: string | null;
 }
 

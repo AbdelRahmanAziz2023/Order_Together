@@ -38,18 +38,18 @@ export const validatePassword = (password: string): boolean => {
 export const validateName = (name: string, fieldName: string): boolean => {
   const trimmed = name.trim();
   const nameRegex =
-    /^(?![_*$!])[A-Za-z\u0600-\u06FF]{2}[A-Za-z\u0600-\u06FF\s]{1,}$/;
+    /^[A-Za-z\u0600-\u06FF]{2}[A-Za-z\u0600-\u06FF\s\-]*[A-Za-z\u0600-\u06FF]$/;
 
   if (!nameRegex.test(trimmed)) {
     Alert.alert(
       "Invalid Name",
-      `${fieldName} must:
-- Start with at least 2 letters
-- No special characters at start
-- Be at least 3 characters long
-- No hyhens or numbers
-`
+      `${fieldName} must meet the following requirements:
+• Start with at least 2 letters
+• Contain only letters, spaces, or hyphens
+• Be at least 3 characters long
+• Not contain numbers or special characters`
     );
+
     return false;
   }
 

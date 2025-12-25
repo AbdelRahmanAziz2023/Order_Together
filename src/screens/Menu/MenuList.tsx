@@ -7,14 +7,12 @@ import { MenuItemCard } from "./MenuItemCard";
 
 interface MenuListProps {
   menuItems: MenuItemDto[];
-  onItemPress?: (item: MenuItemDto) => void;
   restaurantShortCode: string;
   cartId: string;
 }
 
 export const MenuList: React.FC<MenuListProps> = ({
   menuItems,
-  onItemPress,
   restaurantShortCode,
   cartId,
 }) => {
@@ -23,7 +21,6 @@ export const MenuList: React.FC<MenuListProps> = ({
       item={item}
       shortCode={restaurantShortCode}
       cartId={cartId}
-      onPress={() => onItemPress?.(item)}
     />
   );
 

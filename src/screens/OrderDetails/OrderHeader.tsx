@@ -1,19 +1,20 @@
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import getStatusBadgeStyle from "@/src/helper/getStatusBadgeStyle";
+import { RootState } from "@/src/store/store";
 import * as Clipboard from "expo-clipboard";
 import { Copy } from "lucide-react-native";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
 
 type Props = {
-  status: string;
   inviteCode?: string;
 };
 
-const OrderHeader = ({ status, inviteCode }: Props) => {
-  const isOpen = status === "Open";
+const OrderHeader = ({ inviteCode }: Props) => {
+  const isLocked = useSelector((state: RootState) => state.cart.isLocked);
 
   const handleCopy = async () => {
     if (!inviteCode) return;
@@ -33,14 +34,20 @@ const OrderHeader = ({ status, inviteCode }: Props) => {
       {/* Status + Invite */}
       <View style={styles.row}>
         {/* Status */}
-        <View style={[styles.statusBadge, getStatusBadgeStyle(status)]}>
-          <CustomText text={isOpen ? "Open" : "Locked"} textStyle={[styles.statusText]} />
+        <View style={[styles.statusBadge, getStatusBadgeStyle(isLocked?'Locked':'Open')]}>
+          <CustomText
+            text={isLocked ? "Locked" : "Open"}
+            textStyle={[styles.statusText]}
+          />
         </View>
 
         {/* Invite Code */}
-        {isOpen && inviteCode && (
+        {!isLocked && inviteCode && (
           <Pressable
-            style={({ pressed }) => [styles.inviteCode, pressed && styles.invitePressed]}
+            style={({ pressed }) => [
+              styles.inviteCode,
+              pressed && styles.invitePressed,
+            ]}
             onPress={handleCopy}
           >
             <CustomText text={inviteCode} textStyle={[styles.inviteCodeText]} />

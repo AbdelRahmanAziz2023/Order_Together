@@ -15,12 +15,12 @@ const ProfileScreen = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [logout]= useLogoutMutation();
+  const [logout,{isLoading}] = useLogoutMutation();
 
   const handleLogout = async () => {
     try {
-      const refreshToken= await getRefreshToken();
-      await logout({ token: refreshToken??'' }).unwrap();
+      const refreshToken = await getRefreshToken();
+      await logout({ token: refreshToken ?? "" }).unwrap();
       await clearAuth();
       dispatch(clearUser());
       router.replace("/(auth)/Login");
@@ -34,7 +34,7 @@ const ProfileScreen = () => {
 
   const handleEditProfile = () => {
     router.push("/(app)/(profile)/EditProfile");
-  }
+  };
   const handleOrderHistory = () => {
     router.push("/(app)/(home)/OrderHistory");
   };
@@ -44,14 +44,18 @@ const ProfileScreen = () => {
       <ScrollView style={styles.content}>
         <ProfileHeader />
 
-        <MenuSection onOrderHistoryPress={handleOrderHistory} onEditProfilePress={handleEditProfile}  />
+        <MenuSection
+          onOrderHistoryPress={handleOrderHistory}
+          onEditProfilePress={handleEditProfile}
+        />
 
         <View style={styles.logoutSection}>
           <CustomButton
-            title="Logout"
+            title={isLoading ? "Logging out..." : "Logout"}
             onPress={handleLogout}
             Icon={Icons.logout}
-            btnStyle={{ backgroundColor: Colors.red ,marginTop:20 }}
+            btnStyle={{ backgroundColor: Colors.red, marginTop: 20 }}
+            isDisabled={isLoading}
           />
         </View>
       </ScrollView>

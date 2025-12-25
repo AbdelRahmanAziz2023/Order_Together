@@ -1,9 +1,14 @@
-import { useGetCartStateMutation } from "@/src/services/api/endpoints/cartEndpoints";
+import {
+  useGetCartStateMutation,
+  useLockCartMutation,
+} from "@/src/services/api/endpoints/cartEndpoints";
 import { usePlaceOrderMutation } from "@/src/services/api/endpoints/orderEndpoints";
+import { useAppDispatch } from "@/src/store/hooks";
 import { CartStateResponse } from "@/src/types/cart.type";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Toast from "react-native-toast-message";
+import { toggleCartState } from "../store/slices/cartSlice";
 
 export function useCartDetailsLogic() {
   const { cartId, restaurantShortCode } = useLocalSearchParams<{
@@ -14,7 +19,7 @@ export function useCartDetailsLogic() {
   const [cartState, setCartState] = useState<CartStateResponse | null>(null);
   const [getCartState] = useGetCartStateMutation();
   const [placeOrder] = usePlaceOrderMutation();
-  const [hostOverride, setHostOverride] = useState<boolean | null>(null); // debug toggle
+  const [lockCart] = useLockCartMutation();
 
   // fetch + poll
   const mounted = useRef(true);
@@ -44,7 +49,7 @@ export function useCartDetailsLogic() {
     // poll
     const intervalId = setInterval(() => {
       fetchCartState();
-    }, 50000);
+    }, 5000);
 
     return () => {
       mounted.current = false;
@@ -53,10 +58,9 @@ export function useCartDetailsLogic() {
   }, [restaurantShortCode, cartId, getCartState]);
 
   // status
-  const [status, setStatus] = useState<string>("Open");
   useEffect(() => {
     if (!cartState?.cartSummary) return;
-    setStatus(cartState.cartSummary.isLocked ? "Locked" : "Open");
+    dispatch(toggleCartState(cartState.cartSummary.isLocked));
   }, [cartState]);
 
   // local UI state
@@ -66,9 +70,9 @@ export function useCartDetailsLogic() {
 
   // roles
   const derivedIsHost = cartState?.mode === "HOST";
-  const derivedIsInspector = cartState?.mode === "SPECTOR";
-  const isHost = hostOverride ?? derivedIsHost;
-  const isInspector = derivedIsInspector;
+  const derivedisSpectator = cartState?.mode === "SPECTATOR";
+  const isHost =derivedIsHost;
+  const isSpectator = derivedisSpectator;
 
   const subtotal = useMemo(() => {
     if (!cartState?.cartSummary) return 0;
@@ -92,10 +96,28 @@ export function useCartDetailsLogic() {
       0
     );
   }, [cartState]);
-
-  const isLocked = status === "Locked";
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
+  const onLockCart = async () => {
+    try {
+      await lockCart(cartState?.cartSummary?.cartId!).unwrap();
+
+      // update local cart lock
+      dispatch(toggleCartState(true));
+
+      Toast.show({
+        type: "success",
+        text1: "You locked the cart",
+      });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Error locking cart",
+        text2: "Please try again",
+      });
+    }
+  };
   const onPlaceOrder = async () => {
     try {
       const res = await placeOrder({
@@ -128,10 +150,6 @@ export function useCartDetailsLogic() {
 
   return {
     cartState,
-    hostOverride,
-    setHostOverride,
-    status,
-    setStatus,
     deliveryFee,
     setDeliveryFee,
     paymentInstapay,
@@ -139,10 +157,10 @@ export function useCartDetailsLogic() {
     showDataPerItem,
     setShowDataPerItem,
     isHost,
-    isInspector,
+    isSpectator,
     subtotal,
-    isLocked,
     onPlaceOrder,
     onAddItem,
+    onLockCart,
   } as const;
 }

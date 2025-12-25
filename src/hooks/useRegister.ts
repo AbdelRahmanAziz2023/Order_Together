@@ -16,10 +16,10 @@ export const useRegister = () => {
   const handleRegister = async () => {
     if (!validateSignUpInput(firstName, lastName, email, password)) return;
     try {
-      const res = await signUp({
-        firstName,
-        lastName,
-        email,
+      await signUp({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
         password,
       }).unwrap();
 
@@ -41,7 +41,7 @@ export const useRegister = () => {
       Toast.show({
         type: "error",
         text1: "Registration Failed",
-        text2: "An unexpected error occurred. Please try again later.",
+        text2: err.data?.title||"Registration failed, Please try again later.",
       });
     }
   };

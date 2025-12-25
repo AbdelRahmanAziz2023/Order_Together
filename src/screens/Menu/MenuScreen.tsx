@@ -19,10 +19,6 @@ const MenuScreen: React.FC = () => {
   const { data, isLoading, isError } =
     useGetRestaurantMenuQuery(restaurantShortCode);
 
-  const handleMenuItemPress = (item: any) => {
-    console.debug("Menu item pressed:", item);
-  };
-
   if (isLoading) {
     return <MenuItemCardSkeletonList />;
   }
@@ -54,7 +50,6 @@ const MenuScreen: React.FC = () => {
         menuItems={data?.menuItems!}
         restaurantShortCode={restaurantShortCode}
         cartId={cartId}
-        onItemPress={handleMenuItemPress}
       />
     </SafeAreaView>
   );

@@ -18,7 +18,7 @@ type Props = {
 
 const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
   const { passcode, setPasscode, isLoading, handleSubmit, resetForm } =
-    usePasscodeModal();
+    usePasscodeModal(onClose);
 
   const handleClose = () => {
     resetForm();
@@ -45,22 +45,26 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
 
           {isLoading && (
             <ActivityIndicator
-              size="small"
+              size="large"
               color={Colors.red}
               style={{ marginTop: 12 }}
             />
           )}
 
-          <CustomButton
-            title={isLoading ? "Joining..." : "Submit"}
-            btnStyle={styles.submitButton}
-            onPress={handleSubmit}
-            isDisabled={isLoading}
-          />
+          {!isLoading && (
+            <CustomButton
+              title={isLoading ? "Joining..." : "Submit"}
+              btnStyle={styles.submitButton}
+              onPress={handleSubmit}
+              isDisabled={isLoading}
+            />
+          )}
 
-          <TouchableOpacity onPress={handleClose}>
-            <CustomText text="Close" textStyle={[styles.closeText]} />
-          </TouchableOpacity>
+          {!isLoading && (
+            <TouchableOpacity onPress={handleClose}>
+              <CustomText text="Close" textStyle={[styles.closeText]} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </Modal>

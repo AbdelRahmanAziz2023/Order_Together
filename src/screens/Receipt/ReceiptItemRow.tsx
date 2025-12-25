@@ -1,12 +1,13 @@
 import CustomText from "@/src/components/common/CustomText";
+import { CartItemDto } from "@/src/types/cart.type";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const ReceiptItemRow = ({ item }: { item: any }) => (
+const ReceiptItemRow = ({ item }: { item: CartItemDto }) => (
   <View style={styles.row}>
     <View style={styles.left}>
       <View style={styles.qtyBox}>
-        <CustomText text={item.qty.toString()} textStyle={[styles.qtyText]} />
+        <CustomText text={item.quantity.toString()} textStyle={[styles.qtyText]} />
       </View>
 
       <View>
@@ -23,7 +24,7 @@ const ReceiptItemRow = ({ item }: { item: any }) => (
         <Text style={styles.egp}>EGP</Text>
       </Text>
       <CustomText
-        text={`${item.price.toFixed(2)} x ${item.qty}`}
+        text={`${item.price.toFixed(2)} x ${item.quantity}`}
         textStyle={[styles.subInfo]}
       />
     </View>

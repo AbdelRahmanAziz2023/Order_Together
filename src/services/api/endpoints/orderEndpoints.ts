@@ -3,18 +3,13 @@ import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getOrdersHistory: builder.query<OrderHistoryItem[],{page: number; limit: number}>({
-      query: ({page = 1, limit = 5}) => ({
+    getOrdersHistory: builder.query<OrderHistoryItem[],{page: number; pageSize: number}>({
+      query: ({page, pageSize}) => ({
         url: "/orders/history",
         method: "GET",
-        params: { page, limit },
+        params: { page, pageSize },
       }),
-      // serializeQueryArgs: ({endpointName}) => endpointName,
-      // merge: (currentCache, newItems)=>{
-      //   currentCache.push(...newItems);
-      //   return currentCache
-      // }
-
+      providesTags: ["OrderHistory"],
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
@@ -38,7 +33,7 @@ const OrderEndpoints = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["ActiveCart"],
+      invalidatesTags: ["ActiveCart", "OrderHistory"],
     }),
     togglePaidStatus: builder.mutation<{message: string}, { orderId: string; userId: string, body: any }>({
       query: ({ orderId, userId,body }) => ({
