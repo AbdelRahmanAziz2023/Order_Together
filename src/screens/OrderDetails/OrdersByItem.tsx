@@ -4,8 +4,9 @@ import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 const OrdersByItem = ({ cartSummary }: { cartSummary?: any }) => {
-  // Simple grouping: aggregate items across users
-  if (!cartSummary || !cartSummary.users) {
+  const items = cartSummary?.items ?? [];
+
+  if (!items.length) {
     return (
       <View style={styles.container}>
         <CustomText text="No items to show" textStyle={[styles.emptyText]} />
@@ -13,37 +14,35 @@ const OrdersByItem = ({ cartSummary }: { cartSummary?: any }) => {
     );
   }
 
-  const map: Record<string, { name: string; qty: number; users: string[] }> =
-    {};
-
-  cartSummary.users.forEach((user: any) => {
-    user.items.forEach((it: any) => {
-      if (!map[it.menuItemId]) {
-        map[it.menuItemId] = { name: it.name, qty: it.qty, users: [user.name] };
-      } else {
-        map[it.menuItemId].qty += it.qty;
-        map[it.menuItemId].users.push(user.name);
-      }
-    });
-  });
-
-  const items = Object.keys(map).map((id) => ({ id, ...map[id] }));
-
   return (
     <View style={styles.container}>
       <FlatList
         data={items}
-        keyExtractor={(i) => i.id}
+        keyExtractor={(item) => item.aggregateId}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <View style={styles.itemRow}>
-            <View style={styles.itemLeft}>
+            <View style={styles.left}>
               <CustomText text={item.name} textStyle={[styles.itemName]} />
+
+              {!!item.note && (
+                <CustomText
+                  text={item.note}
+                  textStyle={[styles.itemNote]}
+                />
+              )}
+            </View>
+
+            <View style={styles.right}>
+              <View style={styles.qtyBadge}>
+                <CustomText text={`x${item.qty}`} textStyle={[styles.qtyText]} />
+              </View>
+
               <CustomText
-                text={`By: ${item.users.join(", ")}`}
-                textStyle={[styles.itemUsers]}
+                text={`${item.price * item.qty} EGP`}
+                textStyle={[styles.priceText]}
               />
             </View>
-            <CustomText text={`${item.qty}`} textStyle={[styles.itemQty]} />
           </View>
         )}
       />
@@ -63,32 +62,49 @@ const styles = StyleSheet.create({
   emptyText: {
     color: Colors.gray600,
     fontSize: 14,
+    textAlign: "center",
   },
   itemRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F1F5F9",
+    justifyContent: "space-between",
+    paddingVertical: 10,
   },
-  itemLeft: {
+  left: {
     flex: 1,
-    paddingRight: 8,
+    paddingRight: 12,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.textPrimary,
   },
-  itemUsers: {
+  itemNote: {
     fontSize: 12,
     color: Colors.gray600,
+    marginTop: 2,
   },
-  itemQty: {
-    fontSize: 16,
+  right: {
+    alignItems: "flex-end",
+  },
+  qtyBadge: {
+    backgroundColor: Colors.red + "15",
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+    marginBottom: 4,
+  },
+  qtyText: {
+    fontSize: 13,
     color: Colors.red,
-    minWidth: 30,
-    textAlign: "right",
+    fontWeight: "600",
+  },
+  priceText: {
+    fontSize: 13,
+    color: Colors.gray700,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#F1F5F9",
   },
 });
 

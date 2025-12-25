@@ -46,12 +46,11 @@ const styles = StyleSheet.create({
   itemRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 5,
   },
   itemText: { fontFamily: "SenBold" },
   note: {
-    fontFamily: "SenSemiBold",
-    color: Colors.gray400,
+    color: Colors.gray500,
     fontSize: 12,
   },
   price: { fontFamily: "SenBold" },

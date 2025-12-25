@@ -1,5 +1,5 @@
 // hooks/useOrderList.ts
-import { useRemoveItemFromCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
+
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 
@@ -11,14 +11,14 @@ export const useOrderList = (orders:any) => {
     name: string;
   } | null>(null);
 
-  const [removeItemFromCart] = useRemoveItemFromCartMutation();
+  // const [removeItemFromCart] = useRemoveItemFromCartMutation();
 
   const toggle = (index: number) =>
     setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
 
   const onDelete = async (itemId: string) => {
     try {
-      await removeItemFromCart(itemId).unwrap();
+      // await removeItemFromCart(itemId).unwrap();
       Toast.show({
         type: "success",
         text1: "Item removed from cart",

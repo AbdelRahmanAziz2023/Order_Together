@@ -2,7 +2,6 @@ import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import {
   useDeleteCartMutation,
-  useLeaveCartMutation,
   useUnlockCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
 import { toggleCartState } from "@/src/store/slices/cartSlice";
@@ -28,9 +27,8 @@ const MembersRow = ({
   membersCount = 3,
   cartId,
 }: Props) => {
-  useLeaveCartMutation();
   const [unlockCart] = useUnlockCartMutation();
-  useDeleteCartMutation();
+  const [deleteCart] = useDeleteCartMutation();
 
   const isLocked = useSelector((state: RootState) => state.cart.isLocked);
   const router = useRouter();
@@ -56,35 +54,17 @@ const MembersRow = ({
 
   const onCancelPress = async () => {
     try {
-      //await cancelOrder().unwrap();
+      await deleteCart().unwrap();
       router.replace("/(app)/(home)");
       Toast.show({
         type: "success",
-        text1: "You canceled the order",
+        text1: `You ${isHost ? "cancelled" : "left"} the order`,
       });
     } catch (e) {
       console.debug(e);
       Toast.show({
         type: "error",
-        text1: "Error canceling order",
-        text2: "Please try again",
-      });
-    }
-  };
-
-  const onLeavePress = async () => {
-    try {
-      //await leaveCart().unwrap();
-      router.replace("/(app)/(home)");
-      Toast.show({
-        type: "success",
-        text1: "You left the cart",
-      });
-    } catch (e) {
-      console.debug(e);
-      Toast.show({
-        type: "error",
-        text1: "Error leaving cart",
+        text1: `Failed to ${isHost ? "cancel" : "left"} order`,
         text2: "Please try again",
       });
     }
@@ -123,7 +103,7 @@ const MembersRow = ({
           ) : (
             !isLocked && (
               <Pressable
-                onPress={onLeavePress}
+                onPress={onCancelPress}
                 style={({ pressed }) => [
                   styles.textButton,
                   pressed && styles.textButtonPressed,

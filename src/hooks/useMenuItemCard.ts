@@ -1,11 +1,11 @@
 import { showAppAlert } from "@/src/components/common/AppAlert";
 import {
+  useAddItemToCartMutation,
   useCreateCartMutation,
+  useDeleteCartMutation,
   useGetCartStateMutation,
   useJoinCartMutation,
-  useLeaveCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
-import { useAddItemToCartMutation } from "@/src/services/api/endpoints/cartItemEndpoint";
 import { useAppDispatch } from "@/src/store/hooks";
 import { MenuItemDto } from "@/src/types/restaurant.type";
 import { useRouter } from "expo-router";
@@ -35,7 +35,7 @@ export function useMenuItemCard({
   const [addItemToCart] = useAddItemToCartMutation();
   const [createCart] = useCreateCartMutation();
   const [joinCart] = useJoinCartMutation();
-  const [leaveCart] = useLeaveCartMutation();
+  const [deleteCart] = useDeleteCartMutation();
 
   const router = useRouter();
   /* ================= Fetch Cart State ================= */
@@ -80,7 +80,6 @@ export function useMenuItemCard({
                 quantity: quantity,
                 note: customizationNote,
               }).unwrap();
-              
 
               const res = await getCartState({
                 cartId: null,
@@ -91,7 +90,6 @@ export function useMenuItemCard({
               dispatch(toggleCartState(false));
               router.back();
               router.back();
-              console.log("before push");
               router.push({
                 pathname: "/(app)/(home)/OrderDetails",
                 params: {
@@ -99,7 +97,6 @@ export function useMenuItemCard({
                   restaurantShortCode: shortCode,
                 },
               });
-              console.log("after push");
               Toast.show({
                 type: "success",
                 text1: "Cart created",
@@ -112,10 +109,11 @@ export function useMenuItemCard({
           /* ===== User is Member ===== */
           case "MEMBER": {
             await addItemToCart({
-              cartId: cartState.cartSummary!.cartId,
-              menuItemId: item.id,
-              quantity: quantity,
-              note: customizationNote,
+              item: {
+                menuItemId: item.id,
+                quantity: quantity,
+                note: customizationNote,
+              },
             }).unwrap();
 
             Toast.show({
@@ -126,10 +124,11 @@ export function useMenuItemCard({
           }
           case "HOST": {
             await addItemToCart({
-              cartId: cartState.cartSummary!.cartId,
-              menuItemId: item.id,
-              quantity: quantity,
-              note: customizationNote,
+              item: {
+                menuItemId: item.id,
+                quantity: quantity,
+                note: customizationNote,
+              },
             }).unwrap();
 
             Toast.show({
@@ -157,13 +156,13 @@ export function useMenuItemCard({
               Toast.show({
                 type: "success",
                 text1: "Joined cart",
-                text2: "Item added",
+                text2: "Item added successfully",
               });
             } else {
               if (cartState.conflictInfo.isHost) {
                 await showAppAlert({
-                  title: "You are Host of another group",
-                  message: "Return to your group to show it",
+                  title: "You are Host of another Cart",
+                  message: "Return to your Cart =>",
                   buttons: [
                     {
                       text: "Return",
@@ -194,7 +193,7 @@ export function useMenuItemCard({
                       style: "destructive",
                       onPress: async () => {
                         try {
-                          await leaveCart().unwrap();
+                          await deleteCart().unwrap();
                           Toast.show({
                             type: "success",
                             text1: "Left previous cart",
@@ -225,7 +224,7 @@ export function useMenuItemCard({
 
         setCustomizationNote("");
         setModalVisible(false);
-      } catch(err:any) {
+      } catch (err: any) {
         Toast.show({
           type: "error",
           text1: "Error",

@@ -72,16 +72,9 @@ const CartEndpoints = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ActiveCart", "CartState"],
     }),
-    leaveCart: builder.mutation<void, void>({
+    deleteCart: builder.mutation<void, void>({
       query: () => ({
-        url: "cart/leave",
-        method: "POST",
-      }),
-      invalidatesTags: ["ActiveCart", "CartState"],
-    }),
-    deleteCart: builder.mutation<void, string>({
-      query: (cardId) => ({
-        url: `cart/${cardId}`,
+        url: `cart`,
         method: "DELETE",
       }),
       invalidatesTags: ["ActiveCart", "CartState"],
@@ -100,6 +93,14 @@ const CartEndpoints = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ActiveCart", "CartState"],
     }),
+    addItemToCart: builder.mutation<any, {item:CreateCartRequest}>({
+      query: (body) => ({
+        url: `cart/items`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["CartState"],
+    })
   }),
 });
 
@@ -110,8 +111,8 @@ export const {
   useCreateCartMutation,
   useCartPreviewMutation,
   useJoinCartMutation,
-  useLeaveCartMutation,
   useDeleteCartMutation,
   useLockCartMutation,
   useUnlockCartMutation,
+  useAddItemToCartMutation
 } = CartEndpoints;

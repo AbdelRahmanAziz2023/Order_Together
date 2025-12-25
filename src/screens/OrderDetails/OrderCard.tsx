@@ -4,7 +4,7 @@ import { Colors } from "@/src/constants/colors";
 import { RootState } from "@/src/store/store";
 import { CartStateUser, CartStateUserItem } from "@/src/types/cart.type";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import { CartOrderItem } from "./CartOrderItem";
 
@@ -44,14 +44,9 @@ export const OrderCard = ({
       <Pressable style={styles.rowHeader} onPress={onToggle}>
         <View style={styles.left}>
           <View style={styles.nameRow}>
-            <Text
-              style={[styles.name, isYou && { color: Colors.red }]}
-              numberOfLines={1}
-            >
-              {order.name}
-            </Text>
-
-            {isHost && (
+            <CustomText text={order.name} textStyle={[styles.name, isYou && { color: Colors.red }]} />
+            <View style={{gap: 5}}>
+              {isHost && (
               <View style={styles.hostBadge}>
                 <CustomText text="Host" textStyle={[styles.hostBadgeText]} />
               </View>
@@ -62,6 +57,8 @@ export const OrderCard = ({
                 <CustomText text="You" textStyle={[styles.youBadgeText]} />
               </View>
             )}
+            </View>
+            
           </View>
 
           <CustomText
@@ -120,13 +117,13 @@ const styles = StyleSheet.create({
   left: { flex: 1, paddingRight: 8 },
   right: { alignItems: "flex-end" },
   name: { fontSize: 16, fontFamily: "SenBold", color: Colors.textPrimary },
-  meta: { fontSize: 12, color: Colors.textMuted, marginTop: 2 },
+  meta: { fontSize: 12, color: Colors.gray500, marginTop: 2 },
   total: { fontSize: 14, fontFamily: "SenBold", color: Colors.textPrimary },
-  chev: { fontSize: 18, color: Colors.textMuted, marginTop: 4 },
+  chev: { fontSize: 18, color: Colors.gray500, marginTop: 4 },
   expandedContent: {
     marginTop: 12,
     borderTopWidth: 1,
-    borderTopColor: Colors.border,
+    borderTopColor: Colors.gray500,
     paddingTop: 12,
   },
 
