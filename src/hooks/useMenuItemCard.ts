@@ -4,7 +4,6 @@ import {
   useCreateCartMutation,
   useDeleteCartMutation,
   useGetCartStateMutation,
-  useJoinCartMutation,
 } from "@/src/services/api/endpoints/cartEndpoints";
 import { useAppDispatch } from "@/src/store/hooks";
 import { MenuItemDto } from "@/src/types/restaurant.type";
@@ -27,6 +26,7 @@ export function useMenuItemCard({
 }: UseMenuItemCardProps) {
   const dispatch = useAppDispatch();
   const [customizationNote, setCustomizationNote] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
   const [cartState, setCartState] = useState<CartStateResponse | null>(null);
 
@@ -34,7 +34,6 @@ export function useMenuItemCard({
 
   const [addItemToCart] = useAddItemToCartMutation();
   const [createCart] = useCreateCartMutation();
-  const [joinCart] = useJoinCartMutation();
   const [deleteCart] = useDeleteCartMutation();
 
   const router = useRouter();
@@ -66,178 +65,178 @@ export function useMenuItemCard({
   const closeCustomization = () => setModalVisible(false);
 
   /* ================= Confirm Logic ================= */
-  const handleConfirmCustomization = useCallback(
-    async (quantity: number) => {
-      if (!cartState) return;
+  const handleConfirmCustomization = useCallback(async () => {
+    if (!cartState) return;
 
-      try {
-        switch (cartState.mode) {
-          /* ===== User is Cart Creator ===== */
-          case "CREATOR": {
-            if (!cartId) {
-              await createCart({
-                menuItemId: item.id,
-                quantity: quantity,
-                note: customizationNote,
-              }).unwrap();
+    try {
+      switch (cartState.mode) {
+        /* ===== User is Cart Creator ===== */
+        case "CREATOR": {
+          if (!cartId) {
+            await createCart({
+              menuItemId: item.id,
+              quantity: quantity,
+              note: customizationNote,
+            }).unwrap();
 
-              const res = await getCartState({
-                cartId: null,
+            const res = await getCartState({
+              cartId: null,
+              restaurantShortCode: shortCode,
+            }).unwrap();
+            const cartId = res.cartSummary!.cartId;
+            // set global local cart state
+            dispatch(toggleCartState(false));
+            router.back();
+            router.back();
+            router.push({
+              pathname: "/(app)/(home)/OrderDetails",
+              params: {
+                cartId: cartId,
                 restaurantShortCode: shortCode,
-              }).unwrap();
-              const cartId = res.cartSummary!.cartId;
-              // set global local cart state
-              dispatch(toggleCartState(false));
-              router.back();
-              router.back();
-              router.push({
-                pathname: "/(app)/(home)/OrderDetails",
-                params: {
-                  cartId: cartId,
-                  restaurantShortCode: shortCode,
-                },
-              });
-              Toast.show({
-                type: "success",
-                text1: "Cart created",
-                text2: "Item added successfully",
-              });
-            }
-            break;
-          }
-
-          /* ===== User is Member ===== */
-          case "MEMBER": {
-            await addItemToCart({
-              item: {
-                menuItemId: item.id,
-                quantity: quantity,
-                note: customizationNote,
               },
-            }).unwrap();
-
+            });
             Toast.show({
               type: "success",
-              text1: "Item added to cart",
+              text1: "Cart created",
+              text2: "Item added successfully",
             });
-            break;
           }
-          case "HOST": {
-            await addItemToCart({
-              item: {
-                menuItemId: item.id,
-                quantity: quantity,
-                note: customizationNote,
-              },
-            }).unwrap();
-
-            Toast.show({
-              type: "success",
-              text1: "Item added to cart",
-            });
-            break;
-          }
-
-          /* ===== User is in another cart ===== */
-          case "SPECTATOR": {
-            if (cartState.conflictInfo === null) {
-              // join cart and set local cart
-              await joinCart({
-                cartId: cartState.cartSummary?.cartId!,
-                intitailItem: {
-                  menuItemId: item.id,
-                  qty: quantity,
-                  note: customizationNote,
-                },
-              }).unwrap();
-
-              dispatch(toggleCartState(false));
-
-              Toast.show({
-                type: "success",
-                text1: "Joined cart",
-                text2: "Item added successfully",
-              });
-            } else {
-              if (cartState.conflictInfo.isHost) {
-                await showAppAlert({
-                  title: "You are Host of another Cart",
-                  message: "Return to your Cart =>",
-                  buttons: [
-                    {
-                      text: "Return",
-                      style: "destructive",
-                      onPress: () => {
-                        router.back();
-                        router.back();
-                        router.push({
-                          pathname: "/(app)/(home)/OrderDetails",
-                          params: {
-                            cartId: cartState?.conflictInfo?.activeCartId,
-                            restaurantShortCode:
-                              cartState?.conflictInfo?.restaurantShortCode,
-                          },
-                        });
-                      },
-                    },
-                  ],
-                });
-              } else {
-                await showAppAlert({
-                  title: "You are in another group",
-                  message: "Leave current group to add items here?",
-                  buttons: [
-                    { text: "Cancel", style: "cancel" },
-                    {
-                      text: "Leave & Continue",
-                      style: "destructive",
-                      onPress: async () => {
-                        try {
-                          await deleteCart().unwrap();
-                          Toast.show({
-                            type: "success",
-                            text1: "Left previous cart",
-                          });
-
-                          setCustomizationNote("");
-                          setModalVisible(false);
-                        } catch {
-                          Toast.show({
-                            type: "error",
-                            text1: "Failed to leave cart",
-                          });
-                        }
-                      },
-                    },
-                  ],
-                  cancelable: true,
-                });
-              }
-            }
-
-            return; // ⛔ prevent modal auto-close
-          }
-
-          default:
-            return;
+          break;
         }
 
-        setCustomizationNote("");
-        setModalVisible(false);
-      } catch (err: any) {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: err.data.title,
-        });
+        /* ===== User is Member ===== */
+        case "MEMBER": {
+          await addItemToCart({
+            cartID: cartState.cartSummary?.cartId!,
+            item: {
+              menuItemId: item.id,
+              quantity: quantity,
+              note: customizationNote,
+            },
+          }).unwrap();
+
+          Toast.show({
+            type: "success",
+            text1: "Item added to cart",
+          });
+          break;
+        }
+        case "HOST": {
+          await addItemToCart({
+            cartID: cartState.cartSummary?.cartId!,
+            item: {
+              menuItemId: item.id,
+              quantity: quantity,
+              note: customizationNote,
+            },
+          }).unwrap();
+
+          Toast.show({
+            type: "success",
+            text1: "Item added to cart",
+          });
+          break;
+        }
+
+        /* ===== User is in another cart ===== */
+        case "SPECTATOR": {
+          if (cartState.conflictInfo === null) {
+            await addItemToCart({
+              cartID: cartState.cartSummary?.cartId!,
+              item: {
+                menuItemId: item.id,
+                quantity: quantity,
+                note: customizationNote,
+              },
+            }).unwrap();
+
+            dispatch(toggleCartState(false));
+
+            Toast.show({
+              type: "success",
+              text1: "Joined cart",
+              text2: "Item added successfully",
+            });
+          } else {
+            if (cartState.conflictInfo.isHost) {
+              await showAppAlert({
+                title: "You are Host of another Cart",
+                message: "Return to your Cart =>",
+                buttons: [
+                  {
+                    text: "Return",
+                    style: "destructive",
+                    onPress: () => {
+                      router.back();
+                      router.back();
+                      router.push({
+                        pathname: "/(app)/(home)/OrderDetails",
+                        params: {
+                          cartId: cartState?.conflictInfo?.activeCartId,
+                          restaurantShortCode:
+                            cartState?.conflictInfo?.restaurantShortCode,
+                        },
+                      });
+                    },
+                  },
+                ],
+              });
+            } else {
+              await showAppAlert({
+                title: "You are in another group",
+                message: "Leave current group to add items here?",
+                buttons: [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Leave & Continue",
+                    style: "destructive",
+                    onPress: async () => {
+                      try {
+                        await deleteCart().unwrap();
+                        Toast.show({
+                          type: "success",
+                          text1: "Left previous cart",
+                        });
+
+                        setCustomizationNote("");
+                        setModalVisible(false);
+                      } catch {
+                        Toast.show({
+                          type: "error",
+                          text1: "Failed to leave cart",
+                        });
+                      }
+                    },
+                  },
+                ],
+                cancelable: true,
+              });
+            }
+          }
+
+          return; // ⛔ prevent modal auto-close
+        }
+
+        default:
+          return;
       }
-    },
-    [cartState, cartId, customizationNote]
-  );
+
+      setCustomizationNote("");
+      setModalVisible(false);
+    } catch (err: any) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: err.data.title,
+      });
+    }
+  }, [cartState, cartId, customizationNote, quantity]);
 
   return {
     customizationNote,
     setCustomizationNote,
+    quantity,
+    setQuantity,
     modalVisible,
     openCustomization,
     closeCustomization,

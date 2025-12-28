@@ -1,5 +1,5 @@
 import { Colors } from "@/src/constants/colors";
-import React, { useState } from "react";
+import React from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -17,24 +17,24 @@ import { QuantityController } from "./QuantityController";
 
 interface CustomizationModalProps {
   visible: boolean;
-  itemID: string;
-  itemName: string;
+  item: any;
   existingNote?: string;
   isEditing?: boolean;
   isJoining?: boolean;
   isCreating?: boolean;
-  currentQuantity?: number;
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
   editNote: React.Dispatch<React.SetStateAction<string>>;
-  onConfirm: (quantity: number) => void;
+  onConfirm: () => void;
   onCancel: () => void;
 }
 
 export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   visible,
-  itemID,
-  itemName,
+  item,
   existingNote = "",
-  currentQuantity = 1,
+  quantity,
+  setQuantity,
   isEditing = false,
   isJoining = false,
   isCreating = false,
@@ -42,7 +42,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  const [quantity, setQuantity] = useState(currentQuantity);
+ 
 
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
@@ -50,11 +50,12 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
+    
   };
 
   const handleConfirm = () => {
     editNote(existingNote.trim().replace(/\s+/g, " "));
-    onConfirm(quantity);
+    onConfirm();
   };
 
   const handleClearNote = () => {
@@ -83,7 +84,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                     text="Customize Item"
                     textStyle={[styles.title]}
                   />
-                  <CustomText text={itemName} textStyle={[styles.itemName]} />
+                  <CustomText text={item.name} textStyle={[styles.itemName]} />
                 </View>
 
                 {/* QUANTITY SECTION */}

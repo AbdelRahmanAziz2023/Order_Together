@@ -2,13 +2,10 @@ import {
   ActiveCartResponse,
   CartStateRequest,
   CartStateResponse,
-  CartSummaryResponse,
   CreateCartRequest,
   CreateCartResponse,
-  JoinCartRequest,
-  JoinCartResponse,
   PreviewCartRequest,
-  PreviewCartResponse,
+  PreviewCartResponse
 } from "../../../types/cart.type";
 import { baseApi } from "../baseApi";
 
@@ -21,12 +18,6 @@ const CartEndpoints = baseApi.injectEndpoints({
         body,
       }),
       // providesTags: ["CartState"],
-    }),
-
-    getCartSummary: builder.query<CartSummaryResponse, string>({
-      query: (cartId) => ({
-        url: `cart/${cartId}/summary`,
-      }),
     }),
     getActiveCart: builder.query<
       ActiveCartResponse & { isNoContent: boolean },
@@ -62,15 +53,7 @@ const CartEndpoints = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["ActiveCart", "CartState"],
-    }),
-    joinCart: builder.mutation<JoinCartResponse, JoinCartRequest>({
-      query: (body) => ({
-        url: "cart/join",
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["ActiveCart", "CartState"],
+      // invalidatesTags: ["ActiveCart", "CartState"],
     }),
     deleteCart: builder.mutation<void, void>({
       query: () => ({
@@ -93,26 +76,44 @@ const CartEndpoints = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ActiveCart", "CartState"],
     }),
-    addItemToCart: builder.mutation<any, {item:CreateCartRequest}>({
-      query: (body) => ({
-        url: `cart/items`,
+    addItemToCart: builder.mutation<
+      any,
+      { cartID: string; item: CreateCartRequest }
+    >({
+      query: ({ cartID, item: body }) => ({
+        url: `cart/${cartID}/items`,
         method: "POST",
         body,
       }),
-      invalidatesTags: ["CartState"],
-    })
+      invalidatesTags: ["ActiveCart", "CartState"],
+    }),
+    editItemInCart: builder.mutation<any, any>({
+      query: ({ cartId, orderItemId, body }) => ({
+        url: `cart/${cartId}/items/${orderItemId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["ActiveCart", "CartState"],
+    }),
+    deleteItemFromCart: builder.mutation<any, any>({
+      query: ({ cartId, orderItemId }) => ({
+        url: `cart/${cartId}/items/${orderItemId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ActiveCart", "CartState"],
+    }),
   }),
 });
 
 export const {
   useGetCartStateMutation,
-  useGetCartSummaryQuery,
   useGetActiveCartQuery,
   useCreateCartMutation,
   useCartPreviewMutation,
-  useJoinCartMutation,
   useDeleteCartMutation,
   useLockCartMutation,
   useUnlockCartMutation,
-  useAddItemToCartMutation
+  useAddItemToCartMutation,
+  useEditItemInCartMutation,
+  useDeleteItemFromCartMutation,
 } = CartEndpoints;

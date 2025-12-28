@@ -4,7 +4,7 @@ import Reactotron, {
   trackGlobalErrors,
 } from 'reactotron-react-native';
 
-const reactotron = Reactotron.configure({ host: '192.168.1.5' })
+const reactotron = Reactotron.configure({ host: '192.168.1.8' })
   .useReactNative()
   .use(trackGlobalErrors())
   .use(networking())

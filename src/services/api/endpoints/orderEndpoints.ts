@@ -1,4 +1,4 @@
-import { BillResponse, OrderHistoryItem, PlaceOrderRequest, TrackerResponse } from "@/src/types/order.type";
+import { BillResponse, OrderHistoryItem, PlaceOrderRequest, PlaceOrderResponse, TrackerResponse } from "@/src/types/order.type";
 import { baseApi } from "../baseApi";
 
 const OrderEndpoints = baseApi.injectEndpoints({
@@ -27,7 +27,7 @@ const OrderEndpoints = baseApi.injectEndpoints({
       }),
       providesTags:['Tracker'],
     }),
-    placeOrder: builder.mutation<any,PlaceOrderRequest>({
+    placeOrder: builder.mutation<PlaceOrderResponse,PlaceOrderRequest>({
       query: (body) => ({
         url: `/orders/place`,
         method: "POST",

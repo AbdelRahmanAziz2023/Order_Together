@@ -57,4 +57,9 @@ export interface PlaceOrderRequest {
   deliveryFee: number;
 }
 
-export interface PlaceOrderResponse {}
+export interface PlaceOrderResponse {
+  orderId: string;
+  restaurantName: string;
+  totalAmount: number;
+  participantCount: number;
+}

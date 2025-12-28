@@ -3,6 +3,7 @@ import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { RootState } from "@/src/store/store";
 import { CartStateUser, CartStateUserItem } from "@/src/types/cart.type";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -14,7 +15,7 @@ type Props = {
   isExpanded: boolean;
   onToggle: () => void;
   onDelete: (id: string) => void;
-  onEdit: (item: { id: string; name: string }) => void;
+  onEdit: (item:any) => void;
 };
 
 export const OrderCard = ({
@@ -29,10 +30,12 @@ export const OrderCard = ({
   // Determine if this order belongs to the current user. Support both server-side 'participantId' (number) and mapped 'isYou' flag.
   const isYou =
     !!user &&
-    order.participantId !== undefined &&
+    order.userId !== undefined &&
     String(user.id) === String(order.userId);
 
+
   const isHost = !!order.isHost;
+  const router=useRouter();
 
   // Compose role styles: host and you can both apply
   const roleStyle: any[] = [styles.participantCard];
@@ -44,21 +47,23 @@ export const OrderCard = ({
       <Pressable style={styles.rowHeader} onPress={onToggle}>
         <View style={styles.left}>
           <View style={styles.nameRow}>
-            <CustomText text={order.name} textStyle={[styles.name, isYou && { color: Colors.red }]} />
-            <View style={{gap: 5}}>
+            <CustomText
+              text={order.name}
+              textStyle={[styles.name, isYou && { color: Colors.red }]}
+            />
+            <View style={{ gap: 5 }}>
               {isHost && (
-              <View style={styles.hostBadge}>
-                <CustomText text="Host" textStyle={[styles.hostBadgeText]} />
-              </View>
-            )}
+                <View style={styles.hostBadge}>
+                  <CustomText text="Host" textStyle={[styles.hostBadgeText]} />
+                </View>
+              )}
 
-            {isYou && (
-              <View style={styles.youBadge}>
-                <CustomText text="You" textStyle={[styles.youBadgeText]} />
-              </View>
-            )}
+              {isYou && (
+                <View style={styles.youBadge}>
+                  <CustomText text="You" textStyle={[styles.youBadgeText]} />
+                </View>
+              )}
             </View>
-            
           </View>
 
           <CustomText
@@ -83,10 +88,15 @@ export const OrderCard = ({
               key={item.orderItemId}
               item={item}
               isYou={isYou}
-              onDelete={() => onDelete(item.orderItemId.toString())}
-              onEdit={() =>
-                onEdit({ id: item.orderItemId.toString(), name: item.name })
-              }
+              onDelete={() => {
+                if(isHost&&order.items.length===1) {
+                  onDelete(item.orderItemId.toString());
+                  router.replace("/(app)/(home)");
+                  return;
+                }
+                onDelete(item.orderItemId.toString());
+              }}
+              onEdit={() => onEdit(item)}
             />
           ))}
         </View>

@@ -30,16 +30,13 @@ const OrderDetailsScreen = () => {
     onLockCart,
   } = useCartDetailsLogic();
 
-  const isLocked=useSelector((state: RootState) => state.cart.isLocked);
- 
+  const isLocked = useSelector((state: RootState) => state.cart.isLocked);
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
         {/* Order header */}
-        <OrderHeader
-          inviteCode={cartState?.cartSummary?.joinCode}
-        />
+        <OrderHeader inviteCode={cartState?.cartSummary?.joinCode} />
 
         {/* Hint for inspector */}
         {!isHost && isSpectator && (
@@ -84,7 +81,10 @@ const OrderDetailsScreen = () => {
         {showDataPerItem ? (
           <OrdersByItem cartSummary={cartState?.cartSummary} />
         ) : (
-          <OrderList orders={cartState?.cartSummary?.users! ?? []} />
+          <OrderList
+            orders={cartState?.cartSummary?.users! ?? []}
+            cartID={cartState?.cartSummary?.cartId!}
+          />
         )}
         {/* Inputs for Host when lock */}
         {isLocked && isHost && (
@@ -116,7 +116,9 @@ const OrderDetailsScreen = () => {
           isHost={isHost}
           onPlaceOrder={onPlaceOrder}
           onAddItem={onAddItem}
-          onLockCart={() =>{ onLockCart();}}
+          onLockCart={() => {
+            onLockCart();
+          }}
         />
       </View>
     </ScrollView>

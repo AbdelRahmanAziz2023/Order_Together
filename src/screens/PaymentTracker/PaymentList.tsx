@@ -130,7 +130,7 @@ const PaymentList: React.FC<Props> = ({
   return (
     <FlatList
       data={list}
-      keyExtractor={(item) => item.userId.toString()}
+      keyExtractor={(item) => item.userId}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       contentContainerStyle={{ padding: 16, paddingBottom: 120 }}

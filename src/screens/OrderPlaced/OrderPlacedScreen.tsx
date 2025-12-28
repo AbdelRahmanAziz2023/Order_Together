@@ -14,19 +14,17 @@ const OrderPlacedScreen = () => {
   const [timeLeft, setTimeLeft] = useState(redirectSeconds);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
-  const {orderId} = useLocalSearchParams<{orderId: string}>();
-
+  const {orderId,participantCount,totalAmount,restaurantName} = useLocalSearchParams<{orderId:string;participantCount:string;totalAmount:string;restaurantName:string}>();
+console.log(orderId,participantCount,totalAmount,restaurantName)
   const router = useRouter();
 
   const onReturnDashboard = () => {
-    console.debug("Return to dashboard");
     router.replace("/(app)/(home)");
   };
 
   const onTrackPayments = () => {
-    console.debug("Track payments");
     router.replace({
-      pathname: "/(app)/(home)/TrackPayments",
+      pathname: "/(app)/(home)/PaymentTracker",
       params: {orderId:orderId}
     });
   };
@@ -67,9 +65,9 @@ const OrderPlacedScreen = () => {
         <OrderPlacedHeader scaleAnim={scaleAnim} />
 
         <OrderPlacedReceipt
-          restaurant={restaurant}
-          totalPaid={totalPaid}
-          participants={participants}
+          restaurant={restaurantName}
+          totalPaid={Number(totalAmount)}
+          participants={Number(participantCount)}
         />
 
         <OrderPlacedButtons

@@ -127,7 +127,7 @@ export function useCartDetailsLogic() {
       }).unwrap();
       router.replace({
         pathname: "/(app)/(home)/OrderPlaced",
-        params: { orderId: res.id, status: res.status },
+        params: { orderId: res.orderId , participantCount: res.participantCount, totalAmount: res.totalAmount, restaurantName: res.restaurantName},
       });
     } catch {
       Toast.show({

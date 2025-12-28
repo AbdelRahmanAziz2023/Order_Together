@@ -4,7 +4,13 @@ import { CartStateUser } from "@/src/types/cart.type";
 import React from "react";
 import { OrderCard } from "./OrderCard";
 
-const OrderList = ({ orders }: { orders: CartStateUser[] }) => {
+const OrderList = ({
+  orders,
+  cartID,
+}: {
+  orders: CartStateUser[];
+  cartID: string;
+}) => {
   const {
     expanded,
     toggle,
@@ -14,8 +20,11 @@ const OrderList = ({ orders }: { orders: CartStateUser[] }) => {
     onEdit,
     onConfirm,
     onCancel,
-  } = useOrderList(orders);
-
+    quantity,
+    setQuantity,
+    customizationNote,
+    setCustomizationNote,
+  } = useOrderList(orders, cartID);
   return (
     <>
       {orders.map((order: CartStateUser, index: number) => (
@@ -33,12 +42,14 @@ const OrderList = ({ orders }: { orders: CartStateUser[] }) => {
       {selectedItem && (
         <CustomizationModal
           visible={visible}
-          itemID={selectedItem.id}
-          itemName={selectedItem.name}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          item={selectedItem}
           isEditing
+          existingNote={customizationNote}
           onConfirm={onConfirm}
           onCancel={onCancel}
-          editNote={() => {}}
+          editNote={setCustomizationNote}
         />
       )}
     </>

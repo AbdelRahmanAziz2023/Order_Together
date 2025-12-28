@@ -14,7 +14,7 @@ export interface ActiveCartData {
 }
 
 export interface CartStateUserItem {
-  orderItemId: number;
+  orderItemId: string;
   name: string;
   price: number;
   qty: number;

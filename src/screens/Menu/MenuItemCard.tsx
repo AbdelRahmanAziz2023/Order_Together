@@ -22,11 +22,13 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
   const {
     customizationNote,
     setCustomizationNote,
+    quantity,
+    setQuantity,
     modalVisible,
     openCustomization,
     closeCustomization,
     handleConfirmCustomization,
-    cartState
+    cartState,
   } = useMenuItemCard({ item, shortCode, cartId });
 
   return (
@@ -63,8 +65,9 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
       <CustomizationModal
         visible={modalVisible}
-        itemID={item.id}
-        itemName={item.name}
+        item={item}
+        quantity={quantity}
+        setQuantity={setQuantity}
         existingNote={customizationNote}
         isCreating={!cartId}
         isJoining={cartState?.mode === "SPECTATOR"}
