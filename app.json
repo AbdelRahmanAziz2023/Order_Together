@@ -12,12 +12,11 @@
     "platforms": ["ios", "android"],
 
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/Order-Together-Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "icon": "./assets/images/icon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.abdelrahmanaziz23.ordertogether",
       "infoPlist": {

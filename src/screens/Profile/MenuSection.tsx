@@ -27,11 +27,7 @@ const MenuSection = ({
         title="Order History"
         onPress={onOrderHistoryPress}
       />
-      <MenuItem
-        icon={Icons.bell}
-        title="Notifications"
-        onPress={onNotificationsPress}
-      />
+      
      
     </View>
   );

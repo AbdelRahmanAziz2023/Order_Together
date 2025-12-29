@@ -6,12 +6,12 @@ import { Icons } from "@/src/constants/images";
 import useEditProfile from "@/src/hooks/useEditProfile";
 import { useRouter } from "expo-router";
 import {
-    Alert,
-    Image,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    View,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,19 +24,16 @@ const EditProfileScreen = () => {
     setLastName,
     image,
     pickImage,
-    openCamera,
     removeImage,
     onSave,
     isSaving,
   } = useEditProfile();
 
-
   const openAvatarOptions = () => {
     Alert.alert("Profile Image", "Choose an option", [
-      { text: "Choose photo", onPress: pickImage },
-      { text: "Open camera", onPress: openCamera },
-      { text: "Remove photo", onPress: removeImage, style: "destructive" },
       { text: "Cancel", style: "cancel" },
+      { text: "Choose photo", onPress: pickImage },
+      { text: "Remove photo", onPress: removeImage, style: "destructive" },
     ]);
   };
   const handleSave = async () => {
@@ -47,12 +44,9 @@ const EditProfileScreen = () => {
   const Camera = Icons.camera;
   const User = Icons.user;
 
-
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* <CustomText text="Edit Profile" textStyle={[styles.title]} /> */}
-
         <View style={styles.card}>
           <View>
             <Pressable
@@ -65,9 +59,9 @@ const EditProfileScreen = () => {
                 <User width={80} height={80} stroke={Colors.red} />
               )}
             </Pressable>
-            <View style={styles.cameraBadge}>
+            <Pressable onPress={openAvatarOptions} style={styles.cameraBadge}>
               <Camera width={16} height={16} />
-            </View>
+            </Pressable>
           </View>
 
           <CustomText text="Tap image to change" textStyle={[styles.hint]} />
@@ -89,9 +83,11 @@ const EditProfileScreen = () => {
 
             <View style={styles.saveButton}>
               <CustomButton
-                title={isSaving? "Saving..." : "Save"}
+                title={isSaving ? "Saving..." : "Save"}
                 onPress={handleSave}
-                isDisabled={firstName.trim() === "" || lastName.trim() === "" || isSaving}
+                isDisabled={
+                  firstName.trim() === "" || lastName.trim() === "" || isSaving
+                }
               />
             </View>
           </View>

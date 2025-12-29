@@ -1,10 +1,10 @@
 import Reactotron, {
-  networking,
-  openInEditor,
-  trackGlobalErrors,
+    networking,
+    openInEditor,
+    trackGlobalErrors,
 } from 'reactotron-react-native';
 
-const reactotron = Reactotron.configure({ host: '192.168.216.144' })
+const reactotron = Reactotron.configure({ host: '192.168.1.8' })
   .useReactNative()
   .use(trackGlobalErrors())
   .use(networking())
@@ -13,6 +13,8 @@ const reactotron = Reactotron.configure({ host: '192.168.216.144' })
 
 export default reactotron;
 
-console.log = (...values) => Reactotron.log(...values);
-console.warn = (...values) => Reactotron.warn(...values);
-console.error = (...values) => Reactotron.error(...values);
+if (__DEV__) {
+  console.log = (...values) => Reactotron.log(...values);
+  console.warn = (...values) => Reactotron.warn(...values);
+  console.error = (...values) => Reactotron.error(...values);
+}

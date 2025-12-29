@@ -16,7 +16,6 @@ type UseEditProfileReturn = {
   setLastName: (v: string) => void;
   image: string | null;
   pickImage: () => Promise<void>;
-  openCamera: () => Promise<void>;
   removeImage: () => void;
   onSave: () => Promise<boolean>;
   isSaving: boolean;
@@ -39,9 +38,9 @@ const useEditProfile = (): UseEditProfileReturn => {
     setFirstName(user?.firstName || "");
     setLastName(user?.lastName || "");
     setImage(user?.avatarUrl || null);
-  }, [user]);
+  }, []);
 
-  const pickImage = useCallback(async () => {
+  const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -63,21 +62,14 @@ const useEditProfile = (): UseEditProfileReturn => {
       setImage(result.assets[0].uri);
       setFormDataFile(createFormData(result.assets[0].uri));
     }
-  }, []);
+  };
 
-  const removeImage = useCallback(() => {
+  const removeImage = () => {
     setImage(null);
     setFormDataFile(null);
-  }, []);
+  };
 
-  const openCamera = useCallback(async () => {
-    Alert.alert(
-      "Not implemented",
-      "Camera functionality is not implemented yet."
-    );
-  }, []);
-
-  const onSave = useCallback(async () => {
+  const onSave = async () => {
     setIsSaving(true);
     try {
       let avatarUrl = image;
@@ -86,13 +78,15 @@ const useEditProfile = (): UseEditProfileReturn => {
         const res = await uploadImage(formDataFile).unwrap();
         avatarUrl = res.url;
       }
-      const res = await updateProfile({
+      await updateProfile({
         firstName,
         lastName,
         avatarUrl,
-      }).unwrap();
-
-      dispatch(setUser(res.user));
+      })
+        .unwrap()
+        .then((res) => {
+          dispatch(setUser(res.user));
+        });
 
       Toast.show({
         type: "success",
@@ -103,17 +97,17 @@ const useEditProfile = (): UseEditProfileReturn => {
       setFormDataFile(null);
       setIsSaving(false);
       return true;
-    } catch (error) {
+    } catch (error:any) {
       setIsSaving(false);
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to update profile. Please try again.",
+        text2: `Failed to update profile: ${error.data?.title}`,
       });
       console.error("Failed to update profile:", error);
       return false;
     }
-  }, [formDataFile, image, firstName, lastName, uploadImage, updateProfile, dispatch]);
+  };
 
   return {
     firstName,
@@ -122,7 +116,6 @@ const useEditProfile = (): UseEditProfileReturn => {
     setLastName,
     image,
     pickImage,
-    openCamera,
     removeImage,
     onSave,
     isSaving,

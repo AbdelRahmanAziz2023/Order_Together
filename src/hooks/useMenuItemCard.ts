@@ -226,10 +226,7 @@ export function useMenuItemCard({
                 cancelable: true,
               });
             }
-
-            return; // keep modal open to allow user action
           }
-
           break;
         }
 
@@ -240,9 +237,11 @@ export function useMenuItemCard({
       setCustomizationNote("");
       setModalVisible(false);
     } catch (err: any) {
+      setCustomizationNote("");
+      setModalVisible(false);
       Toast.show({
         type: "error",
-        text1: "Error",
+        text1: "Failed to add item",
         text2: err.data.title,
       });
     }
