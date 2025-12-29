@@ -21,12 +21,20 @@ const ProfileScreen = () => {
     try {
       const refreshToken = await getRefreshToken();
       await logout({ token: refreshToken ?? "" }).unwrap();
-      await clearAuth();
+      try {
+        await clearAuth();
+      } catch (e) {
+        console.error("clearAuth failed during logout:", e);
+      }
       dispatch(clearUser());
       router.replace("/(auth)/Login");
     } catch (error) {
       console.error("Logout error:", error);
-      await clearAuth();
+      try {
+        await clearAuth();
+      } catch (e) {
+        console.error("clearAuth failed during logout:", e);
+      }
       dispatch(clearUser());
       router.replace("/(auth)/Login");
     }

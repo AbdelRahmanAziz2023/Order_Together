@@ -19,7 +19,7 @@ export const CartOrderItem = ({ item, isYou, onDelete, onEdit }: Props) => {
   return (
     <View>
       <View style={styles.itemRow}>
-        <CustomText text={item.name} textStyle={[styles.itemText]} />
+        <CustomText text={item.name} numOfLines={2}  textStyle={[styles.itemText]} />
         <CustomText
           text={`${item.qty} x ${item.price.toFixed(2)} EGP`}
           textStyle={[styles.price]}
@@ -46,14 +46,15 @@ const styles = StyleSheet.create({
   itemRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 5,
   },
-  itemText: { fontFamily: "SenBold" },
+  itemText: { fontFamily: "SenBold", flex: 1, marginRight: 8 },
   note: {
     color: Colors.gray500,
     fontSize: 12,
   },
-  price: { fontFamily: "SenBold" },
+  price: { fontFamily: "SenBold", flexShrink: 0, textAlign: "right" },
   actions: {
     flexDirection: "row",
     gap: 10,

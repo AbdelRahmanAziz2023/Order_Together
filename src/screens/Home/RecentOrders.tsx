@@ -13,7 +13,13 @@ const RecentOrders = () => {
   const { data, isLoading, isError } = useGetOrdersHistoryQuery({
     page: 1,
     pageSize: 3,
-  });
+  },
+  {
+    pollingInterval: 5000, // every 5 seconds
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  }
+);
   const onPress = () => {
     router.push("/(app)/(home)/OrderHistory");
   };

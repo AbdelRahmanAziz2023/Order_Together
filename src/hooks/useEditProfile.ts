@@ -39,9 +39,9 @@ const useEditProfile = (): UseEditProfileReturn => {
     setFirstName(user?.firstName || "");
     setLastName(user?.lastName || "");
     setImage(user?.avatarUrl || null);
-  }, []);
+  }, [user]);
 
-  const pickImage = async () => {
+  const pickImage = useCallback(async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -63,21 +63,21 @@ const useEditProfile = (): UseEditProfileReturn => {
       setImage(result.assets[0].uri);
       setFormDataFile(createFormData(result.assets[0].uri));
     }
-  };
+  }, []);
 
-  const removeImage = () => {
+  const removeImage = useCallback(() => {
     setImage(null);
     setFormDataFile(null);
-  };
+  }, []);
 
-  const openCamera = async () => {
+  const openCamera = useCallback(async () => {
     Alert.alert(
       "Not implemented",
       "Camera functionality is not implemented yet."
     );
-  };
+  }, []);
 
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     setIsSaving(true);
     try {
       let avatarUrl = image;
@@ -86,15 +86,13 @@ const useEditProfile = (): UseEditProfileReturn => {
         const res = await uploadImage(formDataFile).unwrap();
         avatarUrl = res.url;
       }
-      await updateProfile({
+      const res = await updateProfile({
         firstName,
         lastName,
         avatarUrl,
-      })
-        .unwrap()
-        .then((res) => {
-          dispatch(setUser(res.user));
-        });
+      }).unwrap();
+
+      dispatch(setUser(res.user));
 
       Toast.show({
         type: "success",
@@ -115,7 +113,7 @@ const useEditProfile = (): UseEditProfileReturn => {
       console.error("Failed to update profile:", error);
       return false;
     }
-  };
+  }, [formDataFile, image, firstName, lastName, uploadImage, updateProfile, dispatch]);
 
   return {
     firstName,

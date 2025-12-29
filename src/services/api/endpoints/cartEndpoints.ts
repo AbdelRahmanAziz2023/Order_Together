@@ -37,6 +37,7 @@ const CartEndpoints = baseApi.injectEndpoints({
         return { ...response, isNoContent: false };
       },
       providesTags: ["ActiveCart"],
+      keepUnusedDataFor: 5,
     }),
 
     createCart: builder.mutation<CreateCartResponse, CreateCartRequest>({

@@ -39,7 +39,7 @@ const PaymentList: React.FC<Props> = ({
   const renderItem = useCallback(
     ({ item }: { item: TrackerParticipant }) => {
       const isHost = item.isHost;
-      const isPaid = Boolean(toggles[item.userId]);
+      const isPaid = Boolean(toggles[item.participantId]);
 
       const currentStatus: "host" | "paid" | "unpaid" = isHost
         ? "host"
@@ -110,13 +110,10 @@ const PaymentList: React.FC<Props> = ({
                   styles.toggle,
                   isPaid ? styles.toggleOn : styles.toggleOff,
                 ]}
-                onPress={() => toggleSwitch(item.userId)}
+                onPress={() => toggleSwitch(item.participantId)}
               >
                 <View
-                  style={[
-                    styles.toggleCircle,
-                    { transform: [{ translateX }] },
-                  ]}
+                  style={[styles.toggleCircle, { transform: [{ translateX }] }]}
                 />
               </Pressable>
             )}
@@ -130,7 +127,7 @@ const PaymentList: React.FC<Props> = ({
   return (
     <FlatList
       data={list}
-      keyExtractor={(item) => item.userId}
+      keyExtractor={(item) => item.participantId}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       contentContainerStyle={{ padding: 16, paddingBottom: 120 }}

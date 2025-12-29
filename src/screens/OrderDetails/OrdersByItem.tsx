@@ -20,6 +20,7 @@ const OrdersByItem = ({ cartSummary }: { cartSummary?: any }) => {
         data={items}
         keyExtractor={(item) => item.aggregateId}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
+        scrollEnabled={false}
         renderItem={({ item }) => (
           <View style={styles.itemRow}>
             <View style={styles.left}>

@@ -18,7 +18,11 @@ const HomeScreen = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
 
-  const { data, isLoading, isError } = useGetActiveCartQuery();
+  const { data, isLoading, isError } = useGetActiveCartQuery(undefined, {
+    pollingInterval: 5000, // every 5 seconds
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
   const isActiveCart = data?.isNoContent ? false : true;
 
   const showPasscodePopup = () => {

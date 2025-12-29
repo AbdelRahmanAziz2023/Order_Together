@@ -8,11 +8,13 @@
     "scheme": "ordertogether",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "assetBundlePatterns": ["assets/images/*"],
+    "platforms": ["ios", "android"],
+
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-      // "image": null,
     },
     "ios": {
       "icon": "./assets/images/icon.png",
@@ -24,15 +26,12 @@
     },
     "android": {
       "icon": "./assets/images/icon.png",
-    
-      // "adaptiveIcon": {
-      //   "backgroundColor": "#FFFFFF",
-      //   "foregroundImage": "./assets/images/adabtive-icon.png"
-      // },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.abdelrahmanaziz23.ordertogether",
-      "jsEngine": "hermes"
+      "jsEngine": "hermes",
+      "enableProguardInReleaseBuilds": true,
+      "enableShrinkResources": true
     },
     "extra": {
       "eas": {

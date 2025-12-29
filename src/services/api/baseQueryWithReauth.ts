@@ -29,7 +29,11 @@ export const baseQueryWithReauth: BaseQuery = async (
 
     if (!refreshToken) {
       // nothing to refresh -> force logout / cleanup
-      await clearAuth();
+      try {
+        await clearAuth();
+      } catch (e) {
+        console.error("clearAuth failed:", e);
+      }
       return result;
     }
 
@@ -37,8 +41,9 @@ export const baseQueryWithReauth: BaseQuery = async (
     if (!refreshPromise) {
       refreshPromise = (async () => {
         try {
+          console.info("Attempting to refresh access token...");
           const res = await fetch(
-            "https://api.mahmoud-osama.com/api/auth/refresh",
+            "https://api2.mahmoud-osama.com/api/auth/refresh",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -47,7 +52,14 @@ export const baseQueryWithReauth: BaseQuery = async (
           );
 
           if (!res.ok) {
-            console.error("Refresh token request failed", res);
+            // try to include response body to aid debugging
+            let bodyText: string | null = null;
+            try {
+              bodyText = await res.text();
+            } catch (err) {
+              /* ignore */
+            }
+            console.error("Refresh token request failed", res.status, bodyText);
             return null;
           }
 
@@ -75,7 +87,11 @@ export const baseQueryWithReauth: BaseQuery = async (
       result = await rawBaseQuery(args, api, extraOptions);
     } else {
       // refresh failed -> clear stored auth and optionally redirect to login
-      await clearAuth();
+      try {
+        await clearAuth();
+      } catch (e) {
+        console.error("clearAuth failed:", e);
+      }
     }
   }
 

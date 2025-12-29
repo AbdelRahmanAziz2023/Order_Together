@@ -3,19 +3,9 @@ import { Colors } from "@/src/constants/colors";
 import { Icons } from "@/src/constants/images";
 import { RootState } from "@/src/store/store";
 import { Image, StyleSheet, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const ProfileHeader = () => {
-  const dispatch = useDispatch();
-
-  // const { data, isLoading, isSuccess } = useGetProfileQuery();
-
-  // useEffect(() => {
-  //   if (isSuccess && data) {
-  //     dispatch(setUser(data));
-  //   }
-  // }, [isSuccess, data, dispatch]);
-
   const user = useSelector((state: RootState) => state.user.user);
 
   const fullName =
@@ -27,19 +17,13 @@ const ProfileHeader = () => {
     <View style={styles.profileCard}>
       <View style={styles.avatarContainer}>
         {user?.avatarUrl ? (
-          <Image
-            source={{ uri: user.avatarUrl }}
-            style={styles.avatarImage}
-          />
+          <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
         ) : (
           <Icons.user width={60} height={60} stroke={Colors.red} />
         )}
       </View>
 
-      <CustomText
-        text={fullName}
-        textStyle={[styles.userName]}
-      />
+      <CustomText text={fullName} textStyle={[styles.userName]} />
 
       <CustomText
         text={user?.email ?? "Email"}
@@ -48,7 +32,6 @@ const ProfileHeader = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   profileCard: {

@@ -8,9 +8,6 @@ import OrderPlacedReceipt from "./OrderPlacedReceipt";
 
 const OrderPlacedScreen = () => {
   const redirectSeconds = 10;
-  const restaurant = "McDonalds";
-  const totalPaid = 100;
-  const participants = 5;
   const [timeLeft, setTimeLeft] = useState(redirectSeconds);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 

@@ -18,11 +18,16 @@ const OrderHeader = ({ inviteCode }: Props) => {
 
   const handleCopy = async () => {
     if (!inviteCode) return;
-    await Clipboard.setStringAsync(inviteCode);
+    await Clipboard.setStringAsync(
+      `You're invited to join the cart 🛒
+Use this invite code:
+${inviteCode}`
+    );
+
     Toast.show({
       type: "success",
-      text1: "Copied to clipboard",
-      text2: `${inviteCode} has been copied to your clipboard.`,
+      text1: "Copied!",
+      text2: "Code is ready to share ✨",
     });
   };
 
@@ -34,7 +39,12 @@ const OrderHeader = ({ inviteCode }: Props) => {
       {/* Status + Invite */}
       <View style={styles.row}>
         {/* Status */}
-        <View style={[styles.statusBadge, getStatusBadgeStyle(isLocked?'Locked':'Open')]}>
+        <View
+          style={[
+            styles.statusBadge,
+            getStatusBadgeStyle(isLocked ? "Locked" : "Open"),
+          ]}
+        >
           <CustomText
             text={isLocked ? "Locked" : "Open"}
             textStyle={[styles.statusText]}

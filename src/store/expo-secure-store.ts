@@ -60,12 +60,15 @@ export const removeRefreshToken = async (): Promise<void> => {
 
 export const clearAuth = async (): Promise<void> => {
   try {
+    console.info("Clearing auth tokens from SecureStore...");
     await Promise.all([
       SecureStore.deleteItemAsync(TOKEN_KEY),
       SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
     ]);
+    console.info("Auth tokens cleared.");
   } catch (error) {
     console.error("Error clearing auth data:", error);
-    throw error;
+    // Swallow the error to avoid crashing the app during cleanup.
+    // The app should remain usable even if SecureStore fails to delete items.
   }
 };

@@ -31,7 +31,7 @@ export interface BillResponse {
 }
 
 export interface TrackerParticipant {
-  userId: string; // uuid
+  participantId: string; // uuid
   userName: string;
   avatarUrl: string | null;
   total: number;

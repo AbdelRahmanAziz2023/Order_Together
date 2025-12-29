@@ -10,6 +10,7 @@ const OrderEndpoints = baseApi.injectEndpoints({
         params: { page, pageSize },
       }),
       providesTags: ["OrderHistory"],
+      keepUnusedDataFor: 5,
     }),
     getBill: builder.query<BillResponse,string>({
       query: (orderId) => ({
@@ -41,7 +42,7 @@ const OrderEndpoints = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-     invalidatesTags:['Tracker']
+     invalidatesTags:['Tracker','OrderHistory'],
     }),
   }),
 });

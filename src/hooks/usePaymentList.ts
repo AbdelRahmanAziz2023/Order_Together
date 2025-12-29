@@ -14,7 +14,7 @@ const usePaymentList = ({ participants, orderId, calculateTotal }: UsePaymentLis
 
   const [toggles, setToggles] = useState<Record<string, boolean>>(() =>
     list.reduce((acc, p) => {
-      acc[p.userId] = p.isPaid;
+      acc[p.participantId] = p.isPaid;
       return acc;
     }, {} as Record<string, boolean>)
   );
@@ -30,7 +30,7 @@ useEffect(() => {
 
   setToggles(
     list.reduce((acc, p) => {
-      acc[p.userId] = p.isPaid;
+      acc[p.participantId] = p.isPaid;
       return acc;
     }, {} as Record<string, boolean>)
   );
@@ -43,7 +43,7 @@ useEffect(() => {
 
   const toggleSwitch = useCallback(
     async (id: string) => {
-      const participant = list.find((p) => p.userId === id);
+      const participant = list.find((p) => p.participantId === id);
       if (!participant) return;
 
       const isCurrentlyPaid = !!toggles[id];

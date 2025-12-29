@@ -55,7 +55,7 @@ export function useMenuItemCard({
     };
 
     fetchCartState();
-  }, [cartId, shortCode]);
+  }, [cartId, shortCode, getCartState]);
 
   /* ================= Modal Handlers ================= */
   const openCustomization = () => {
@@ -150,7 +150,21 @@ export function useMenuItemCard({
               },
             }).unwrap();
 
+            // refresh cart state from server
+            try {
+              const updated = await getCartState({
+                cartId: null,
+                restaurantShortCode: shortCode,
+              }).unwrap();
+
+              setCartState(updated);
+            } catch {
+              // ignore refresh errors
+            }
+
             dispatch(toggleCartState(false));
+            setCustomizationNote("");
+            setModalVisible(false);
 
             Toast.show({
               type: "success",
@@ -212,9 +226,11 @@ export function useMenuItemCard({
                 cancelable: true,
               });
             }
+
+            return; // keep modal open to allow user action
           }
 
-          return; // ⛔ prevent modal auto-close
+          break;
         }
 
         default:
@@ -230,7 +246,20 @@ export function useMenuItemCard({
         text2: err.data.title,
       });
     }
-  }, [cartState, cartId, customizationNote, quantity]);
+  }, [
+    cartState,
+    cartId,
+    customizationNote,
+    quantity,
+    addItemToCart,
+    createCart,
+    deleteCart,
+    getCartState,
+    dispatch,
+    item.id,
+    router,
+    shortCode,
+  ]);
 
   return {
     customizationNote,
