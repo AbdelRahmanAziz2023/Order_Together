@@ -1,24 +1,33 @@
 // hooks/useOrderList.ts
 
+import { emitCartRefresh } from "@/src/utils/cartStateRefresh";
 import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import {
   useDeleteItemFromCartMutation,
   useEditItemInCartMutation,
+  useGetCartStateMutation,
 } from "../services/api/endpoints/cartEndpoints";
 import { CartStateUserItem } from "../types/cart.type";
 
-export const useOrderList = (orders: any, cartID: string) => {
+export const useOrderList = (
+  orders: any,
+  cartID: string,
+  restaurantShortCode?: string
+) => {
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [visible, setVisible] = useState(false);
 
   const [customizationNote, setCustomizationNote] = useState("");
   const [quantity, setQuantity] = useState(1);
 
-  const [selectedItem, setSelectedItem] = useState<CartStateUserItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CartStateUserItem | null>(
+    null
+  );
 
   const [deleteItemFromCart] = useDeleteItemFromCartMutation();
   const [editItemInCart] = useEditItemInCartMutation();
+  const [getCartState] = useGetCartStateMutation();
 
   // 🔹 Keep modal fields in sync with selected item
   useEffect(() => {
@@ -46,7 +55,22 @@ export const useOrderList = (orders: any, cartID: string) => {
         type: "success",
         text1: "Item removed from cart",
       });
-    } catch (error) {
+
+      // notify listeners to refresh
+      emitCartRefresh();
+
+      // best-effort local refresh (fallback)
+      if (restaurantShortCode) {
+        try {
+          await getCartState({
+            cartId: cartID,
+            restaurantShortCode,
+          }).unwrap();
+        } catch {
+          // ignore – polling will sync later
+        }
+      }
+    } catch {
       Toast.show({
         type: "error",
         text1: "Failed to remove item",
@@ -54,7 +78,7 @@ export const useOrderList = (orders: any, cartID: string) => {
     }
   };
 
-  const onEdit = (item: any) => {
+  const onEdit = (item: CartStateUserItem) => {
     setSelectedItem(item);
     setVisible(true);
   };
@@ -77,13 +101,26 @@ export const useOrderList = (orders: any, cartID: string) => {
         text1: "Item edited",
       });
 
-      setVisible(false);
-      setSelectedItem(null);
-    } catch (error) {
+      // notify listeners to refresh
+      emitCartRefresh();
+
+      // best-effort local refresh (fallback)
+      if (restaurantShortCode) {
+        try {
+          await getCartState({
+            cartId: cartID,
+            restaurantShortCode,
+          }).unwrap();
+        } catch {
+          // ignore – polling will sync later
+        }
+      }
+    } catch {
       Toast.show({
         type: "error",
         text1: "Failed to edit item",
       });
+    } finally {
       setVisible(false);
       setSelectedItem(null);
     }

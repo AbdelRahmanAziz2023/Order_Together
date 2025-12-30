@@ -19,7 +19,7 @@ const HomeActions = ({ onJoin, onCreate }: Props) => {
       />
 
       <CustomButton
-        title="Create Order"
+        title="Create Cart"
         btnStyle={styles.createButton}
         Icon={Icons.plus}
         onPress={onCreate}

@@ -7,9 +7,11 @@ import { OrderCard } from "./OrderCard";
 const OrderList = ({
   orders,
   cartID,
+  restaurantShortCode,
 }: {
   orders: CartStateUser[];
   cartID: string;
+  restaurantShortCode?: string;
 }) => {
   const {
     expanded,
@@ -24,7 +26,7 @@ const OrderList = ({
     setQuantity,
     customizationNote,
     setCustomizationNote,
-  } = useOrderList(orders, cartID);
+  } = useOrderList(orders, cartID, restaurantShortCode);
   return (
     <>
       {orders.map((order: CartStateUser, index: number) => (

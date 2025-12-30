@@ -1,4 +1,5 @@
 // components/OrderCard.tsx
+import { showAppAlert } from "@/src/components/common/AppAlert";
 import CustomText from "@/src/components/common/CustomText";
 import { Colors } from "@/src/constants/colors";
 import { RootState } from "@/src/store/store";
@@ -88,12 +89,29 @@ export const OrderCard = ({
               key={item.orderItemId}
               item={item}
               isYou={isYou}
-              onDelete={() => {
-                if(isHost&&order.items.length===1) {
-                  onDelete(item.orderItemId.toString());
-                  router.replace("/(app)/(home)");
+              onDelete={async () => {
+                if (order.items.length === 1) {
+                  await showAppAlert({
+                    title: "Remove last item?",
+                    message:
+                      `This is the last item in the cart — removing it will ${isHost? "delete" : "leave"} the cart. Are you sure you want to continue?`,
+                    buttons: [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "OK",
+                        style: "destructive",
+                        onPress: () => {
+                          onDelete(item.orderItemId.toString());
+                          router.replace("/(app)/(home)");
+                        },
+                      },
+                    ],
+                    cancelable: true,
+                  });
+
                   return;
                 }
+
                 onDelete(item.orderItemId.toString());
               }}
               onEdit={() => onEdit(item)}

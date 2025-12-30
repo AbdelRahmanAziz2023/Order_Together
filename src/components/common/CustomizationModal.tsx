@@ -1,9 +1,11 @@
 import { Colors } from "@/src/constants/colors";
 import React from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -42,18 +44,11 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
- 
-
-  const handleIncrease = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
-  const handleDecrease = () => {
-    if (quantity > 1) setQuantity((prev) => prev - 1);
-    
-  };
+  const handleIncrease = () => setQuantity((prev) => prev + 1);
+  const handleDecrease = () => quantity > 1 && setQuantity((prev) => prev - 1);
 
   const handleConfirm = () => {
+    Keyboard.dismiss();
     editNote(existingNote.trim().replace(/\s+/g, " "));
     onConfirm();
   };
@@ -64,21 +59,20 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPress={onCancel}
-      >
+      {/* Overlay */}
+      <Pressable style={styles.overlay} onPress={onCancel}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardView}
         >
           <ScrollView
             contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
+            keyboardShouldPersistTaps="always"
           >
-            <TouchableOpacity activeOpacity={1}>
+            {/* Modal content */}
+            <Pressable onPress={() => {}}>
               <View style={styles.modalContainer}>
+                {/* HEADER */}
                 <View style={styles.header}>
                   <CustomText
                     text="Customize Item"
@@ -87,7 +81,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                   <CustomText text={item.name} textStyle={[styles.itemName]} />
                 </View>
 
-                {/* QUANTITY SECTION */}
+                {/* QUANTITY */}
                 <View style={styles.quantitySection}>
                   <QuantityController
                     quantity={quantity}
@@ -95,6 +89,7 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                     onDecrease={handleDecrease}
                   />
                 </View>
+
                 {/* NOTE INPUT */}
                 <View style={styles.content}>
                   <View style={styles.labelRow}>
@@ -153,27 +148,18 @@ export const CustomizationModal: React.FC<CustomizationModalProps> = ({
                   </TouchableOpacity>
                 </View>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </ScrollView>
         </KeyboardAvoidingView>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flex: 1,
-    justifyContent: "center",
-    width: "100%",
-  },
+  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)" },
+  keyboardView: { flex: 1 },
+  scrollContent: { flex: 1, justifyContent: "center", width: "100%" },
   modalContainer: {
     backgroundColor: Colors.white,
     borderRadius: 24,
@@ -185,9 +171,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 8,
   },
-  header: {
-    marginBottom: 20,
-  },
+  header: { marginBottom: 20 },
   title: {
     fontSize: 12,
     fontFamily: "SenMedium",
@@ -207,9 +191,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
-  content: {
-    marginVertical: 10,
-  },
+  content: { marginVertical: 10 },
   labelRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -222,11 +204,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     letterSpacing: 0.3,
   },
-  clearButton: {
-    fontSize: 13,
-    fontFamily: "SenMedium",
-    color: Colors.red,
-  },
+  clearButton: { fontSize: 13, fontFamily: "SenMedium", color: Colors.red },
   textInput: {
     borderWidth: 1.5,
     borderRadius: 14,
@@ -239,27 +217,11 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     textAlignVertical: "top",
   },
-  charCountContainer: {
-    alignItems: "flex-end",
-    marginTop: 8,
-  },
-  charCount: {
-    fontSize: 12,
-    color: Colors.textMuted,
-    fontFamily: "SenMedium",
-  },
-  footer: {
-    marginTop: 20,
-    gap: 5,
-  },
-  confirmButton: {
-    backgroundColor: Colors.red,
-  },
-  closeContainer: {
-    marginTop: 8,
-    alignItems: "center",
-    paddingVertical: 5,
-  },
+  charCountContainer: { alignItems: "flex-end", marginTop: 8 },
+  charCount: { fontSize: 12, color: Colors.textMuted, fontFamily: "SenMedium" },
+  footer: { marginTop: 20, gap: 5 },
+  confirmButton: { backgroundColor: Colors.red },
+  closeContainer: { marginTop: 8, alignItems: "center", paddingVertical: 5 },
   closeText: {
     fontSize: 14,
     color: Colors.gray500,

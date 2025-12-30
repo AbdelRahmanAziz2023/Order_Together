@@ -39,7 +39,7 @@ const DeliveryPaymentSection = ({
               placeholder="0"
               onChangeText={onDeliveryChange}
               style={styles.numberInput}
-              value={deliveryFee === 0 ? "" : String(deliveryFee)}
+              value={String(deliveryFee)}
             />
           </View>
         </View>
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: 15,
     backgroundColor: "#FFFFFF",
+    color: "#111827",
   },
 
   hint: {

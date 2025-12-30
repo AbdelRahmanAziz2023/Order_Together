@@ -9,6 +9,7 @@ import {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
+import { router } from "expo-router";
 import { rawBaseQuery } from "./rawBaseQuery";
 
 type BaseQuery = BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>;
@@ -31,8 +32,16 @@ export const baseQueryWithReauth: BaseQuery = async (
       // nothing to refresh -> force logout / cleanup
       try {
         await clearAuth();
-      } catch (e) {
-        console.error("clearAuth failed:", e);
+
+        // navigate to login if possible
+        try {
+          // guard against router not being initialized
+          router.replace("/(auth)/Login");
+        } catch {
+          // ignore navigation errors
+        }
+      } catch {
+        console.error("clearAuth failed while handling missing refresh token");
       }
       return result;
     }
@@ -56,7 +65,7 @@ export const baseQueryWithReauth: BaseQuery = async (
             let bodyText: string | null = null;
             try {
               bodyText = await res.text();
-            } catch (err) {
+            } catch {
               /* ignore */
             }
             console.error("Refresh token request failed", res.status, bodyText);
@@ -72,8 +81,8 @@ export const baseQueryWithReauth: BaseQuery = async (
             await saveRefreshToken(data.refreshToken);
           }
           return data;
-        } catch (e) {
-          console.error("Refresh token request failed", e);
+        } catch {
+          console.error("Refresh token request failed");
           return null;
         }
       })();
@@ -86,11 +95,18 @@ export const baseQueryWithReauth: BaseQuery = async (
       // retry original request after refreshing the token
       result = await rawBaseQuery(args, api, extraOptions);
     } else {
-      // refresh failed -> clear stored auth and optionally redirect to login
+      // refresh failed -> clear stored auth and redirect to login
       try {
         await clearAuth();
-      } catch (e) {
-        console.error("clearAuth failed:", e);
+
+        // navigate to login route if router is available
+        try {
+          router.replace("/(auth)/Login");
+        } catch {
+          // ignore navigation errors
+        }
+      } catch {
+        console.error("clearAuth failed while retrying request");
       }
     }
   }

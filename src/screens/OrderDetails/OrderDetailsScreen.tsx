@@ -1,4 +1,5 @@
 import CustomHint from "@/src/components/common/CustomHint";
+import OrderDetailsSkeleton from "@/src/components/skeleton/OrderDetailsSkeleton";
 import { Colors } from "@/src/constants/colors";
 import { RootState } from "@/src/store/store";
 import React from "react";
@@ -22,6 +23,7 @@ const OrderDetailsScreen = () => {
     setPaymentInstapay,
     showDataPerItem,
     setShowDataPerItem,
+    isInitialLoading,
     isHost,
     isSpectator,
     subtotal,
@@ -31,6 +33,9 @@ const OrderDetailsScreen = () => {
   } = useCartDetailsLogic();
 
   const isLocked = useSelector((state: RootState) => state.cart.isLocked);
+
+  // show skeleton for the initial load
+  if (isInitialLoading) return <OrderDetailsSkeleton />;
 
   return (
     <ScrollView style={styles.container}>
@@ -52,7 +57,7 @@ const OrderDetailsScreen = () => {
             }
             message={
               !isLocked
-                ? "You are an inspector, add item to join"
+                ? "You are an spectator, add item to join"
                 : "This cart is locked, you so late"
             }
           />
@@ -84,6 +89,7 @@ const OrderDetailsScreen = () => {
           <OrderList
             orders={cartState?.cartSummary?.users! ?? []}
             cartID={cartState?.cartSummary?.cartId!}
+            restaurantShortCode={cartState?.cartSummary?.restaurantShortCode}
           />
         )}
         {/* Inputs for Host when lock */}

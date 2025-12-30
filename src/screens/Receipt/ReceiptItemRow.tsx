@@ -10,8 +10,8 @@ const ReceiptItemRow = ({ item }: { item: CartItemDto }) => (
         <CustomText text={item.quantity.toString()} textStyle={[styles.qtyText]} />
       </View>
 
-      <View>
-        <CustomText text={item.name} textStyle={[styles.name]} />
+      <View style={styles.itemRow}>
+        <CustomText text={item.name} numOfLines={2} textStyle={[styles.name]} />
         {item.note ? (
           <CustomText text={item.note} textStyle={[styles.note]} />
         ) : null}
@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+   itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
   },
 
   left: {

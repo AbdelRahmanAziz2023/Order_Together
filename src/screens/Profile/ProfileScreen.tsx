@@ -15,19 +15,19 @@ const ProfileScreen = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [logout,{isLoading}] = useLogoutMutation();
+  const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = async () => {
     try {
       const refreshToken = await getRefreshToken();
       await logout({ token: refreshToken ?? "" }).unwrap();
+      router.replace("/(auth)/Login");
       try {
         await clearAuth();
       } catch (e) {
         console.error("clearAuth failed during logout:", e);
       }
       dispatch(clearUser());
-      router.replace("/(auth)/Login");
     } catch (error) {
       console.error("Logout error:", error);
       try {

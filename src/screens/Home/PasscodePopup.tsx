@@ -5,7 +5,9 @@ import { Colors } from "@/src/constants/colors";
 import { usePasscodeModal } from "@/src/hooks/usePasscodeModal";
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -32,7 +34,11 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
       animationType="fade"
       onRequestClose={handleClose}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+      >
         <View style={styles.alertBox}>
           <CustomText text="Enter Passcode" textStyle={[styles.title]} />
 
@@ -41,6 +47,8 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
             name=""
             value={passcode}
             onChangeText={setPasscode}
+            onSubmitEditing={handleSubmit}
+            returnKeyType="done"
           />
 
           {isLoading && (
@@ -66,7 +74,7 @@ const PasscodePopup = ({ isVisible = false, onClose }: Props) => {
             </TouchableOpacity>
           )}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

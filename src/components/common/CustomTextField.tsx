@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  TextInputProps,
   View,
   ViewStyle,
 } from 'react-native';
@@ -17,7 +18,12 @@ type Props = {
   placeholder: string;
   containerStyle?: ViewStyle;
   isPassword?: boolean;
-};
+} & Partial<
+  Pick<
+    TextInputProps,
+    'onSubmitEditing' | 'keyboardType' | 'returnKeyType' | 'maxLength' | 'blurOnSubmit'
+  >
+>;
 
 const CustomTextField = ({
   name,
@@ -26,6 +32,11 @@ const CustomTextField = ({
   isPassword = false,
   onChangeText,
   value,
+  onSubmitEditing,
+  returnKeyType,
+  keyboardType,
+  maxLength,
+  blurOnSubmit,
 }: Props) => {
   const [isSecure, setIsSecure] = useState(isPassword);
 
@@ -56,6 +67,11 @@ const CustomTextField = ({
           value={value}
           selectionHandleColor={Colors.lightred}
           autoCapitalize='none'
+          onSubmitEditing={onSubmitEditing}
+          returnKeyType={returnKeyType}
+          keyboardType={keyboardType}
+          maxLength={maxLength}
+          blurOnSubmit={blurOnSubmit}
         />
         {isPassword && <Pressable onPress={changeSecure}>{icon}</Pressable>}
       </View>

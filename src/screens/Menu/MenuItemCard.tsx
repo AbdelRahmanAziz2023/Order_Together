@@ -69,7 +69,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         quantity={quantity}
         setQuantity={setQuantity}
         existingNote={customizationNote}
-        isCreating={!cartId}
+        isCreating={cartState?.mode === "CREATOR"}
         isJoining={cartState?.mode === "SPECTATOR"}
         editNote={setCustomizationNote}
         onConfirm={handleConfirmCustomization}

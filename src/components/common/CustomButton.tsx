@@ -1,7 +1,13 @@
-import { Colors } from '@/src/constants/colors';
-import { StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { SvgProps } from 'react-native-svg';
-import CustomText from './CustomText';
+import { Colors } from "@/src/constants/colors";
+import {
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from "react-native";
+import { SvgProps } from "react-native-svg";
+import CustomText from "./CustomText";
 
 type Props = {
   onPress?: () => void;
@@ -28,33 +34,37 @@ const CustomButton = ({
     >
       <View style={styles.content}>
         {Icon && <Icon style={styles.iconWrapper} />}
-        <CustomText text={title} textStyle={[!textStyle? styles.textStyle: textStyle]} />
+        <CustomText
+          text={title}
+          textStyle={[!textStyle ? styles.textStyle : textStyle]}
+        />
       </View>
     </TouchableOpacity>
   );
 };
 
+
 const styles = StyleSheet.create({
   mainStyle: {
-    width: '100%',
+    width: "100%",
     height: 60,
     backgroundColor: Colors.red,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 12,
   },
   content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconWrapper: {
     marginRight: 8, // space between icon and text
   },
   textStyle: {
-    fontFamily: 'SenBold',
+    fontFamily: "SenBold",
     fontSize: 18,
-    color: '#fff',
+    color: "#fff",
   },
 });
 

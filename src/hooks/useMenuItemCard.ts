@@ -7,6 +7,7 @@ import {
 } from "@/src/services/api/endpoints/cartEndpoints";
 import { useAppDispatch } from "@/src/store/hooks";
 import { MenuItemDto } from "@/src/types/restaurant.type";
+import { emitCartRefresh } from "@/src/utils/cartStateRefresh";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
@@ -119,6 +120,9 @@ export function useMenuItemCard({
             type: "success",
             text1: "Item added to cart",
           });
+
+          // notify listeners
+          emitCartRefresh();
           break;
         }
         case "HOST": {
@@ -135,6 +139,9 @@ export function useMenuItemCard({
             type: "success",
             text1: "Item added to cart",
           });
+
+          // notify listeners
+          emitCartRefresh();
           break;
         }
 
@@ -171,6 +178,9 @@ export function useMenuItemCard({
               text1: "Joined cart",
               text2: "Item added successfully",
             });
+
+            // notify listeners
+            emitCartRefresh();
           } else {
             if (cartState.conflictInfo.isHost) {
               await showAppAlert({
@@ -214,6 +224,9 @@ export function useMenuItemCard({
 
                         setCustomizationNote("");
                         setModalVisible(false);
+
+                        // notify listeners
+                        emitCartRefresh();
                       } catch {
                         Toast.show({
                           type: "error",
