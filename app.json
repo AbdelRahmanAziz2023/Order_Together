@@ -8,9 +8,13 @@
     "scheme": "ordertogether",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": ["assets/images/*"],
-    "platforms": ["ios", "android"],
-
+    "assetBundlePatterns": [
+      "assets/images/*"
+    ],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
       "image": "./assets/images/Order-Together-Logo.png",
       "resizeMode": "contain",
@@ -29,12 +33,13 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.abdelrahmanaziz23.ordertogether",
       "jsEngine": "hermes",
-      "enableProguardInReleaseBuilds": true,
-      "enableShrinkResources": true
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "extra": {
       "eas": {
-        "projectId": "eee76858-f1fb-479e-8f93-392401d7fa58"
+        "projectId": "d7796200-7b56-4019-b9b1-345ddf9aa533"
       }
     },
     "plugins": [
